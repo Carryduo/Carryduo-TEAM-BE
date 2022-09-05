@@ -1,2 +1,3 @@
 # Carryduo-TEAM-BE
-Carryduo BE repository
+
+롤 듀오 서칭 플랫폼
