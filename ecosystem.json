@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "carryduo",
-      "script": "./node_modules/.bin/ts-node",
+      "script": "./project-carryduo/node_modules/.bin/ts-node",
       "args": "./project-carryduo/src/main.ts",
       "watch": true
     }
