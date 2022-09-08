@@ -4,10 +4,8 @@
       "name": "carryduo",
       "script": "./node_modules/.bin/ts-node",
       "args": "./src/main.ts",
-      "instances": "max",
-      "exec_mode": "cluster",
-      "wait_ready": true,
-      "listen_timeout": 50000
+      "instances": 0,
+      "exec_mode": "cluster"
     }
   ]
 }
