@@ -6,4 +6,4 @@ cd /home/ubuntu/build
 
 #install node modules & update swagger & pm2 reload
 sudo npm install
-sudo pm2 reload carryduo
+sudo pm2 reload ecosystem.json
