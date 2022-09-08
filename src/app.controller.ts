@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'cd test!';
+    return 'cd test2!!';
   }
 }
