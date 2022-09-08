@@ -2,8 +2,7 @@
   "apps": [
     {
       "name": "carryduo",
-      "script": "./node_modules/.bin/ts-node",
-      "args": "./src/main.ts",
+      "script": "dist/main",
       "instances": 0,
       "exec_mode": "cluster"
     }
