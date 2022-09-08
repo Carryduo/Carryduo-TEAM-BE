@@ -4,7 +4,11 @@
       "name": "carryduo",
       "script": "./node_modules/.bin/ts-node",
       "args": "./src/main.ts",
-      "watch": true
+      "watch": true,
+      "instances": "max",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "listen_timeout": 50000
     }
   ]
 }
