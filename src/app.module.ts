@@ -14,6 +14,8 @@ import { CombinationStatModule } from './combination-stat/combination-stat.modul
 import { SubscriptionModule } from './subscription/subscription.module';
 import { UserEntity } from './user/entities/user.entity';
 import { ChampEntity } from './champ/entities/champ.entity';
+import { ChampSkillInfoEntity } from './champ/entities/champSkillInfo.entity';
+import { Summoner } from './summoner/entities/summoner.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -26,7 +28,7 @@ const typeOrmModuleOptions = {
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
-    entities: [UserEntity, ChampEntity],
+    entities: [UserEntity, ChampEntity, ChampSkillInfoEntity, Summoner],
     synchronize: true, //! set 'false' in production = 동기화 여부, 리셋되는 것이므로 prod 레벨에선 해제
     autoLoadEntities: true,
     logging: true,
