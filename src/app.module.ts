@@ -12,6 +12,8 @@ import { SummonerModule } from './summoner/summoner.module';
 import { CommentsModule } from './comments/comments.module';
 import { CombinationStatModule } from './combination-stat/combination-stat.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { UserEntity } from './user/entities/user.entity';
+import { ChampEntity } from './champ/entities/champ.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -24,11 +26,12 @@ const typeOrmModuleOptions = {
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    entities: [UserEntity, ChampEntity],
     synchronize: true, //! set 'false' in production = 동기화 여부, 리셋되는 것이므로 prod 레벨에선 해제
     autoLoadEntities: true,
     logging: true,
     keepConnectionAlive: true,
+    timezone: 'local',
   }),
   inject: [ConfigService],
 };

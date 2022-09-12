@@ -1,6 +1,10 @@
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+
+@Entity({
+  name: 'USER',
+})
 export class UserEntity extends CommonEntity {
   @IsString()
   @IsNotEmpty({ message: '소셜로그인 아이디' })
