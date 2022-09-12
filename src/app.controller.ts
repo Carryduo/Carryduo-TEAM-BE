@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'this is carryduo development server. test';
+    return 'this is carryduo development server.';
   }
 }
