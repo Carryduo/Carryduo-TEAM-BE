@@ -4,6 +4,9 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AdminModule } from './admin/admin.module';
+import { UserModule } from './user/user.module';
+import { ChampModule } from './champ/champ.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -29,6 +32,9 @@ const typeOrmModuleOptions = {
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    AdminModule,
+    UserModule,
+    ChampModule,
   ],
   controllers: [AppController],
   providers: [AppService],
