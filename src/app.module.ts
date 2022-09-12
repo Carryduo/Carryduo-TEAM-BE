@@ -4,6 +4,10 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SummonerModule } from './summoner/summoner.module';
+import { CommentsModule } from './comments/comments.module';
+import { CombinationStatModule } from './combination-stat/combination-stat.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -29,6 +33,10 @@ const typeOrmModuleOptions = {
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    SummonerModule,
+    CommentsModule,
+    CombinationStatModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
