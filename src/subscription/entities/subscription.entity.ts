@@ -24,7 +24,7 @@ export class SubscriptionEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  user: UserEntity;
+  userId: UserEntity;
 
   @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.id, {
     onDelete: 'CASCADE',
@@ -35,5 +35,5 @@ export class SubscriptionEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  summoner: SummonerEntity;
+  summonerId: SummonerEntity;
 }

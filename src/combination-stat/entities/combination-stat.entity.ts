@@ -1,6 +1,7 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 
 @Entity({
   name: 'COMBINATION_STAT',
@@ -30,4 +31,28 @@ export class CombinationStatEntity extends CommonEntity {
   @IsNumber()
   @IsNotEmpty()
   sampleNum: number;
+
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'targetChampId',
+      referencedColumnName: 'id',
+    },
+  ])
+  targetChampId: ChampEntity;
+
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'subChampId',
+      referencedColumnName: 'id',
+    },
+  ])
+  subChampId: ChampEntity;
 }

@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
+import { CommentEntity } from 'src/comments/entities/comments.entity';
 
 @Entity({
   name: 'SUMMONER',
@@ -50,21 +51,55 @@ export class SummonerEntity extends CommonEntity {
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn([
     {
-      name: 'mostChampionList',
+      name: 'mostChamp1',
       referencedColumnName: 'id',
     },
   ])
-  champId: ChampEntity[];
+  mostChamp1: ChampEntity;
+
+  @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'mostChamp2',
+      referencedColumnName: 'id',
+    },
+  ])
+  mostChamp2: ChampEntity;
+
+  @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'mostChamp3',
+      referencedColumnName: 'id',
+    },
+  ])
+  mostChamp3: ChampEntity;
 
   @OneToMany(
     () => SubscriptionEntity,
-    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.summoner,
+    (subscription: SubscriptionEntity) => subscription.summonerId,
     {
       cascade: true,
     },
   )
   subscription: SubscriptionEntity;
+
+  @OneToMany(
+    () => CommentEntity,
+    (comment: CommentEntity) => comment.summonerId,
+    {
+      cascade: true,
+    },
+  )
+  comment: CommentEntity;
 }

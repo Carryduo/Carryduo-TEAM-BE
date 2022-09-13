@@ -1,8 +1,17 @@
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({
   name: 'USER',
@@ -50,7 +59,7 @@ export class UserEntity extends CommonEntity {
 
   @OneToMany(
     () => SubscriptionEntity,
-    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.user,
+    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.userId,
     {
       cascade: true,
     },
@@ -65,4 +74,38 @@ export class UserEntity extends CommonEntity {
     },
   )
   comment: CommentEntity;
+
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'preferChamp1',
+      referencedColumnName: 'id',
+    },
+  ])
+  preferChamp1: ChampEntity;
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'preferChamp2',
+      referencedColumnName: 'id',
+    },
+  ])
+  preferChamp2: ChampEntity;
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'preferChamp3',
+      referencedColumnName: 'id',
+    },
+  ])
+  preferChamp3: ChampEntity;
 }

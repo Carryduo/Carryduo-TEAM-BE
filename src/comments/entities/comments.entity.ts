@@ -2,6 +2,8 @@ import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 
 @Entity({
   name: 'COMMENT',
@@ -24,6 +26,7 @@ export class CommentEntity extends CommonEntity {
 
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.id, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn([
     {
@@ -32,4 +35,32 @@ export class CommentEntity extends CommonEntity {
     },
   ])
   userId: UserEntity;
+
+  @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'champId',
+      referencedColumnName: 'id',
+    },
+  ])
+  champId: UserEntity;
+
+  @ManyToOne(
+    () => SummonerEntity,
+    (summonerEntity: SummonerEntity) => summonerEntity.id,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn([
+    {
+      name: 'summonerId',
+      referencedColumnName: 'id',
+    },
+  ])
+  summonerId: UserEntity;
 }
