@@ -1,6 +1,8 @@
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({
   name: 'USER',
@@ -45,4 +47,22 @@ export class UserEntity extends CommonEntity {
   @IsNotEmpty({ message: '채팅활성화 여부를 입력해주세요' })
   @Column({ type: 'boolean', nullable: false, default: true })
   enableChat: boolean;
+
+  @OneToMany(
+    () => SubscriptionEntity,
+    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.user,
+    {
+      cascade: true,
+    },
+  )
+  subscription: SubscriptionEntity;
+
+  @OneToMany(
+    () => CommentEntity,
+    (commentEntity: CommentEntity) => commentEntity.id,
+    {
+      cascade: true,
+    },
+  )
+  comment: CommentEntity;
 }

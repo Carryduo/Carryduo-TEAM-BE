@@ -1,9 +1,9 @@
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity } from 'typeorm';
-import { IsDecimal, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @Entity({
-  name: 'COMBINATION-STAT',
+  name: 'COMBINATION_STAT',
 })
 export class CombinationStatEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false })

@@ -1,6 +1,7 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Entity({
   name: 'COMMENT',
@@ -20,4 +21,15 @@ export class CommentEntity extends CommonEntity {
   @IsNumber()
   @IsNotEmpty()
   reportNum: number;
+
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.id, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+  ])
+  userId: UserEntity;
 }

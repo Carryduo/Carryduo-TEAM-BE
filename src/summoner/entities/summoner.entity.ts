@@ -1,11 +1,13 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 
 @Entity({
   name: 'SUMMONER',
 })
-export class Summoner extends CommonEntity {
+export class SummonerEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false })
   @IsString()
   @IsNotEmpty()
@@ -45,4 +47,24 @@ export class Summoner extends CommonEntity {
   @IsNumber()
   @IsNotEmpty()
   winRate: number;
+
+  @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'mostChampionList',
+      referencedColumnName: 'id',
+    },
+  ])
+  champId: ChampEntity[];
+
+  @OneToMany(
+    () => SubscriptionEntity,
+    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.summoner,
+    {
+      cascade: true,
+    },
+  )
+  subscription: SubscriptionEntity;
 }
