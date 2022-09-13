@@ -30,23 +30,19 @@ export class UserEntity extends CommonEntity {
   profileImg: string;
 
   @IsString()
-  @IsNotEmpty({ message: '자기소개를 입력해주세요' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   bio: string;
 
   @IsString()
-  @IsNotEmpty({ message: '선호 포지션을 입력해주세요' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   preferPosition: string;
 
   @IsString()
-  @IsNotEmpty({ message: '티어를 입력해주세요' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   tier: string;
 
   @IsBoolean()
-  @IsNotEmpty({ message: '채팅활성화 여부를 입력해주세요' })
-  @Column({ type: 'boolean', nullable: false, default: true })
+  @Column({ type: 'boolean', default: true })
   enableChat: boolean;
 
   @OneToMany(
@@ -78,6 +74,7 @@ export class UserEntity extends CommonEntity {
     },
   ])
   preferChamp1: ChampEntity;
+
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -89,6 +86,7 @@ export class UserEntity extends CommonEntity {
     },
   ])
   preferChamp2: ChampEntity;
+
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
