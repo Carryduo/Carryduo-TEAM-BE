@@ -1,13 +1,5 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-} from 'typeorm';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 

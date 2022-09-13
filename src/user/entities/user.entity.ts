@@ -3,15 +3,7 @@ import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({
   name: 'USER',
