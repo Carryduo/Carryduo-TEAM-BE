@@ -4,6 +4,6 @@ import { CombinationStatService } from './combination-stat.service';
 
 @Module({
   controllers: [CombinationStatController],
-  providers: [CombinationStatService]
+  providers: [CombinationStatService],
 })
 export class CombinationStatModule {}
