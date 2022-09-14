@@ -24,7 +24,7 @@ export class ChampService {
       const championNameKo = targetChampionInfo[value].name;
       const championImg = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
 
-      this.champRepository.targetChampionInfoSave(
+      await this.champRepository.targetChampionInfoSave(
         championId,
         championNameEn,
         championNameKo,
@@ -70,7 +70,7 @@ export class ChampService {
         image: `http://ddragon.leagueoflegends.com/cdn/12.17.1/img/passive/${passive.image.full}`,
       };
 
-      this.champRepository.targetChampionSkillInfoSave(
+      await this.champRepository.targetChampionSkillInfoSave(
         championId,
         qSkill,
         wSkill,

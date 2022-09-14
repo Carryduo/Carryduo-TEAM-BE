@@ -11,13 +11,6 @@ export class ChampRepository {
     private readonly champsSkillInfoRepository: Repository<ChampSkillInfoEntity>,
   ) {}
 
-  async champExistFilter(champId) {
-    const existChamp = await this.champsRepository.find({
-      where: { id: champId },
-    });
-    return existChamp;
-  }
-
   async targetChampionInfoSave(
     championId: string,
     championNameEn: string,
@@ -31,9 +24,7 @@ export class ChampRepository {
       champImg: championImg,
     };
 
-    const existChamp = await this.champExistFilter(data.id);
-
-    if (existChamp.length === 0) await this.champsRepository.save({ ...data });
+    await this.champsRepository.save({ ...data });
   }
 
   async targetChampionSkillInfoSave(
@@ -56,47 +47,73 @@ export class ChampRepository {
     rSkill = Object.assign({}, rSkillInfo);
     passive = Object.assign({}, passiveInfo);
 
-    const ChampInfo = await this.champExistFilter(championId);
-    if (ChampInfo.length === 0) {
-      await this.champsSkillInfoRepository.save({
-        id: championId,
+    await this.champsSkillInfoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ChampSkillInfoEntity)
+      .values({
+        champId: { id: championId },
         skillId: qSkill.id,
         skillName: qSkill.name,
         sikllDesc: qSkill.desc,
         skillToolTip: qSkill.tooltip,
         skillImg: qSkill.image,
-      });
-      await this.champsSkillInfoRepository.save({
-        id: championId,
+      })
+      .execute();
+
+    await this.champsSkillInfoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ChampSkillInfoEntity)
+      .values({
+        champId: { id: championId },
         skillId: wSkill.id,
         skillName: wSkill.name,
         sikllDesc: wSkill.desc,
         skillToolTip: wSkill.tooltip,
         skillImg: wSkill.image,
-      });
-      await this.champsSkillInfoRepository.save({
-        id: championId,
+      })
+      .execute();
+
+    await this.champsSkillInfoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ChampSkillInfoEntity)
+      .values({
+        champId: { id: championId },
         skillId: eSkill.id,
         skillName: eSkill.name,
         sikllDesc: eSkill.desc,
         skillToolTip: eSkill.tooltip,
         skillImg: eSkill.image,
-      });
-      await this.champsSkillInfoRepository.save({
-        id: championId,
+      })
+      .execute();
+
+    await this.champsSkillInfoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ChampSkillInfoEntity)
+      .values({
+        champId: { id: championId },
         skillId: rSkill.id,
         skillName: rSkill.name,
         sikllDesc: rSkill.desc,
         skillToolTip: rSkill.tooltip,
         skillImg: rSkill.image,
-      });
-      await this.champsSkillInfoRepository.save({
-        id: championId,
+      })
+      .execute();
+
+    await this.champsSkillInfoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ChampSkillInfoEntity)
+      .values({
+        champId: { id: championId },
         skillId: passive.id,
         skillName: passive.name,
         sikllDesc: passive.desc,
         skillImg: passive.image,
-      });
-    }
+      })
+      .execute();
   }
 }
