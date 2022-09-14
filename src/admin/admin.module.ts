@@ -7,7 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { KakaoStrategy } from './kakao.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { jwtStrategy } from './jwt.strategy';
+import { jwtStrategy } from './jwt/jwt.strategy';
 import { AdminRepository } from './admin.repository';
 @Module({
   imports: [

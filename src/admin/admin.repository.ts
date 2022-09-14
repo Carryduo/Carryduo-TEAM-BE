@@ -25,4 +25,19 @@ export class AdminRepository {
     }
     return user;
   }
+
+  async findById(id: string) {
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
+  async deleteUser(id: string) {
+    console.log(id);
+    this.usersRepository
+      .createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .where('id = :id', { id })
+      .execute();
+    return { success: true };
+  }
 }

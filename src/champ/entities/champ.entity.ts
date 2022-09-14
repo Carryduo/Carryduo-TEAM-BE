@@ -6,7 +6,7 @@ import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { OmitType, PickType } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/swagger';
 
 @Entity({
   name: 'CHAMP',

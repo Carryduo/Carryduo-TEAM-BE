@@ -10,7 +10,7 @@ export class ChampService {
   ) {}
 
   async targetChampionInfo(champName): Promise<any> {
-    for (let key in champName) {
+    for (const key in champName) {
       const value = champName[key];
       const targetChampionResult = await this.axios
         .get(
