@@ -22,7 +22,7 @@ export class ChampSkillInfoEntity extends CommonEntity {
   @IsNotEmpty()
   sikllDesc: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   @IsString()
   @IsNotEmpty()
   skillToolTip: string;
