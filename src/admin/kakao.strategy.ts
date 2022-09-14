@@ -13,7 +13,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
   async validate(accessToken, refreshToken, profile, done) {
     // 유저정보 가져오기
     // 유저정보 보내기
-    console.log(profile);
     const payload: kakaoPayload = {
       socialId: `${profile.id}`,
       social: profile.provider,
