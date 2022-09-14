@@ -38,6 +38,6 @@ export class AdminRepository {
       .from(UserEntity)
       .where('id = :id', { id })
       .execute();
-    return { success: true };
+    return { success: true, message: '회원 탈퇴 완료되었습니다' };
   }
 }
