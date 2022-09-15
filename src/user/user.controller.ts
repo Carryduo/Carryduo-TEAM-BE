@@ -28,7 +28,7 @@ export class UserController {
   @ApiOperation({ summary: '특정 유저 정보 조회' })
   @Get('/:id')
   @UseGuards(jwtGuard)
-  async getIndividualUserInfo(@Param('id') param: number, @Req() req) {
+  async getIndividualUserInfo(@Param('id') param: string, @Req() req) {
     return '로그인 유저 정보 ';
   }
 }

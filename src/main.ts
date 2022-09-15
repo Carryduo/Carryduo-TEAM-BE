@@ -24,6 +24,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
+  app.enableCors({
+    origin: true, // true = 어느 곳에서나 접근 가능, true 이외에 본래는 url을 작성
+    credentials: true,
+  });
   await app.listen(process.env.PORT);
 }
 
