@@ -23,11 +23,11 @@ export class AdminController {
   }
 
   // 프론트 통신 시 삭제 예정
-  @Get('/kakao')
-  @UseGuards(AuthGuard('kakao'))
-  async kakaoLogin() {
-    return 'this is admin api';
-  }
+  // @Get('/kakao')
+  // @UseGuards(AuthGuard('kakao'))
+  // async kakaoLogin() {
+  //   return 'this is admin api';
+  // }
 
   // 카카오 콜백
   @ApiOperation({ summary: '카카오 로그인' })
