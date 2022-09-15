@@ -17,7 +17,6 @@ export class AdminRepository {
       where: { social, socialId },
     });
     if (user === null) {
-      console.log(data.socialId);
       const newUser = await this.usersRepository.save({
         ...data,
       });
@@ -31,7 +30,6 @@ export class AdminRepository {
   }
 
   async deleteUser(id: string) {
-    console.log(id);
     this.usersRepository
       .createQueryBuilder()
       .delete()

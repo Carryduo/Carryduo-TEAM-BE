@@ -4,13 +4,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CommonEntity {
   @ApiProperty()
   @IsUUID()
+  @IsString()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -21,5 +21,6 @@ import { AdminRepository } from './admin.repository';
   ],
   controllers: [AdminController],
   providers: [AdminService, KakaoStrategy, jwtStrategy, AdminRepository],
+  exports: [AdminRepository],
 })
 export class AdminModule {}

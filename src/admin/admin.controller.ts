@@ -12,21 +12,22 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  // 회원탈퇴
   @ApiOperation({ summary: '회원탈퇴' })
   @ApiResponse({ status: 200, description: '회원 탈퇴 성공하였습니다' })
   @ApiResponse({ status: 400, description: '회원 탈퇴 실패했습니다' })
   @Delete()
   @UseGuards(jwtGuard)
   async deleteUser(@Req() req) {
-    return this.adminService.deleteUser(req.user.id);
+    return this.adminService.deleteUser(req.user.userId);
   }
 
   // 프론트 통신 시 삭제 예정
-  @Get('/kakao')
-  @UseGuards(AuthGuard('kakao'))
-  async kakaoLogin() {
-    return 'this is admin api';
-  }
+  // @Get('/kakao')
+  // @UseGuards(AuthGuard('kakao'))
+  // async kakaoLogin() {
+  //   return 'this is admin api';
+  // }
 
   // 카카오 콜백
   @ApiOperation({ summary: '카카오 로그인' })
