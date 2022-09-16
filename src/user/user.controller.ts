@@ -1,10 +1,19 @@
 import { UserService } from './user.service';
-import { Controller } from '@nestjs/common';
-import { Get, UseGuards, Delete, UseFilters, Param, Req } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
+import {
+  Get,
+  UseGuards,
+  Delete,
+  UseFilters,
+  Param,
+  Req,
+  Body,
+} from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
+import { OptionRequestDTO } from './dto/user.request.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -38,6 +47,12 @@ export class UserController {
   @UseGuards(jwtGuard)
   async getLoginUserOptionInfo(@Req() req) {
     return this.userService.getUserInfo('option', req.user);
+  }
+
+  @Post('/option')
+  @UseGuards(jwtGuard)
+  async updateUserOptionInfo(@Req() req, @Body() body: OptionRequestDTO) {
+    return this.userService.updateUserOptionInfo(req.user, body);
   }
 
   @ApiOperation({ summary: '특정 유저 정보 조회' })

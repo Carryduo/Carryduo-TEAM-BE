@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { adminResponse } from 'src/admin/dto/admin.response';
 import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
+import { OptionRequestDTO } from './dto/user.request.dto';
 @Injectable()
 export class UserRepository {
   constructor(
@@ -15,10 +16,16 @@ export class UserRepository {
     data: adminResponse,
   ): Promise<loginResponseDTO | optionResponseDTO> {
     // TODO: findOne => queryBuilder로 수정(preferChamp 나오도록...)
-    const result = await this.usersRepository.findOne({
-      where: { id: data.userId },
+    const result = await this.usersRepository
+      .createQueryBuilder()
+      .select('user')
+      .from(UserEntity, 'user')
+      .where('user.id = :id', { id: data.userId })
+      .getOne();
+    const result2 = await this.usersRepository.find({
+      relations: ['preferChamp1'],
     });
-    console.log(result);
+    console.log(result2);
     const {
       id,
       nickname,
@@ -53,6 +60,25 @@ export class UserRepository {
       };
     } else {
       throw new HttpException('카테고리가 잘못되었습니다', 400);
+    }
+  }
+  async updateUserOptionInfo(data: adminResponse, body: OptionRequestDTO) {
+    try {
+      console.log(data);
+      console.log(body);
+      const result = await this.usersRepository
+        .createQueryBuilder()
+        .update(UserEntity)
+        .set(body)
+        .where('id = :id', { id: data.userId })
+        .execute();
+      console.log(result);
+      return {
+        success: true,
+        message: '설정 변경 완료되었습니다',
+      };
+    } catch {
+      throw new HttpException('설정 변경 실패했습니다', 400);
     }
   }
 }
