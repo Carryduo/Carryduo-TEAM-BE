@@ -11,7 +11,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 })
 export class UserEntity extends CommonEntity {
   @ApiProperty({
-    example: '2428090645',
+    example: '242787845',
     description: 'socialId',
     required: true,
   })
@@ -51,7 +51,7 @@ export class UserEntity extends CommonEntity {
   profileImg: string;
 
   @ApiProperty({
-    example: '서폿유저 실버2',
+    example: '서폿유저 실버2입니다. 듀오 환영!',
     description: 'bio',
     required: false,
   })
@@ -108,6 +108,11 @@ export class UserEntity extends CommonEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  @ApiProperty({
+    example: '56',
+    description: '선호챔피언1',
+    required: false,
+  })
   @JoinColumn([
     {
       name: 'preferChamp1',
@@ -120,6 +125,11 @@ export class UserEntity extends CommonEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  @ApiProperty({
+    example: '56',
+    description: '선호챔피언2',
+    required: false,
+  })
   @JoinColumn([
     {
       name: 'preferChamp2',
@@ -131,6 +141,11 @@ export class UserEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+  })
+  @ApiProperty({
+    example: '56',
+    description: '선호챔피언3',
+    required: false,
   })
   @JoinColumn([
     {

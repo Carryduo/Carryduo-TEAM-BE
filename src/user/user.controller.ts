@@ -12,6 +12,7 @@ import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: '로그인 유저 정보 조회' })
   @ApiResponse({
     status: 200,
     description: 'More or less dangerous animals',
@@ -21,7 +22,6 @@ export class UserController {
     status: 404,
     description: '사용자 정보를 불러오지 못했습니다.',
   })
-  @ApiOperation({ summary: '로그인 유저 정보 조회' })
   @Get()
   @UseGuards(jwtGuard)
   async getLoginUserInfo(@Req() req) {
@@ -29,6 +29,11 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '설정 페이지 데이터 조회',
+    type: optionResponseDTO,
+  })
   @Get('/option')
   @UseGuards(jwtGuard)
   async getLoginUserOptionInfo(@Req() req) {

@@ -10,6 +10,11 @@ export class optionResponseDTO extends OmitType(UserEntity, [
   'updatedAt',
   'deletedAt',
 ]) {
+  @ApiProperty({
+    example: 'wqeqwQWE244',
+    description: '유저ID',
+    required: false,
+  })
   userId: string;
 }
 
@@ -17,5 +22,10 @@ export class loginResponseDTO extends PickType(UserEntity, [
   'nickname',
   'profileImg',
 ]) {
+  @ApiProperty({
+    example: 'wqeqwQWE244',
+    description: '유저ID',
+    required: false,
+  })
   userId: string;
 }
