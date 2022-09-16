@@ -2,8 +2,9 @@ import { UserService } from './user.service';
 import { Controller } from '@nestjs/common';
 import { Get, UseGuards, Delete, UseFilters, Param, Req } from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
+import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -11,6 +12,15 @@ import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiResponse({
+    status: 200,
+    description: 'More or less dangerous animals',
+    type: loginResponseDTO,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '사용자 정보를 불러오지 못했습니다.',
+  })
   @ApiOperation({ summary: '로그인 유저 정보 조회' })
   @Get()
   @UseGuards(jwtGuard)
