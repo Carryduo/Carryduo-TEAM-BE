@@ -2,7 +2,7 @@ import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { ChampBasicInfoDTO } from 'src/champ/dto/champ.response.dto';
 import { UserEntity } from '../entities/user.entity';
 
-export class OptionResponseDTO extends OmitType(UserEntity, [
+export class UserSpecificInfoResponseDTO extends OmitType(UserEntity, [
   'id',
   'createdAt',
   'socialId',
@@ -28,7 +28,7 @@ export class OptionResponseDTO extends OmitType(UserEntity, [
   preferChamp3: ChampBasicInfoDTO | null;
 }
 
-export class LoginResponseDTO extends PickType(UserEntity, [
+export class UserBasicInfoResponseDTO extends PickType(UserEntity, [
   'nickname',
   'profileImg',
 ]) {

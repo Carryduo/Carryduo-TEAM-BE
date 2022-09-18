@@ -2,8 +2,11 @@ import { UserEntity } from './entities/user.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AdminResponse } from 'src/admin/dto/admin.response';
-import { LoginResponseDTO, OptionResponseDTO } from './dto/user.response.dto';
+import { AdminResponseDTO } from 'src/admin/dto/admin.response';
+import {
+  UserBasicInfoResponseDTO,
+  UserSpecificInfoResponseDTO,
+} from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 @Injectable()
 export class UserRepository {
@@ -13,15 +16,25 @@ export class UserRepository {
   ) {}
   async getUserInfo(
     category: string,
-    data: AdminResponse,
-  ): Promise<LoginResponseDTO | OptionResponseDTO> {
+    data: AdminResponseDTO,
+  ): Promise<UserBasicInfoResponseDTO | UserSpecificInfoResponseDTO> {
     // TODO: findOne => queryBuilder로 수정(preferChamp 나오도록...)
     const result = await this.usersRepository.findOne({
       where: { id: data.userId },
     });
 
-    const { id, nickname, tier, bio, profileImg, preferPosition, enableChat } =
-      result;
+    const {
+      id,
+      nickname,
+      tier,
+      bio,
+      profileImg,
+      preferPosition,
+      enableChat,
+      preferChamp1,
+      preferChamp2,
+      preferChamp3,
+    } = result;
 
     if (category === 'login') {
       return {
@@ -38,16 +51,16 @@ export class UserRepository {
         profileImg,
         preferPosition,
         // TODO: 트랜젝션으로 묶기
-        preferChamp1: await result.preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
-        preferChamp2: await result.preferChamp2,
-        preferChamp3: await result.preferChamp3,
+        preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
+        preferChamp2,
+        preferChamp3,
         enableChat,
       };
     } else {
       throw new HttpException('카테고리가 잘못되었습니다', 400);
     }
   }
-  async updateUserOptionInfo(data: AdminResponse, body: OptionRequestDTO) {
+  async updateUserOptionInfo(data: AdminResponseDTO, body: OptionRequestDTO) {
     try {
       await this.usersRepository
         .createQueryBuilder()
@@ -64,10 +77,22 @@ export class UserRepository {
     }
   }
 
-  async getIndividualUserInfo(data: string): Promise<OptionResponseDTO> {
+  async getIndividualUserInfo(
+    data: string,
+  ): Promise<UserSpecificInfoResponseDTO> {
     const result = await this.usersRepository.findOne({ where: { id: data } });
-    const { id, nickname, tier, bio, profileImg, preferPosition, enableChat } =
-      result;
+    const {
+      id,
+      nickname,
+      tier,
+      bio,
+      profileImg,
+      preferPosition,
+      enableChat,
+      preferChamp1,
+      preferChamp2,
+      preferChamp3,
+    } = result;
     return {
       userId: id,
       nickname,
@@ -76,9 +101,9 @@ export class UserRepository {
       profileImg,
       preferPosition,
       enableChat,
-      preferChamp1: await result.preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
-      preferChamp2: await result.preferChamp2,
-      preferChamp3: await result.preferChamp3,
+      preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
+      preferChamp2,
+      preferChamp3,
     };
   }
 }

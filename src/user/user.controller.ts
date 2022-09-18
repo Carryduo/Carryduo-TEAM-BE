@@ -4,7 +4,10 @@ import { Get, UseGuards, UseFilters, Param, Req, Body } from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
-import { LoginResponseDTO, OptionResponseDTO } from './dto/user.response.dto';
+import {
+  UserBasicInfoResponseDTO,
+  UserSpecificInfoResponseDTO,
+} from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 
 @Controller('user')
@@ -17,7 +20,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'More or less dangerous animals',
-    type: LoginResponseDTO,
+    type: UserBasicInfoResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -33,7 +36,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '설정 페이지 데이터 조회',
-    type: OptionResponseDTO,
+    type: UserSpecificInfoResponseDTO,
   })
   // TODO: req -> user 데코레이터로 변겅
   @Get('/option')

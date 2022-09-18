@@ -35,7 +35,7 @@ export class CommentEntity extends CommonEntity {
     description: '신고 받은 횟수',
     required: false,
   })
-  @Column({ type: 'int', nullable: false })
+  @Column({ type: 'int', nullable: false, default: 0 })
   @IsNumber()
   @IsNotEmpty()
   reportNum: number;
@@ -43,6 +43,7 @@ export class CommentEntity extends CommonEntity {
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @ApiProperty({
     example: 'xzczcaQWWWE23',
@@ -60,6 +61,7 @@ export class CommentEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -80,6 +82,7 @@ export class CommentEntity extends CommonEntity {
     {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
+      eager: true,
     },
   )
   @ApiProperty({

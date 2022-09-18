@@ -98,7 +98,7 @@ export class UserEntity extends CommonEntity {
 
   @OneToMany(
     () => CommentEntity,
-    (commentEntity: CommentEntity) => commentEntity.id,
+    (commentEntity: CommentEntity) => commentEntity.userId,
     {
       cascade: true,
     },
@@ -108,7 +108,7 @@ export class UserEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    // eager: true,
+    eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -121,12 +121,12 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp1: Promise<ChampEntity>;
+  preferChamp1: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    // eager: true,
+    eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -139,12 +139,12 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp2: Promise<ChampEntity>;
+  preferChamp2: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    // eager: true,
+    eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -157,5 +157,5 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp3: Promise<ChampEntity>;
+  preferChamp3: ChampEntity;
 }
