@@ -12,7 +12,7 @@ import {
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
-import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
+import { LoginResponseDTO, OptionResponseDTO } from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 
 @Controller('user')
@@ -25,7 +25,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'More or less dangerous animals',
-    type: loginResponseDTO,
+    type: LoginResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -41,7 +41,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '설정 페이지 데이터 조회',
-    type: optionResponseDTO,
+    type: OptionResponseDTO,
   })
   @Get('/option')
   @UseGuards(jwtGuard)
@@ -58,7 +58,7 @@ export class UserController {
   @ApiOperation({ summary: '특정 유저 정보 조회' })
   @Get('/:id')
   @UseGuards(jwtGuard)
-  async getIndividualUserInfo(@Param('id') param: string, @Req() req) {
+  async getIndividualUserInfo(@Param('id') param, @Req() req) {
     return '로그인 유저 정보 ';
   }
 }

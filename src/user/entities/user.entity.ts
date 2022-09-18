@@ -85,6 +85,7 @@ export class UserEntity extends CommonEntity {
   @IsBoolean()
   @Column({ type: 'boolean', default: true })
   enableChat: boolean;
+  //
 
   @OneToMany(
     () => SubscriptionEntity,
@@ -107,6 +108,7 @@ export class UserEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    // eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -119,11 +121,12 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp1: ChampEntity;
+  preferChamp1: Promise<ChampEntity>;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    // eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -136,11 +139,12 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp2: ChampEntity;
+  preferChamp2: Promise<ChampEntity>;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    // eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -153,5 +157,5 @@ export class UserEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp3: ChampEntity;
+  preferChamp3: Promise<ChampEntity>;
 }

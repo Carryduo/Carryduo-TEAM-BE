@@ -2,8 +2,8 @@ import { UserEntity } from './entities/user.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { adminResponse } from 'src/admin/dto/admin.response';
-import { loginResponseDTO, optionResponseDTO } from './dto/user.response.dto';
+import { AdminResponse } from 'src/admin/dto/admin.response';
+import { LoginResponseDTO, OptionResponseDTO } from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 @Injectable()
 export class UserRepository {
@@ -13,31 +13,15 @@ export class UserRepository {
   ) {}
   async getUserInfo(
     category: string,
-    data: adminResponse,
-  ): Promise<loginResponseDTO | optionResponseDTO> {
+    data: AdminResponse,
+  ): Promise<LoginResponseDTO | OptionResponseDTO> {
     // TODO: findOne => queryBuilder로 수정(preferChamp 나오도록...)
-    const result = await this.usersRepository
-      .createQueryBuilder()
-      .select('user')
-      .from(UserEntity, 'user')
-      .where('user.id = :id', { id: data.userId })
-      .getOne();
-    const result2 = await this.usersRepository.find({
-      relations: ['preferChamp1'],
+    const result = await this.usersRepository.findOne({
+      where: { id: data.userId },
     });
-    console.log(result2);
-    const {
-      id,
-      nickname,
-      tier,
-      bio,
-      profileImg,
-      preferPosition,
-      preferChamp1,
-      preferChamp2,
-      preferChamp3,
-      enableChat,
-    } = result;
+
+    const { id, nickname, tier, bio, profileImg, preferPosition, enableChat } =
+      result;
 
     if (category === 'login') {
       return {
@@ -53,26 +37,24 @@ export class UserRepository {
         bio,
         profileImg,
         preferPosition,
-        preferChamp1,
-        preferChamp2,
-        preferChamp3,
+        // TODO: 트랜젝션으로 묶기
+        preferChamp1: await result.preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
+        preferChamp2: await result.preferChamp2,
+        preferChamp3: await result.preferChamp3,
         enableChat,
       };
     } else {
       throw new HttpException('카테고리가 잘못되었습니다', 400);
     }
   }
-  async updateUserOptionInfo(data: adminResponse, body: OptionRequestDTO) {
+  async updateUserOptionInfo(data: AdminResponse, body: OptionRequestDTO) {
     try {
-      console.log(data);
-      console.log(body);
-      const result = await this.usersRepository
+      await this.usersRepository
         .createQueryBuilder()
         .update(UserEntity)
         .set(body)
         .where('id = :id', { id: data.userId })
         .execute();
-      console.log(result);
       return {
         success: true,
         message: '설정 변경 완료되었습니다',
