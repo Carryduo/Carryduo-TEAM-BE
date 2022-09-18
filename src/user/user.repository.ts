@@ -18,7 +18,6 @@ export class UserRepository {
     category: string,
     data: AdminResponseDTO,
   ): Promise<UserBasicInfoResponseDTO | UserSpecificInfoResponseDTO> {
-    // TODO: findOne => queryBuilder로 수정(preferChamp 나오도록...)
     const result = await this.usersRepository.findOne({
       where: { id: data.userId },
     });
@@ -50,8 +49,7 @@ export class UserRepository {
         bio,
         profileImg,
         preferPosition,
-        // TODO: 트랜젝션으로 묶기
-        preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
+        preferChamp1,
         preferChamp2,
         preferChamp3,
         enableChat,

@@ -99,4 +99,31 @@ export class CommentRepository {
     }
     return { success: true, message: '평판 업로드 완료했습니다' };
   }
+
+  // TODO: 조회 + 생성 트랜젝션 연결하기
+  async updateReportNum(param) {
+    const reportNum =
+      (
+        await this.commentsRepository.findOne({
+          where: { id: param.id },
+        })
+      ).reportNum + 1;
+    await this.commentsRepository
+      .createQueryBuilder()
+      .update(CommentEntity)
+      .set({ reportNum })
+      .where('id = :id', { id: param.id })
+      .execute();
+    return { success: true, message: '평판 신고 완료되었습니다' };
+  }
+  // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
+  async deleteComment(param) {
+    this.commentsRepository
+      .createQueryBuilder()
+      .delete()
+      .from(CommentEntity)
+      .where('id = :id', { id: param.id })
+      .execute();
+    return { success: true, message: '평판 삭제 완료되었습니다' };
+  }
 }

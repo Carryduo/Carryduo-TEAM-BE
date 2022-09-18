@@ -7,6 +7,8 @@ import {
   Req,
   Body,
   UseGuards,
+  Delete,
+  Patch,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
@@ -34,5 +36,18 @@ export class CommentsController {
     @Body() body: PostCommentDTO,
   ) {
     return this.commentService.postComment(param, req.user, body);
+  }
+
+  // TODO: id validator 필요
+  @Patch('/:id')
+  @UseGuards(jwtGuard)
+  updateReportNum(@Param() param) {
+    return this.commentService.updateReportNum(param);
+  }
+
+  @Delete('/:id')
+  @UseGuards(jwtGuard)
+  deleteComment(@Param() param) {
+    return this.commentService.deleteComment(param);
   }
 }

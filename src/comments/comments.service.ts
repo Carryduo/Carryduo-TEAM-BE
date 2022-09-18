@@ -18,4 +18,12 @@ export class CommentsService {
   ) {
     return this.commentRepository.postComment(param, user, data);
   }
+
+  updateReportNum(param) {
+    return this.commentRepository.updateReportNum(param);
+  }
+
+  deleteComment(param) {
+    return this.commentRepository.deleteComment(param);
+  }
 }
