@@ -1,14 +1,6 @@
 import { UserService } from './user.service';
 import { Controller, Post } from '@nestjs/common';
-import {
-  Get,
-  UseGuards,
-  Delete,
-  UseFilters,
-  Param,
-  Req,
-  Body,
-} from '@nestjs/common';
+import { Get, UseGuards, UseFilters, Param, Req, Body } from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
@@ -43,12 +35,18 @@ export class UserController {
     description: '설정 페이지 데이터 조회',
     type: OptionResponseDTO,
   })
+  // TODO: req -> user 데코레이터로 변겅
   @Get('/option')
   @UseGuards(jwtGuard)
   async getLoginUserOptionInfo(@Req() req) {
     return this.userService.getUserInfo('option', req.user);
   }
 
+  @ApiOperation({ summary: '설정 페이지 데이터 업데이트' })
+  @ApiResponse({
+    status: 200,
+    description: '설정 페이지 데이터 업데이트 성공',
+  })
   @Post('/option')
   @UseGuards(jwtGuard)
   async updateUserOptionInfo(@Req() req, @Body() body: OptionRequestDTO) {
@@ -58,7 +56,7 @@ export class UserController {
   @ApiOperation({ summary: '특정 유저 정보 조회' })
   @Get('/:id')
   @UseGuards(jwtGuard)
-  async getIndividualUserInfo(@Param('id') param, @Req() req) {
-    return '로그인 유저 정보 ';
+  async getIndividualUserInfo(@Param('id') param) {
+    return this.userService.getIndividualUserInfo(param);
   }
 }

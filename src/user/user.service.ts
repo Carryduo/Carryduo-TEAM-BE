@@ -14,4 +14,8 @@ export class UserService {
   async updateUserOptionInfo(data: AdminResponse, body: OptionRequestDTO) {
     return this.userRepository.updateUserOptionInfo(data, body);
   }
+
+  async getIndividualUserInfo(data: string) {
+    return this.userRepository.getIndividualUserInfo(data);
+  }
 }

@@ -13,6 +13,8 @@ export class OptionResponseDTO extends OmitType(UserEntity, [
   'preferChamp1',
   'preferChamp2',
   'preferChamp3',
+  'subscription',
+  'comment',
 ]) {
   @ApiProperty({
     example: 'wqeqwQWE244',
@@ -21,9 +23,9 @@ export class OptionResponseDTO extends OmitType(UserEntity, [
   })
   userId: string;
 
-  preferChamp1: ChampBasicInfoDTO;
-  preferChamp2: ChampBasicInfoDTO;
-  preferChamp3: ChampBasicInfoDTO;
+  preferChamp1: ChampBasicInfoDTO | null;
+  preferChamp2: ChampBasicInfoDTO | null;
+  preferChamp3: ChampBasicInfoDTO | null;
 }
 
 export class LoginResponseDTO extends PickType(UserEntity, [

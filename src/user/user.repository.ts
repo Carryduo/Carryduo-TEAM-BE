@@ -63,4 +63,22 @@ export class UserRepository {
       throw new HttpException('설정 변경 실패했습니다', 400);
     }
   }
+
+  async getIndividualUserInfo(data: string): Promise<OptionResponseDTO> {
+    const result = await this.usersRepository.findOne({ where: { id: data } });
+    const { id, nickname, tier, bio, profileImg, preferPosition, enableChat } =
+      result;
+    return {
+      userId: id,
+      nickname,
+      tier,
+      bio,
+      profileImg,
+      preferPosition,
+      enableChat,
+      preferChamp1: await result.preferChamp1, // result.preferChamp1에는 champ table 정보가 있어서, 이에 대한 타입도 지정해줘야함.
+      preferChamp2: await result.preferChamp2,
+      preferChamp3: await result.preferChamp3,
+    };
+  }
 }
