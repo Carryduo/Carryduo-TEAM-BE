@@ -1,6 +1,14 @@
 import { UserService } from './user.service';
 import { Controller, Post } from '@nestjs/common';
-import { Get, UseGuards, UseFilters, Param, Req, Body } from '@nestjs/common';
+import {
+  Get,
+  UseGuards,
+  UseFilters,
+  Param,
+  Req,
+  Body,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import {
   ApiBearerAuth,
@@ -81,7 +89,8 @@ export class UserController {
   })
   @Get('/:id')
   @UseGuards(jwtGuard)
-  async getIndividualUserInfo(@Param('id') param) {
+  async getIndividualUserInfo(@Param('id', ParseUUIDPipe) param: string) {
+    console.log(param);
     return this.userService.getIndividualUserInfo(param);
   }
 }

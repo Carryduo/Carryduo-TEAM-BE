@@ -9,6 +9,8 @@ import {
   UseGuards,
   Delete,
   Patch,
+  ParseUUIDPipe,
+  HttpException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,8 +23,12 @@ import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { CommentsService } from './comments.service';
-import { CommentParamDTO, PostCommentDTO } from './dto/comment.request.dto';
+import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentGetResponseDTO } from './dto/comment.response.dto';
+import {
+  CommentCategoryPipe,
+  CommentTargetPipe,
+} from './pipes/comment.param.validation.pipe';
 
 @Controller('comments')
 @ApiTags('comment')
@@ -49,8 +55,19 @@ export class CommentsController {
     type: CommentGetResponseDTO,
   })
   @Get('/:category/:target')
-  getComments(@Param() param: CommentParamDTO) {
-    return this.commentService.getComments(param);
+  getComments(
+    @Param('category', CommentCategoryPipe) category: string,
+    @Param('target', CommentTargetPipe) target: string,
+  ) {
+    if (isNaN(Number(target))) {
+      if (category === 'champ') {
+        throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
+      }
+    } else if (category === 'summoner') {
+      throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
+    }
+
+    return this.commentService.getComments(category, target);
   }
 
   @ApiOperation({ summary: '평판 등록' })
@@ -73,11 +90,19 @@ export class CommentsController {
   @Post('/:category/:target')
   @UseGuards(jwtGuard)
   postComment(
-    @Param() param: CommentParamDTO,
+    @Param('category', CommentCategoryPipe) category: string,
+    @Param('target', CommentTargetPipe) target: string,
     @Req() req,
     @Body() body: PostCommentDTO,
   ) {
-    return this.commentService.postComment(param, req.user, body);
+    if (isNaN(Number(target))) {
+      if (category === 'champ') {
+        throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
+      }
+    } else if (category === 'summoner') {
+      throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
+    }
+    return this.commentService.postComment(category, target, req.user, body);
   }
 
   // TODO: id validator 필요
@@ -95,8 +120,8 @@ export class CommentsController {
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
-  updateReportNum(@Param() param) {
-    return this.commentService.updateReportNum(param);
+  updateReportNum(@Param('id', ParseUUIDPipe) id) {
+    return this.commentService.updateReportNum(id);
   }
 
   @ApiOperation({ summary: '평판 삭제' })
@@ -113,7 +138,7 @@ export class CommentsController {
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)
-  deleteComment(@Param() param) {
-    return this.commentService.deleteComment(param);
+  deleteComment(@Param('id', ParseUUIDPipe) id) {
+    return this.commentService.deleteComment(id);
   }
 }

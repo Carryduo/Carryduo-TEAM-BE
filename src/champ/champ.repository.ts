@@ -1,5 +1,4 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { raw } from 'express';
 import { Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
@@ -19,8 +18,9 @@ export class ChampRepository {
   }
 
   async getTargetChampion(category: string) {
-    let skill = [];
+    const skill = [];
 
+    // TODO: DB에러 발생 시, httpException filter로 넘어가게 해야함
     const champInfo = await this.champsRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
