@@ -21,6 +21,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       | { error: string; statusCode: number; message: string | string[] };
     // type이 Object인 404 에러의 분기 처리(404에러를 포함한 에러 예외 처리)
 
+    console.log(error, typeof error);
     // 1. 404 외의 에러
     if (typeof error === 'string') {
       response.status(status).json({

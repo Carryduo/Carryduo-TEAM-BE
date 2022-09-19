@@ -1,0 +1,130 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AdminResponseDTO } from 'src/admin/dto/admin.response';
+import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
+import { Repository, Equal } from 'typeorm';
+import { PostCommentDTO } from './dto/comment.request.dto';
+import { CommentEntity } from './entities/comments.entity';
+
+@Injectable()
+export class CommentRepository {
+  constructor(
+    @InjectRepository(CommentEntity)
+    private readonly commentsRepository: Repository<CommentEntity>,
+  ) {}
+  //   TODO: 코드 사용성 개선
+
+  async getComments(
+    category: string,
+    target: string,
+  ): Promise<UserBasicInfoResponseDTO[]> {
+    if (category === 'champ') {
+      const result = [];
+      const data = await this.commentsRepository.find({
+        where: { category: category, champId: Equal(target) },
+      });
+      data.map((value) => {
+        result.push({
+          id: value.id,
+          category: value.category,
+          content: value.category,
+          reportNum: value.reportNum,
+          userId: {
+            id: value.userId.id,
+            nickname: value.userId.nickname,
+            profileImg: value.userId.profileImg,
+            enableChat: value.userId.enableChat,
+          },
+          champId: value.champId.id,
+        });
+      });
+      //   const user = await result.userId;
+      return result;
+    } else if (category === 'summoner') {
+      const result = [];
+      const data = await this.commentsRepository.find({
+        where: { category: category, summonerId: Equal(target) },
+      });
+      data.map((value) => {
+        result.push({
+          id: value.id,
+          category: value.category,
+          content: value.category,
+          reportNum: value.reportNum,
+          userId: {
+            id: value.userId.id,
+            nickname: value.userId.nickname,
+            profileImg: value.userId.profileImg,
+            enableChat: value.userId.enableChat,
+          },
+          summonerId: value.summonerId.id,
+        });
+      });
+      return result;
+    }
+  }
+  async postComment(
+    category: string,
+    target: string,
+    user: AdminResponseDTO,
+    data: PostCommentDTO,
+  ) {
+    // 챔피언 댓글
+    if (category === 'champ') {
+      await this.commentsRepository
+        .createQueryBuilder()
+        .insert()
+        .into(CommentEntity)
+        .values({
+          userId: { id: user.userId },
+          category,
+          champId: { id: target },
+          content: data.content,
+        })
+        .execute();
+    }
+    // 소환사 댓글
+    else if (category === 'summoner') {
+      await this.commentsRepository
+        .createQueryBuilder()
+        .insert()
+        .into(CommentEntity)
+        .values({
+          // Promise로 묶인 column은 다음과 같이 function 형태로 주입해주어야 한다.
+          userId: { id: user.userId },
+          category,
+          summonerId: { id: target },
+          content: data.content,
+        })
+        .execute();
+    }
+    return { success: true, message: '평판 업로드 완료했습니다' };
+  }
+
+  // TODO: 조회 + 생성 트랜젝션 연결하기
+  async updateReportNum(id) {
+    const reportNum =
+      (
+        await this.commentsRepository.findOne({
+          where: { id: id.id },
+        })
+      ).reportNum + 1;
+    await this.commentsRepository
+      .createQueryBuilder()
+      .update(CommentEntity)
+      .set({ reportNum })
+      .where('id = :id', { id: id })
+      .execute();
+    return { success: true, message: '평판 신고 완료되었습니다' };
+  }
+  // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
+  async deleteComment(id) {
+    this.commentsRepository
+      .createQueryBuilder()
+      .delete()
+      .from(CommentEntity)
+      .where('id = :id', { id: id })
+      .execute();
+    return { success: true, message: '평판 삭제 완료되었습니다' };
+  }
+}

@@ -6,12 +6,17 @@ import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { OmitType } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 @Entity({
   name: 'CHAMP',
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
+  @ApiProperty({
+    example: 86,
+    description: '챔피언 고유 ID',
+    required: true,
+  })
   @PrimaryColumn({
     name: 'chmapId',
     type: 'varchar',
@@ -19,16 +24,31 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @IsString()
   id: string;
 
+  @ApiProperty({
+    example: '가렌',
+    description: '챔피언 한글 이름',
+    required: true,
+  })
   @Column({ type: 'varchar', nullable: false })
   @IsString()
   @IsNotEmpty()
   champNameKo: string;
 
+  @ApiProperty({
+    example: 'Garen',
+    description: '챔피언 영문 이름',
+    required: true,
+  })
   @Column({ type: 'varchar', nullable: false })
   @IsString()
   @IsNotEmpty()
   champNameEn: string;
 
+  @ApiProperty({
+    example: 'example.png',
+    description: '챔피언 이미지 url',
+    required: true,
+  })
   @Column({ type: 'varchar', nullable: false })
   @IsString()
   @IsNotEmpty()
