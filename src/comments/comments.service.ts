@@ -1,5 +1,5 @@
 import { CommentRepository } from './comments.repository';
-import { CommentParamDTO, PostCommentDTO } from './dto/comment.request.dto';
+import { PostCommentDTO } from './dto/comment.request.dto';
 import { Injectable } from '@nestjs/common';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 
@@ -7,23 +7,24 @@ import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  getComments(data: CommentParamDTO) {
-    return this.commentRepository.getComments(data);
+  getComments(category: string, target: string) {
+    return this.commentRepository.getComments(category, target);
   }
 
   postComment(
-    param: CommentParamDTO,
+    category: string,
+    target: string,
     user: AdminResponseDTO,
     data: PostCommentDTO,
   ) {
-    return this.commentRepository.postComment(param, user, data);
+    return this.commentRepository.postComment(category, target, user, data);
   }
 
-  updateReportNum(param) {
-    return this.commentRepository.updateReportNum(param);
+  updateReportNum(id: string) {
+    return this.commentRepository.updateReportNum(id);
   }
 
-  deleteComment(param) {
-    return this.commentRepository.deleteComment(param);
+  deleteComment(id: string) {
+    return this.commentRepository.deleteComment(id);
   }
 }

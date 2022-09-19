@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
 import { Repository, Equal } from 'typeorm';
-import { CommentParamDTO, PostCommentDTO } from './dto/comment.request.dto';
+import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentEntity } from './entities/comments.entity';
 
 @Injectable()
@@ -15,12 +15,13 @@ export class CommentRepository {
   //   TODO: 코드 사용성 개선
 
   async getComments(
-    param: CommentParamDTO,
+    category: string,
+    target: string,
   ): Promise<UserBasicInfoResponseDTO[]> {
-    if (param.category === 'champ') {
+    if (category === 'champ') {
       const result = [];
       const data = await this.commentsRepository.find({
-        where: { category: param.category, champId: Equal(param.target) },
+        where: { category: category, champId: Equal(target) },
       });
       data.map((value) => {
         result.push({
@@ -39,10 +40,10 @@ export class CommentRepository {
       });
       //   const user = await result.userId;
       return result;
-    } else if (param.category === 'summoner') {
+    } else if (category === 'summoner') {
       const result = [];
       const data = await this.commentsRepository.find({
-        where: { category: param.category, summonerId: Equal(param.target) },
+        where: { category: category, summonerId: Equal(target) },
       });
       data.map((value) => {
         result.push({
@@ -63,11 +64,11 @@ export class CommentRepository {
     }
   }
   async postComment(
-    param: CommentParamDTO,
+    category: string,
+    target: string,
     user: AdminResponseDTO,
     data: PostCommentDTO,
   ) {
-    const { category, target } = param;
     // 챔피언 댓글
     if (category === 'champ') {
       await this.commentsRepository
@@ -101,28 +102,28 @@ export class CommentRepository {
   }
 
   // TODO: 조회 + 생성 트랜젝션 연결하기
-  async updateReportNum(param) {
+  async updateReportNum(id) {
     const reportNum =
       (
         await this.commentsRepository.findOne({
-          where: { id: param.id },
+          where: { id: id.id },
         })
       ).reportNum + 1;
     await this.commentsRepository
       .createQueryBuilder()
       .update(CommentEntity)
       .set({ reportNum })
-      .where('id = :id', { id: param.id })
+      .where('id = :id', { id: id })
       .execute();
     return { success: true, message: '평판 신고 완료되었습니다' };
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
-  async deleteComment(param) {
+  async deleteComment(id) {
     this.commentsRepository
       .createQueryBuilder()
       .delete()
       .from(CommentEntity)
-      .where('id = :id', { id: param.id })
+      .where('id = :id', { id: id })
       .execute();
     return { success: true, message: '평판 삭제 완료되었습니다' };
   }

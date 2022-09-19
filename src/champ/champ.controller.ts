@@ -9,6 +9,7 @@ import {
 } from './dto/champ.response.dto';
 
 @Controller('champ')
+@UseFilters(HttpExceptionFilter)
 @ApiTags('champ')
 @UseFilters(HttpExceptionFilter)
 export class ChampController {
@@ -34,5 +35,5 @@ export class ChampController {
   @Get('/:champId')
   async getTargetChampion(@Param('champId') champId: string) {
     return await this.champService.getTargetChampion(champId);
-  }
+
 }
