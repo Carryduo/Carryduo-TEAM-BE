@@ -40,8 +40,8 @@ export class ChampRepository {
 
     const data = {
       id: champInfo.id,
-      champName_ko: champInfo.champNameKo,
-      champName_en: champInfo.champNameEn,
+      champNameKo: champInfo.champNameKo,
+      champNameEn: champInfo.champNameEn,
       champImg: champInfo.champImg,
       skill,
     };

@@ -13,7 +13,7 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @ApiProperty({
-    example: 56,
+    example: 86,
     description: '챔피언 고유 ID',
     required: true,
   })
@@ -25,7 +25,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   id: string;
 
   @ApiProperty({
-    example: '카르마',
+    example: '가렌',
     description: '챔피언 한글 이름',
     required: true,
   })
@@ -35,7 +35,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   champNameKo: string;
 
   @ApiProperty({
-    example: 'karma',
+    example: 'Garen',
     description: '챔피언 영문 이름',
     required: true,
   })
