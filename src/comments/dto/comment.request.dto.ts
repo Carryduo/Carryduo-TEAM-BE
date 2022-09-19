@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { CommentEntity } from '../entities/comments.entity';

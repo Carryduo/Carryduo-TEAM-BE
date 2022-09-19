@@ -23,8 +23,19 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserEntity, [
   })
   userId: string;
 
+  @ApiProperty({
+    description: '선호챔피언1 정보',
+  })
   preferChamp1: ChampBasicInfoDTO | null;
+
+  @ApiProperty({
+    description: '선호챔피언2 정보',
+  })
   preferChamp2: ChampBasicInfoDTO | null;
+
+  @ApiProperty({
+    description: '선호챔피언3 정보',
+  })
   preferChamp3: ChampBasicInfoDTO | null;
 }
 
