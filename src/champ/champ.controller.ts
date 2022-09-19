@@ -1,6 +1,7 @@
-import { Get, Param } from '@nestjs/common';
+import { Get, Param, UseFilters } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { ChampService } from './champ.service';
 import {
   ChampBasicInfoDTO,
@@ -9,6 +10,7 @@ import {
 
 @Controller('champ')
 @ApiTags('champ')
+@UseFilters(HttpExceptionFilter)
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
@@ -29,8 +31,8 @@ export class ChampController {
     description: '평판 조회 응답 예시',
     type: TargetChampionResponseDTO,
   })
-  @Get('/:category')
-  async getTargetChampion(@Param('category') category: string) {
-    return await this.champService.getTargetChampion(category);
+  @Get('/:champId')
+  async getTargetChampion(@Param('champId') champId: string) {
+    return await this.champService.getTargetChampion(champId);
   }
 }

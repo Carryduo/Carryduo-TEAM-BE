@@ -1,5 +1,6 @@
+import { HttpStatus } from '@nestjs/common';
+import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
-import { raw } from 'express';
 import { Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
@@ -18,23 +19,30 @@ export class ChampRepository {
     });
   }
 
-  async getTargetChampion(category: string) {
+  async getTargetChampion(champId: string) {
     let skill = [];
 
     const champInfo = await this.champsRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
-      .where('champ.chmapId=:chmapId', { chmapId: category })
+      .where('champ.chmapId=:chmapId', { chmapId: champId })
       .orderBy('skillInfo.createdAt', 'ASC')
       .getOne();
+
+    if (!champInfo) {
+      throw new HttpException(
+        '해당하는 챔피언 정보가 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     champInfo.champSkillInfo.map((value) => {
       skill.push({
         id: value.skillId,
         name: value.skillName,
-        description: value.sikllDesc,
-        tootip: value.skillToolTip,
-        sillImg: value.skillImg,
+        desc: value.sikllDesc,
+        toolTip: value.skillToolTip,
+        image: value.skillImg,
       });
     });
 

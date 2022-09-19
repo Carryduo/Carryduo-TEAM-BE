@@ -9,7 +9,7 @@ export class ChampService {
     return await this.champRepository.getChmapList();
   }
 
-  async getTargetChampion(category: string) {
-    return await this.champRepository.getTargetChampion(category);
+  async getTargetChampion(champId: string) {
+    return await this.champRepository.getTargetChampion(champId);
   }
 }
