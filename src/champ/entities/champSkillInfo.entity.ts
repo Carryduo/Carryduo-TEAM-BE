@@ -42,4 +42,5 @@ export class ChampSkillInfoEntity extends CommonEntity {
     },
   ])
   champId: ChampEntity;
+  map: any;
 }

@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { raw } from 'express';
 import { Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
@@ -11,6 +12,45 @@ export class ChampRepository {
     private readonly champsSkillInfoRepository: Repository<ChampSkillInfoEntity>,
   ) {}
 
+  async getChmapList() {
+    return await this.champsRepository.find({
+      order: { champNameKo: 'ASC' },
+    });
+  }
+
+  async getTargetChampion(category: string) {
+    let skill = [];
+
+    const champInfo = await this.champsRepository
+      .createQueryBuilder('champ')
+      .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
+      .where('champ.chmapId=:chmapId', { chmapId: category })
+      .orderBy('skillInfo.createdAt', 'ASC')
+      .getOne();
+
+    champInfo.champSkillInfo.map((value) => {
+      skill.push({
+        id: value.skillId,
+        name: value.skillName,
+        description: value.sikllDesc,
+        tootip: value.skillToolTip,
+        sillImg: value.skillImg,
+      });
+    });
+
+    const data = {
+      id: champInfo.id,
+      champName_ko: champInfo.champNameKo,
+      champName_en: champInfo.champNameEn,
+      champImg: champInfo.champImg,
+      skill,
+    };
+    return data;
+  }
+
+  /** 라이엇 api repository
+   * 다른 파일로 옮길 예정
+   */
   async targetChampionInfoSave(
     championId: string,
     championNameEn: string,
