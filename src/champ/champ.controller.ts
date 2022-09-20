@@ -1,6 +1,6 @@
 import { Get, Param, UseFilters } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { ChampService } from './champ.service';
 import {
@@ -27,6 +27,11 @@ export class ChampController {
   }
 
   @ApiOperation({ summary: '특정 챔피언 정보 조회' })
+  @ApiParam({
+    name: 'champId',
+    required: true,
+    description: '조회할 챔피언의 ID',
+  })
   @ApiResponse({
     status: 200,
     description: '평판 조회 응답 예시',
@@ -35,5 +40,5 @@ export class ChampController {
   @Get('/:champId')
   async getTargetChampion(@Param('champId') champId: string) {
     return await this.champService.getTargetChampion(champId);
-
+  }
 }
