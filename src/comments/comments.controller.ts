@@ -43,11 +43,13 @@ export class CommentsController {
     name: 'category',
     required: true,
     description: '챔피언 평판/소환사 평판 분류 기준',
+    example: 'summoner/champ',
   })
   @ApiParam({
     name: 'target',
     required: true,
     description: '특정 챔피언/소환사 등 평판글의 대상',
+    example: 'UUID/number',
   })
   @ApiResponse({
     status: 200,
@@ -75,11 +77,13 @@ export class CommentsController {
     name: 'category',
     required: true,
     description: '챔피언 평판/소환사 평판 분류 기준',
+    example: 'summoner/champ',
   })
   @ApiParam({
     name: 'target',
     required: true,
     description: '특정 챔피언/소환사 등 평판글의 대상',
+    example: 'UUID/number',
   })
   @ApiBearerAuth('authorization')
   @ApiResponse({
@@ -120,8 +124,9 @@ export class CommentsController {
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
-  updateReportNum(@Param('id', ParseUUIDPipe) id) {
-    return this.commentService.updateReportNum(id);
+  updateReportNum(@Param('id', ParseUUIDPipe) id, @Req() req) {
+    const userId = req.user.userId;
+    return this.commentService.updateReportNum(id, userId);
   }
 
   @ApiOperation({ summary: '평판 삭제' })
@@ -138,7 +143,8 @@ export class CommentsController {
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)
-  deleteComment(@Param('id', ParseUUIDPipe) id) {
-    return this.commentService.deleteComment(id);
+  deleteComment(@Param('id', ParseUUIDPipe) id, @Req() req) {
+    const userId = req.user.userId;
+    return this.commentService.deleteComment(id, userId);
   }
 }
