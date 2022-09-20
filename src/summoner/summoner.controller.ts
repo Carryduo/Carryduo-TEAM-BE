@@ -1,4 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { SummonerService } from './summoner.service';
 
 @Controller('summoner')
-export class SummonerController {}
+@ApiTags('Summoner')
+export class SummonerController {
+  constructor(private readonly summonerService: SummonerService) {}
+
+  @Get('refresh/:summonerName')
+  async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
+    return await this.summonerService.refreshSummonerInfo(summonerName);
+  }
+
+  @Get('/:summonerName')
+  async summonerInfo(@Param('summonerName') summonerName: string) {}
+}

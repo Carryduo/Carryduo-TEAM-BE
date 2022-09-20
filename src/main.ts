@@ -4,9 +4,11 @@ import { AppModule } from './app.module';
 import * as expressBasicAuth from 'express-basic-auth';
 import { HttpExceptionFilter } from './common/exception/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe()); // class-validator 등록
   app.useGlobalFilters(new HttpExceptionFilter()); // httpException filter 등록
   app.use(
@@ -28,6 +30,11 @@ async function bootstrap() {
     origin: true, // true = 어느 곳에서나 접근 가능, true 이외에 본래는 url을 작성
     credentials: true,
   });
+
+  app.useStaticAssets(join(__dirname, '../', 'static'), {
+    prefix: '/tier',
+  });
+
   await app.listen(process.env.PORT);
 }
 

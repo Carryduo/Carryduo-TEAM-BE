@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
-import { Repository, Equal } from 'typeorm';
+import { Repository, Equal, getConnection } from 'typeorm';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentEntity } from './entities/comments.entity';
 
@@ -12,7 +12,7 @@ export class CommentRepository {
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
   ) {}
-  //   TODO: 코드 사용성 개선
+  //   TODO: 코드 사용성 개선 (쿼리가 불필요하게 많음)
 
   async getComments(
     category: string,
@@ -25,9 +25,9 @@ export class CommentRepository {
       });
       data.map((value) => {
         result.push({
-          id: value.id,
+          commentId: value.id,
           category: value.category,
-          content: value.category,
+          content: value.content,
           reportNum: value.reportNum,
           userId: {
             id: value.userId.id,
@@ -102,28 +102,48 @@ export class CommentRepository {
   }
 
   // TODO: 조회 + 생성 트랜젝션 연결하기
-  async updateReportNum(id) {
-    const reportNum =
-      (
-        await this.commentsRepository.findOne({
-          where: { id: id.id },
-        })
-      ).reportNum + 1;
-    await this.commentsRepository
-      .createQueryBuilder()
-      .update(CommentEntity)
-      .set({ reportNum })
-      .where('id = :id', { id: id })
-      .execute();
-    return { success: true, message: '평판 신고 완료되었습니다' };
+  async updateReportNum(id, userId) {
+    let message;
+    let success;
+
+    try {
+      await this.commentsRepository.manager.transaction(
+        async (transactionalEntityManager) => {
+          const data = await transactionalEntityManager
+            .createQueryBuilder()
+            .select('COMMENT')
+            .from(CommentEntity, 'COMMENT')
+            .where('COMMENT.id = :id', { id })
+            .andWhere('COMMENT.userId = :userId', { userId })
+            .getOne();
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .update(CommentEntity)
+            .set({ reportNum: data.reportNum + 1 })
+            .where('id = :id', { id })
+            .andWhere('userId = :userId', { userId })
+            .execute();
+        },
+      );
+
+      success = true;
+      message = '평판 신고 완료되었습니다';
+    } catch (error) {
+      console.log(error);
+      success = true;
+      message = '평판 신고 실패하였습니다';
+    } finally {
+      return { success, message };
+    }
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
-  async deleteComment(id) {
+  async deleteComment(id, userId) {
     this.commentsRepository
       .createQueryBuilder()
       .delete()
       .from(CommentEntity)
       .where('id = :id', { id: id })
+      .andWhere('userId = :userId', { userId })
       .execute();
     return { success: true, message: '평판 삭제 완료되었습니다' };
   }

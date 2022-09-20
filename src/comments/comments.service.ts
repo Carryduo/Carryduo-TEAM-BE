@@ -20,11 +20,11 @@ export class CommentsService {
     return this.commentRepository.postComment(category, target, user, data);
   }
 
-  updateReportNum(id: string) {
-    return this.commentRepository.updateReportNum(id);
+  updateReportNum(id: string, userId: string) {
+    return this.commentRepository.updateReportNum(id, userId);
   }
 
-  deleteComment(id: string) {
-    return this.commentRepository.deleteComment(id);
+  deleteComment(id: string, userId: string) {
+    return this.commentRepository.deleteComment(id, userId);
   }
 }

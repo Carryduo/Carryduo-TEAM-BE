@@ -52,6 +52,7 @@ export class SummonerEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @JoinColumn([
     {
@@ -64,6 +65,7 @@ export class SummonerEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @JoinColumn([
     {
@@ -76,6 +78,7 @@ export class SummonerEntity extends CommonEntity {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @JoinColumn([
     {
