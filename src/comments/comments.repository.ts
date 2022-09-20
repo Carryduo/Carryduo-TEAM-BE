@@ -102,7 +102,7 @@ export class CommentRepository {
   }
 
   // TODO: 조회 + 생성 트랜젝션 연결하기
-  async updateReportNum(id) {
+  async updateReportNum(id, userId) {
     let message;
     let success;
 
@@ -114,12 +114,14 @@ export class CommentRepository {
             .select('COMMENT')
             .from(CommentEntity, 'COMMENT')
             .where('COMMENT.id = :id', { id })
+            .andWhere('COMMENT.userId = :userId', { userId })
             .getOne();
           await transactionalEntityManager
             .createQueryBuilder()
             .update(CommentEntity)
             .set({ reportNum: data.reportNum + 1 })
             .where('id = :id', { id })
+            .andWhere('userId = :userId', { userId })
             .execute();
         },
       );
@@ -135,12 +137,13 @@ export class CommentRepository {
     }
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
-  async deleteComment(id) {
+  async deleteComment(id, userId) {
     this.commentsRepository
       .createQueryBuilder()
       .delete()
       .from(CommentEntity)
       .where('id = :id', { id: id })
+      .andWhere('userId = :userId', { userId })
       .execute();
     return { success: true, message: '평판 삭제 완료되었습니다' };
   }
