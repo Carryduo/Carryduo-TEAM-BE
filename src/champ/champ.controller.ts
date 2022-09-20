@@ -11,6 +11,7 @@ import {
 @Controller('champ')
 @UseFilters(HttpExceptionFilter)
 @ApiTags('champ')
+@UseFilters(HttpExceptionFilter)
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
@@ -31,9 +32,8 @@ export class ChampController {
     description: '평판 조회 응답 예시',
     type: TargetChampionResponseDTO,
   })
-  @Get('/:category')
-  async getTargetChampion(@Param('category') category: string) {
-    console.log(category);
-    return await this.champService.getTargetChampion(category);
-  }
+  @Get('/:champId')
+  async getTargetChampion(@Param('champId') champId: string) {
+    return await this.champService.getTargetChampion(champId);
+
 }
