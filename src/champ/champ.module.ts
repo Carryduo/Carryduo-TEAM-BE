@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampController } from './champ.controller';
 import { ChampRepository } from './champ.repository';
 import { ChampService } from './champ.service';
@@ -9,7 +10,7 @@ import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ChampEntity, ChampSkillInfoEntity]),
+    TypeOrmModule.forFeature([ChampEntity, ChampSkillInfoEntity, UserEntity]),
     HttpModule,
   ],
   controllers: [ChampController],

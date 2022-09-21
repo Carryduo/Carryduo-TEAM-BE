@@ -1,4 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampEntity } from '../entities/champ.entity';
 import { ChampSkillInfoEntity } from '../entities/champSkillInfo.entity';
 
@@ -15,6 +16,13 @@ export class ChmapSkillInfoDTO extends PickType(ChampSkillInfoEntity, [
   'sikllDesc',
   'skillToolTip',
   'skillImg',
+]) {}
+
+export class preferChampUsersDTO extends PickType(UserEntity, [
+  'id',
+  'nickname',
+  'profileImg',
+  'tier',
 ]) {}
 
 class skillData {
