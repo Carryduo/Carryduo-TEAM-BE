@@ -58,8 +58,14 @@ export class SummonerRepository {
   }
 
   async updateSummoner(summonerInfo: SummonerInfoDTO) {
-    console.log('소환사가 존재하여 업데이트 중');
-    return;
+    return this.summonerRepository
+      .createQueryBuilder()
+      .update(SummonerEntity)
+      .set(summonerInfo)
+      .where('summonerName=:summonerName', {
+        summonerName: summonerInfo.summonerName,
+      })
+      .execute();
   }
 
   async summonerInfo(summonerName: string) {}

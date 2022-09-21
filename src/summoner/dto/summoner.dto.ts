@@ -1,6 +1,5 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { ChampBasicInfoDTO } from 'src/champ/dto/champ.response.dto';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from '../entities/summoner.entity';
 
 export class SummonerInfoDTO extends PickType(SummonerEntity, [
@@ -13,9 +12,16 @@ export class SummonerInfoDTO extends PickType(SummonerEntity, [
   'lose',
   'winRate',
 ]) {
+  @ApiProperty({
+    description: '모스트챔피언1 정보',
+  })
   mostChamp1: ChampBasicInfoDTO | null;
+  @ApiProperty({
+    description: '모스트챔피언2 정보',
+  })
   mostChamp2: ChampBasicInfoDTO | null;
+  @ApiProperty({
+    description: '모스트챔피언3 정보',
+  })
   mostChamp3: ChampBasicInfoDTO | null;
 }
-
-export type mostChampList = [];
