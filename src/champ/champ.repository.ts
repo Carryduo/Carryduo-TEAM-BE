@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
@@ -21,8 +21,17 @@ export class ChampRepository {
       .createQueryBuilder('user')
       .where('user.tier = :tier', { tier })
       .andWhere(
-        'user.preferChamp1 = :preferChamp1 OR user.preferChamp2 = :preferChamp2 OR user.preferChamp3 = :preferChamp3',
-        { preferChamp1: champId, preferChamp2: champId, preferChamp3: champId },
+        new Brackets((qb) => {
+          qb.where('user.preferChamp1 = :preferChamp1', {
+            preferChamp1: champId,
+          })
+            .orWhere('user.preferChamp2 = :preferChamp2', {
+              preferChamp2: champId,
+            })
+            .orWhere('user.preferChamp3 = :preferChamp3', {
+              preferChamp3: champId,
+            });
+        }),
       )
       .select(['user.id', 'user.nickname', 'user.profileImg', 'user.tier'])
       .getMany();
