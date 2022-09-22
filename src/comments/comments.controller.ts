@@ -110,6 +110,7 @@ export class CommentsController {
   }
 
   // TODO: id validator 필요
+
   @ApiOperation({ summary: '평판 신고' })
   @ApiParam({
     name: 'id',
@@ -122,11 +123,34 @@ export class CommentsController {
     description: '평판 신고 성공',
     type: CommonResponseDTO,
   })
-  @Patch('/:id')
+  @Patch('/report/:id')
   @UseGuards(jwtGuard)
   updateReportNum(@Param('id', ParseUUIDPipe) id, @Req() req) {
     const userId = req.user.userId;
     return this.commentService.updateReportNum(id, userId);
+  }
+
+  @ApiOperation({ summary: '평판 수정' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: '평판 고유 ID',
+  })
+  @ApiBearerAuth('authorization')
+  @ApiResponse({
+    status: 200,
+    description: '평판 수정 성공',
+    type: CommonResponseDTO,
+  })
+  @Patch('/:id')
+  @UseGuards(jwtGuard)
+  updateContent(
+    @Param('id', ParseUUIDPipe) id,
+    @Req() req,
+    @Body('content') content,
+  ) {
+    const userId = req.user.userId;
+    return this.commentService.updateContent(id, userId, content);
   }
 
   @ApiOperation({ summary: '평판 삭제' })
