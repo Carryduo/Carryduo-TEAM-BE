@@ -16,11 +16,10 @@ export class ChampRepository {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findPreferChampUsers(champId: string, tier: string) {
+  async findPreferChampUsers(champId: string) {
     return this.userRepository
       .createQueryBuilder('user')
-      .where('user.tier = :tier', { tier })
-      .andWhere(
+      .where(
         new Brackets((qb) => {
           qb.where('user.preferChamp1 = :preferChamp1', {
             preferChamp1: champId,

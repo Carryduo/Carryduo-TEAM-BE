@@ -49,21 +49,13 @@ export class ChampController {
     required: true,
     description: '조회할 챔피언의 ID',
   })
-  @ApiParam({
-    name: 'tier',
-    required: true,
-    description: '조회할 유저의 티어(대문자로 시작합니다 => Bronze, Silver)',
-  })
   @ApiResponse({
     status: 200,
     description: '특정 챔피언 선호한 유저 조회 응답 예시',
     type: preferChampUsersDTO,
   })
-  @Get('/:champId/:tier/users')
-  async getPreferChampUser(
-    @Param('champId') champId: string,
-    @Param('tier') tier: string,
-  ) {
-    return await this.champService.getPreferChampUsers(champId, tier);
+  @Get('/:champId/users')
+  async getPreferChampUser(@Param('champId') champId: string) {
+    return await this.champService.getPreferChampUsers(champId);
   }
 }
