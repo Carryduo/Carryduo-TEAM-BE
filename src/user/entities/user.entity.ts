@@ -69,8 +69,9 @@ export class UserEntity extends CommonEntity {
   preferPosition: string;
 
   @ApiProperty({
-    example: 'silver',
-    description: 'tier',
+    example: '0',
+    description:
+      '아이언:0, 브론즈:1, 실버:2, 골드:3, 플레:4, 다이아:5, 마스터:6, 그마:7, 챌:8',
     required: false,
   })
   @IsNumber()

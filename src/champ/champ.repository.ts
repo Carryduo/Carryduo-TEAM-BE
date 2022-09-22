@@ -46,23 +46,4 @@ export class ChampRepository {
       .orderBy('skillInfo.createdAt', 'ASC')
       .getOne();
   }
-
-  /** 라이엇 api repository
-   * 다른 파일로 옮길 예정
-   */
-  async targetChampionInfoSave(
-    championId: string,
-    championNameEn: string,
-    championNameKo: string,
-    championImg: string,
-  ) {
-    const data = {
-      id: championId,
-      champNameEn: championNameEn,
-      champNameKo: championNameKo,
-      champImg: championImg,
-    };
-
-    await this.champRepository.save({ ...data });
-  }
 }
