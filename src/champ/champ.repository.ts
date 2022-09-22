@@ -1,20 +1,43 @@
 import { HttpStatus } from '@nestjs/common';
 import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { Brackets, Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
 export class ChampRepository {
   constructor(
     @InjectRepository(ChampEntity)
-    private readonly champsRepository: Repository<ChampEntity>,
+    private readonly champRepository: Repository<ChampEntity>,
     @InjectRepository(ChampSkillInfoEntity)
-    private readonly champsSkillInfoRepository: Repository<ChampSkillInfoEntity>,
+    private readonly champSkillInfoRepository: Repository<ChampSkillInfoEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
+  async findPreferChampUsers(champId: string) {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where(
+        new Brackets((qb) => {
+          qb.where('user.preferChamp1 = :preferChamp1', {
+            preferChamp1: champId,
+          })
+            .orWhere('user.preferChamp2 = :preferChamp2', {
+              preferChamp2: champId,
+            })
+            .orWhere('user.preferChamp3 = :preferChamp3', {
+              preferChamp3: champId,
+            });
+        }),
+      )
+      .select(['user.id', 'user.nickname', 'user.profileImg', 'user.tier'])
+      .getMany();
+  }
+
   async getChmapList() {
-    return await this.champsRepository.find({
+    return await this.champRepository.find({
       order: { champNameKo: 'ASC' },
     });
   }
@@ -23,7 +46,7 @@ export class ChampRepository {
     let skill = [];
 
     // TODO: DB에러 발생 시, httpException filter로 넘어가게 해야함
-    const champInfo = await this.champsRepository
+    const champInfo = await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
       .where('champ.chmapId=:chmapId', { chmapId: champId })
@@ -73,7 +96,7 @@ export class ChampRepository {
       champImg: championImg,
     };
 
-    await this.champsRepository.save({ ...data });
+    await this.champRepository.save({ ...data });
   }
 
   async targetChampionSkillInfoSave(
@@ -96,7 +119,7 @@ export class ChampRepository {
     rSkill = Object.assign({}, rSkillInfo);
     passive = Object.assign({}, passiveInfo);
 
-    await this.champsSkillInfoRepository
+    await this.champSkillInfoRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
@@ -110,7 +133,7 @@ export class ChampRepository {
       })
       .execute();
 
-    await this.champsSkillInfoRepository
+    await this.champSkillInfoRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
@@ -124,7 +147,7 @@ export class ChampRepository {
       })
       .execute();
 
-    await this.champsSkillInfoRepository
+    await this.champSkillInfoRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
@@ -138,7 +161,7 @@ export class ChampRepository {
       })
       .execute();
 
-    await this.champsSkillInfoRepository
+    await this.champSkillInfoRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
@@ -152,7 +175,7 @@ export class ChampRepository {
       })
       .execute();
 
-    await this.champsSkillInfoRepository
+    await this.champSkillInfoRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)

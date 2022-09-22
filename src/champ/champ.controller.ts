@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter'
 import { ChampService } from './champ.service';
 import {
   ChampBasicInfoDTO,
+  preferChampUsersDTO,
   TargetChampionResponseDTO,
 } from './dto/champ.response.dto';
 
@@ -19,7 +20,7 @@ export class ChampController {
   @ApiOperation({ summary: '챔피언 리스트 조회' })
   @ApiResponse({
     status: 200,
-    description: '평판 조회 응답 예시',
+    description: '챔피언 리스트 조회 예시',
     type: ChampBasicInfoDTO,
   })
   async getChampionList() {
@@ -34,11 +35,27 @@ export class ChampController {
   })
   @ApiResponse({
     status: 200,
-    description: '평판 조회 응답 예시',
+    description: '특정 챔피언 정보 조회 응답 예시',
     type: TargetChampionResponseDTO,
   })
   @Get('/:champId')
   async getTargetChampion(@Param('champId') champId: string) {
     return await this.champService.getTargetChampion(champId);
+  }
+
+  @ApiOperation({ summary: '특정 챔피언 선호한 유저 조회' })
+  @ApiParam({
+    name: 'champId',
+    required: true,
+    description: '조회할 챔피언의 ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '특정 챔피언 선호한 유저 조회 응답 예시',
+    type: preferChampUsersDTO,
+  })
+  @Get('/:champId/users')
+  async getPreferChampUser(@Param('champId') champId: string) {
+    return await this.champService.getPreferChampUsers(champId);
   }
 }
