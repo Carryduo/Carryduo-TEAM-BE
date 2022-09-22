@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
-import { Repository, Equal, getConnection } from 'typeorm';
+import { Repository, Equal } from 'typeorm';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentEntity } from './entities/comments.entity';
 
@@ -146,5 +146,41 @@ export class CommentRepository {
       .andWhere('userId = :userId', { userId })
       .execute();
     return { success: true, message: '평판 삭제 완료되었습니다' };
+  }
+
+  async updateContent(id: string, userId: string, content: string) {
+    console.log(id, userId);
+    const data = await this.commentsRepository
+      .createQueryBuilder()
+      .select('COMMENT')
+      .from(CommentEntity, 'COMMENT')
+      .where('COMMENT.id = :id', { id })
+      .getOne();
+
+    console.log(data);
+    try {
+      await this.commentsRepository.manager.transaction(
+        async (transactionalEntityManager) => {
+          const data = await transactionalEntityManager
+            .createQueryBuilder()
+            .select('COMMENT')
+            .from(CommentEntity, 'COMMENT')
+            .where('COMMENT.id = :id', { id })
+            .andWhere('COMMENT.userId = :userId', { userId })
+            .getOne();
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .update(CommentEntity)
+            .set({ content })
+            .where('id = :id', { id: data.id })
+            .andWhere('userId = :userId', { userId })
+            .execute();
+        },
+      );
+      return { success: true };
+    } catch {
+      return { success: false };
+    }
+    return data;
   }
 }
