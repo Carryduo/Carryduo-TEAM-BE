@@ -12,7 +12,6 @@ export class AdminService {
   async kakaoLogin(data: kakaoPayload) {
     // 유저 검증 및 생성
     const user = await this.adminRepository.checkAndSignUser(data);
-    // 토큰 생성
     return {
       id: user.id,
       nickname: user.nickname,

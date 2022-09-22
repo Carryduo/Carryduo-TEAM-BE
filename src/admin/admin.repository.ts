@@ -13,13 +13,35 @@ export class AdminRepository {
 
   async checkAndSignUser(data: kakaoPayload) {
     const { socialId, social } = data;
-    const user = await this.usersRepository.findOne({
-      where: { social, socialId },
-    });
+    const user = await this.usersRepository
+      .createQueryBuilder()
+      .select('USER')
+      .from(UserEntity, 'USER')
+      .where('USER.socialId = :socialId', { socialId })
+      .andWhere('USER.social = :social', { social })
+      .getOne();
+    console.log(user);
     if (user === null) {
-      const newUser = await this.usersRepository.save({
-        ...data,
-      });
+      let newUser;
+      await this.usersRepository.manager.transaction(
+        async (transactionalEntityManager) => {
+          await this.usersRepository
+            .createQueryBuilder()
+            .insert()
+            .into(UserEntity)
+            .values({
+              ...data,
+            })
+            .execute();
+          newUser = await transactionalEntityManager
+            .createQueryBuilder()
+            .select('USER')
+            .from(UserEntity, 'USER')
+            .where('USER.socialId = :socialId', { socialId })
+            .andWhere('USER.social = :social', { social })
+            .getOne();
+        },
+      );
       return newUser;
     }
     return user;
@@ -30,7 +52,7 @@ export class AdminRepository {
   }
 
   async deleteUser(id: string) {
-    this.usersRepository
+    await this.usersRepository
       .createQueryBuilder()
       .delete()
       .from(UserEntity)
