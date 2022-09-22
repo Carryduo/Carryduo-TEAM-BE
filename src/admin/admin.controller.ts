@@ -34,6 +34,7 @@ export class AdminController {
   @Delete()
   @UseGuards(jwtGuard)
   async deleteUser(@Req() req) {
+    console.log(req.user);
     return this.adminService.deleteUser(req.user.userId);
   }
 
