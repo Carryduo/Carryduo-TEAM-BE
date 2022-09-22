@@ -10,7 +10,33 @@ export class ChampService {
   }
 
   async getTargetChampion(champId: string) {
-    return await this.champRepository.getTargetChampion(champId);
+    let skill = [];
+    const champInfo = await this.champRepository.getTargetChampion(champId);
+    if (!champInfo) {
+      throw new HttpException(
+        '해당하는 챔피언 정보가 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    champInfo.champSkillInfo.map((value) => {
+      skill.push({
+        id: value.skillId,
+        name: value.skillName,
+        desc: value.sikllDesc,
+        toolTip: value.skillToolTip,
+        image: value.skillImg,
+      });
+    });
+
+    const data = {
+      id: champInfo.id,
+      champNameKo: champInfo.champNameKo,
+      champNameEn: champInfo.champNameEn,
+      champImg: champInfo.champImg,
+      skill,
+    };
+    return data;
   }
 
   async getPreferChampUsers(champId: string) {
