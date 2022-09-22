@@ -28,7 +28,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
-        error: error,
+        message: error,
       });
     } else {
       // 2. 404 에러

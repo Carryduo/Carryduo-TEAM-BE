@@ -73,7 +73,6 @@ export class UserController {
   @Post('/option')
   @UseGuards(jwtGuard)
   async updateUserOptionInfo(@Req() req, @Body() body: OptionRequestDTO) {
-    console.log(req.user);
     return this.userService.updateUserOptionInfo(req.user, body);
   }
 
@@ -91,7 +90,6 @@ export class UserController {
   @Get('/:id')
   @UseGuards(jwtGuard)
   async getIndividualUserInfo(@Param('id', ParseUUIDPipe) param: string) {
-    console.log(param);
     return this.userService.getIndividualUserInfo(param);
   }
 }

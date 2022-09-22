@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { CommonEntity } from 'src/common/entities/common.entity';
@@ -73,9 +73,9 @@ export class UserEntity extends CommonEntity {
     description: 'tier',
     required: false,
   })
-  @IsString()
-  @Column({ type: 'varchar', nullable: true })
-  tier: string;
+  @IsNumber()
+  @Column({ type: 'int', nullable: true })
+  tier: number;
 
   @ApiProperty({
     example: '1 or 0',

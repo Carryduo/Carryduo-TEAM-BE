@@ -148,7 +148,6 @@ export class SummonerService {
       };
       return summonerData;
     } catch (err) {
-      console.log(err);
       if (err.response.status === 429) {
         throw new HttpException(
           '라이엇API 요청 과도화',
