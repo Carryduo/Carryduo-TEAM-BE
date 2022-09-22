@@ -2,6 +2,7 @@ import { CommentRepository } from './comments.repository';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { Injectable } from '@nestjs/common';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class CommentsService {
@@ -26,5 +27,9 @@ export class CommentsService {
 
   deleteComment(id: string, userId: string) {
     return this.commentRepository.deleteComment(id, userId);
+  }
+
+  updateContent(id: string, userId: string, content: string) {
+    return this.commentRepository.updateContent(id, userId, content);
   }
 }
