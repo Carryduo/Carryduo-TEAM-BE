@@ -9,6 +9,7 @@ export class CommentGetResponseDTO extends PickType(CommentEntity, [
   'category',
   'content',
   'reportNum',
+  'createdAt',
 ]) {
   @ApiProperty({
     description: '평판 작성자 정보',

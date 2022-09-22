@@ -22,6 +22,7 @@ export class CommentRepository {
       const result = [];
       const data = await this.commentsRepository.find({
         where: { category: category, champId: Equal(target) },
+        order: { createdAt: 'DESC' },
       });
       data.map((value) => {
         result.push({
@@ -36,6 +37,7 @@ export class CommentRepository {
             enableChat: value.userId.enableChat,
           },
           champId: value.champId.id,
+          createdAt: value.createdAt,
         });
       });
       //   const user = await result.userId;
@@ -103,84 +105,65 @@ export class CommentRepository {
 
   // TODO: 조회 + 생성 트랜젝션 연결하기
   async updateReportNum(id, userId) {
-    let message;
-    let success;
-
-    try {
-      await this.commentsRepository.manager.transaction(
-        async (transactionalEntityManager) => {
-          const data = await transactionalEntityManager
-            .createQueryBuilder()
-            .select('COMMENT')
-            .from(CommentEntity, 'COMMENT')
-            .where('COMMENT.id = :id', { id })
-            .andWhere('COMMENT.userId = :userId', { userId })
-            .getOne();
-          await transactionalEntityManager
-            .createQueryBuilder()
-            .update(CommentEntity)
-            .set({ reportNum: data.reportNum + 1 })
-            .where('id = :id', { id })
-            .andWhere('userId = :userId', { userId })
-            .execute();
-        },
-      );
-
-      success = true;
-      message = '평판 신고 완료되었습니다';
-    } catch (error) {
-      console.log(error);
-      success = true;
-      message = '평판 신고 실패하였습니다';
-    } finally {
-      return { success, message };
-    }
+    return await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id })
+          .andWhere('COMMENT.userId = :userId', { userId })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .update(CommentEntity)
+          .set({ reportNum: data.reportNum + 1 })
+          .where('id = :id', { id })
+          .andWhere('userId = :userId', { userId })
+          .execute();
+      },
+    );
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
   async deleteComment(id, userId) {
-    this.commentsRepository
-      .createQueryBuilder()
-      .delete()
-      .from(CommentEntity)
-      .where('id = :id', { id: id })
-      .andWhere('userId = :userId', { userId })
-      .execute();
-    return { success: true, message: '평판 삭제 완료되었습니다' };
+    return await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id })
+          .andWhere('COMMENT.userId = :userId', { userId })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .delete()
+          .from(CommentEntity)
+          .where('id = :id', { id: data.id })
+          .andWhere('userId = :userId', { userId })
+          .execute();
+      },
+    );
   }
 
   async updateContent(id: string, userId: string, content: string) {
-    console.log(id, userId);
-    const data = await this.commentsRepository
-      .createQueryBuilder()
-      .select('COMMENT')
-      .from(CommentEntity, 'COMMENT')
-      .where('COMMENT.id = :id', { id })
-      .getOne();
-
-    console.log(data);
-    try {
-      await this.commentsRepository.manager.transaction(
-        async (transactionalEntityManager) => {
-          const data = await transactionalEntityManager
-            .createQueryBuilder()
-            .select('COMMENT')
-            .from(CommentEntity, 'COMMENT')
-            .where('COMMENT.id = :id', { id })
-            .andWhere('COMMENT.userId = :userId', { userId })
-            .getOne();
-          await transactionalEntityManager
-            .createQueryBuilder()
-            .update(CommentEntity)
-            .set({ content })
-            .where('id = :id', { id: data.id })
-            .andWhere('userId = :userId', { userId })
-            .execute();
-        },
-      );
-      return { success: true };
-    } catch {
-      return { success: false };
-    }
-    return data;
+    return await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id })
+          .andWhere('COMMENT.userId = :userId', { userId })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .update(CommentEntity)
+          .set({ content })
+          .where('id = :id', { id: data.id })
+          .andWhere('userId = :userId', { userId })
+          .execute();
+      },
+    );
   }
 }

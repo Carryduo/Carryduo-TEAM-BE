@@ -21,15 +21,46 @@ export class CommentsService {
     return this.commentRepository.postComment(category, target, user, data);
   }
 
-  updateReportNum(id: string, userId: string) {
-    return this.commentRepository.updateReportNum(id, userId);
+  async updateReportNum(id: string, userId: string) {
+    let message, success;
+    try {
+      await this.commentRepository.updateReportNum(id, userId);
+      message = '평판 신고 완료되었습니다';
+      success = true;
+    } catch {
+      message = '평판 신고 실패하였습니다';
+      success = false;
+    } finally {
+      return { success, message };
+    }
   }
 
-  deleteComment(id: string, userId: string) {
-    return this.commentRepository.deleteComment(id, userId);
+  async deleteComment(id: string, userId: string) {
+    let success, message;
+    try {
+      const data = await this.commentRepository.deleteComment(id, userId);
+      console.log(data);
+      success = true;
+      message = '평판 삭제 완료되었습니다';
+    } catch {
+      success = false;
+      message = '평판 삭제 실패하였습니다';
+    } finally {
+      return { success, message };
+    }
   }
 
-  updateContent(id: string, userId: string, content: string) {
-    return this.commentRepository.updateContent(id, userId, content);
+  async updateContent(id: string, userId: string, content: string) {
+    let success, message;
+    try {
+      await this.commentRepository.updateContent(id, userId, content);
+      success = true;
+      message = '평판 수정 완료되었습니다';
+    } catch {
+      success = false;
+      message = '평판 수정 실패하였습니다';
+    } finally {
+      return { success, message };
+    }
   }
 }
