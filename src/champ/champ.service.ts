@@ -13,11 +13,8 @@ export class ChampService {
     return await this.champRepository.getTargetChampion(champId);
   }
 
-  async getPreferChampUsers(champId: string, tier: string) {
-    const targetUser = await this.champRepository.findPreferChampUsers(
-      champId,
-      tier,
-    );
+  async getPreferChampUsers(champId: string) {
+    const targetUser = await this.champRepository.findPreferChampUsers(champId);
     if (targetUser.length === 0)
       throw new HttpException(
         '선호챔피언 유저 정보 조회 실패',
