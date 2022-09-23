@@ -1,5 +1,4 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ.response.dto';
 import { UserCommonDto } from './user.common.dto';
 
 export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [

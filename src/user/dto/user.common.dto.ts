@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  IsNumber,
+} from 'class-validator';
 
 export class UserCommonDto {
   @ApiProperty({
@@ -82,9 +88,11 @@ export class UserCommonDto {
 
   @ApiProperty({
     example: '0',
-    description: 'tier',
-    required: true,
+    description:
+      '아이언:0, 브론즈:1, 실버:2, 골드:3, 플레:4, 다이아:5, 마스터:6, 그마:7, 챌:8',
+    required: false,
   })
+  @IsNumber()
   tier: number | null;
 
   @ApiProperty({
