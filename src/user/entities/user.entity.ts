@@ -86,7 +86,6 @@ export class UserEntity extends CommonEntity {
   @IsBoolean()
   @Column({ type: 'boolean', default: true })
   enableChat: boolean;
-  //
 
   @OneToMany(
     () => SubscriptionEntity,

@@ -15,13 +15,13 @@ export class SummonerInfoDTO extends PickType(SummonerEntity, [
   @ApiProperty({
     description: '모스트챔피언1 정보',
   })
-  mostChamp1: ChampBasicInfoDTO | null;
+  mostChamp1: string | null;
   @ApiProperty({
     description: '모스트챔피언2 정보',
   })
-  mostChamp2: ChampBasicInfoDTO | null;
+  mostChamp2: string | null;
   @ApiProperty({
     description: '모스트챔피언3 정보',
   })
-  mostChamp3: ChampBasicInfoDTO | null;
+  mostChamp3: string | null;
 }
