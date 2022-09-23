@@ -58,7 +58,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     () => ChampSkillInfoEntity,
     (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId,
     {
-      cascade: true, // 사용자를 통해 블로그가 추가, 수정, 삭제되고 사용자가 저장되면 추가된 블로그도 저장된다.
+      cascade: true,
     },
   )
   champSkillInfo: ChampSkillInfoEntity;
@@ -71,7 +71,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
       summoner.mostChamp3,
     ],
     {
-      cascade: true, // 사용자를 통해 블로그가 추가, 수정, 삭제되고 사용자가 저장되면 추가된 블로그도 저장된다.
+      cascade: true,
     },
   )
   summoner: SummonerEntity;

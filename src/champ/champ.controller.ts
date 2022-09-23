@@ -10,7 +10,6 @@ import {
 } from './dto/champ.response.dto';
 
 @Controller('champ')
-@UseFilters(HttpExceptionFilter)
 @ApiTags('champ')
 @UseFilters(HttpExceptionFilter)
 export class ChampController {
