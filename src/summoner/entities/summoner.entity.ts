@@ -106,7 +106,7 @@ export class SummonerEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp1: ChampEntity;
+  mostChamp1: string;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -124,7 +124,7 @@ export class SummonerEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp2: ChampEntity;
+  mostChamp2: string;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -142,7 +142,7 @@ export class SummonerEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp3: ChampEntity;
+  mostChamp3: string;
 
   @OneToMany(
     () => SubscriptionEntity,

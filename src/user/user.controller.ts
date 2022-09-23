@@ -72,7 +72,10 @@ export class UserController {
   })
   @Post('/option')
   @UseGuards(jwtGuard)
-  async updateUserOptionInfo(@Req() req, @Body() body: OptionRequestDTO) {
+  async updateUserOptionInfo(
+    @Req() req,
+    @Body() body: OptionRequestDTO,
+  ): Promise<CommonResponseDTO> {
     return this.userService.updateUserOptionInfo(req.user, body);
   }
 

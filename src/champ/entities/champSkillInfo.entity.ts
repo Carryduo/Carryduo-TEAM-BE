@@ -8,6 +8,9 @@ import { ApiProperty } from '@nestjs/swagger';
   name: 'CHAMPSKILLINFO',
 })
 export class ChampSkillInfoEntity extends CommonEntity {
+  map(arg0: (value: any) => void) {
+    throw new Error('Method not implemented.');
+  }
   @ApiProperty({
     example: 'q',
     description: 'q | w | e | r | passive',
@@ -67,6 +70,5 @@ export class ChampSkillInfoEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: ChampEntity;
-  map: any;
+  champId: string;
 }

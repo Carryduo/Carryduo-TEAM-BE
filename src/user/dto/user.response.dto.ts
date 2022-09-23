@@ -1,8 +1,7 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ.response.dto';
-import { UserEntity } from '../entities/user.entity';
+import { UserCommonDto } from './user.common.dto';
 
-export class UserSpecificInfoResponseDTO extends OmitType(UserEntity, [
+export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
   'id',
   'createdAt',
   'socialId',
@@ -13,8 +12,6 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserEntity, [
   'preferChamp1',
   'preferChamp2',
   'preferChamp3',
-  'subscription',
-  'comment',
 ]) {
   @ApiProperty({
     example: 'wqeqwQWE244',
@@ -25,21 +22,29 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserEntity, [
 
   @ApiProperty({
     description: '선호챔피언1 정보',
+    example: {
+      id: 1,
+      champNameKo: '애니',
+      champNameEn: 'Annie',
+      champImg: '이미지url',
+    },
   })
-  preferChamp1: ChampBasicInfoDTO | null;
+  preferChamp1: string | null;
 
   @ApiProperty({
     description: '선호챔피언2 정보',
+    example: null,
   })
-  preferChamp2: ChampBasicInfoDTO | null;
+  preferChamp2: string | null;
 
   @ApiProperty({
     description: '선호챔피언3 정보',
+    example: null,
   })
-  preferChamp3: ChampBasicInfoDTO | null;
+  preferChamp3: string | null;
 }
 
-export class UserBasicInfoResponseDTO extends PickType(UserEntity, [
+export class UserBasicInfoResponseDTO extends PickType(UserCommonDto, [
   'nickname',
   'profileImg',
 ]) {
