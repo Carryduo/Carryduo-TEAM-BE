@@ -2,6 +2,10 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ChampRepository } from '../champ/champ.repository';
 
+/**
+ * 라이엇 champ 정보 요청 서비스 API
+ */
+
 @Injectable()
 export class ChampService {
   constructor(
@@ -71,12 +75,12 @@ export class ChampService {
       const championNameKo = targetChampionInfo[value].name;
       const championImg = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
 
-      await this.champRepository.targetChampionInfoSave(
-        championId,
-        championNameEn,
-        championNameKo,
-        championImg,
-      );
+      // await this.champRepository.targetChampionInfoSave(
+      //   championId,
+      //   championNameEn,
+      //   championNameKo,
+      //   championImg,
+      // );
 
       const { spells } = targetChampionInfo[value];
       const { passive } = targetChampionInfo[value];

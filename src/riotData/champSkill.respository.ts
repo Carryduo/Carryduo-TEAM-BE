@@ -1,5 +1,25 @@
 import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
 
+/**
+ * 라이엇 champ 정보 요청 저장 API
+ */
+
+async function targetChampionInfoSave(
+  championId: string,
+  championNameEn: string,
+  championNameKo: string,
+  championImg: string,
+) {
+  const data = {
+    id: championId,
+    champNameEn: championNameEn,
+    champNameKo: championNameKo,
+    champImg: championImg,
+  };
+
+  await this.champRepository.save({ ...data });
+}
+
 async function targetChampionSkillInfoSave(
   championId: string,
   qSkillInfo: object,
