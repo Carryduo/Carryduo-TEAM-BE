@@ -56,12 +56,11 @@ export class CommentEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  userId: UserEntity;
+  userId: string;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @ApiProperty({
     example: '56',
@@ -74,7 +73,7 @@ export class CommentEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: ChampEntity;
+  champId: string;
 
   @ManyToOne(
     () => SummonerEntity,
@@ -96,5 +95,5 @@ export class CommentEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  summonerId: SummonerEntity;
+  summonerId: string;
 }

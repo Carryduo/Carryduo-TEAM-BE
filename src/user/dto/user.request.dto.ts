@@ -1,19 +1,11 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { UserEntity } from '../entities/user.entity';
+import { UserCommonDto } from './user.common.dto';
+import { OmitType } from '@nestjs/swagger';
 
-export class OptionRequestDTO extends OmitType(UserEntity, [
+export class OptionRequestDTO extends OmitType(UserCommonDto, [
   'id',
-  'createdAt',
-  'socialId',
-  'social',
   'createdAt',
   'updatedAt',
   'deletedAt',
-]) {
-  @ApiProperty({
-    example: 'wqeqwQWE244',
-    description: '유저ID',
-    required: false,
-  })
-  userId: string;
-}
+  'social',
+  'socialId',
+]) {}
