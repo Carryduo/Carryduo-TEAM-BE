@@ -19,11 +19,11 @@ export class CommentGetResponseDTO extends PickType(CommentEntity, [
     example: 1,
     description: '평판이 등록된 챔피언 고유 ID',
   })
-  champId: ChampEntity['id'];
+  champId: { id: string } | null;
 
   @ApiProperty({
     example: 'sdfdsxv1235pqwcm',
     description: '평판이 등록된 소환사 고유 ID',
   })
-  SummonerId: SummonerEntity['id'];
+  SummonerId: { id: string } | null;
 }

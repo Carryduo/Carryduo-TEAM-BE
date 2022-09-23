@@ -14,56 +14,33 @@ export class CommentRepository {
   ) {}
   //   TODO: 코드 사용성 개선 (쿼리가 불필요하게 많음)
 
-  async getComments(
-    category: string,
-    target: string,
-  ): Promise<UserBasicInfoResponseDTO[]> {
-    if (category === 'champ') {
-      const result = [];
-      const data = await this.commentsRepository.find({
-        where: { category: category, champId: Equal(target) },
-        order: { createdAt: 'DESC' },
-      });
-      data.map((value) => {
-        result.push({
-          commentId: value.id,
-          category: value.category,
-          content: value.content,
-          reportNum: value.reportNum,
-          userId: {
-            id: value.userId.id,
-            nickname: value.userId.nickname,
-            profileImg: value.userId.profileImg,
-            enableChat: value.userId.enableChat,
-          },
-          champId: value.champId.id,
-          createdAt: value.createdAt,
-        });
-      });
-      //   const user = await result.userId;
-      return result;
-    } else if (category === 'summoner') {
-      const result = [];
-      const data = await this.commentsRepository.find({
-        where: { category: category, summonerId: Equal(target) },
-      });
-      data.map((value) => {
-        result.push({
-          id: value.id,
-          category: value.category,
-          content: value.category,
-          reportNum: value.reportNum,
-          userId: {
-            id: value.userId.id,
-            nickname: value.userId.nickname,
-            profileImg: value.userId.profileImg,
-            enableChat: value.userId.enableChat,
-          },
-          summonerId: value.summonerId.id,
-        });
-      });
-      return result;
-    }
+  // : Promise<UserBasicInfoResponseDTO[]>
+  async getComments(category: string, target: string) {
+    const data = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.userId', 'user')
+      .leftJoinAndSelect('comment.champId', 'champ')
+      .leftJoinAndSelect('comment.summonerId', 'summoner')
+      .select([
+        'comment.content',
+        'comment.id',
+        'user.id',
+        'user.profileImg',
+        'user.nickname',
+        'champ.id',
+        'comment.reportNum',
+        'comment.createdAt',
+        'comment.category',
+        'comment.summonerId',
+        'summoner.id',
+      ])
+      .where('comment.category = :category', { category })
+      .andWhere('comment.champId = :champId', { champId: target })
+      .orderBy({
+        'comment.createdAt': 'DESC',
+      })
+      .getMany();
+    return data;
   }
   async postComment(
     category: string,
@@ -78,9 +55,9 @@ export class CommentRepository {
         .insert()
         .into(CommentEntity)
         .values({
-          userId: { id: user.userId },
+          userId: user.userId,
           category,
-          champId: { id: target },
+          champId: target,
           content: data.content,
         })
         .execute();
@@ -93,9 +70,9 @@ export class CommentRepository {
         .into(CommentEntity)
         .values({
           // Promise로 묶인 column은 다음과 같이 function 형태로 주입해주어야 한다.
-          userId: { id: user.userId },
+          userId: user.userId,
           category,
-          summonerId: { id: target },
+          summonerId: target,
           content: data.content,
         })
         .execute();
