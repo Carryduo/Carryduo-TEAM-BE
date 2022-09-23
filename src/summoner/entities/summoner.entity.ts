@@ -31,6 +31,16 @@ export class SummonerEntity extends CommonEntity {
   summonerIcon: string;
 
   @ApiProperty({
+    example: '120',
+    description: '소환사 레벨',
+    required: true,
+  })
+  @Column({ type: 'varchar', nullable: false })
+  @IsString()
+  @IsNotEmpty()
+  summonerLevel: string;
+
+  @ApiProperty({
     example: 'SILVER I',
     description: '소환사 티어',
     required: true,

@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SummonerInfoDTO } from './dto/summoner.dto';
+import { SummonerResponseDTO } from './dto/summoner.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -10,10 +10,12 @@ export class SummonerService {
     private readonly axios: HttpService,
   ) {}
 
-  async summonerDataCleansing(summoner: SummonerInfoDTO) {
+  async summonerDataCleansing(summoner: SummonerResponseDTO) {
     const summonerData = {
+      id: summoner.id,
       summonerName: summoner.summonerName,
       summonerIcon: summoner.summonerIcon,
+      summonerLevel: summoner.summonerLevel,
       tier: summoner.tier,
       lp: summoner.lp,
       tierImg: summoner.tierImg,
@@ -136,6 +138,7 @@ export class SummonerService {
       const summonerData = {
         summonerName: data.name,
         summonerIcon,
+        summonerLevel: data.summonerLevel,
         tier: detailData.tier + ' ' + detailData.rank,
         lp: detailData.leaguePoints,
         tierImg: image,

@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { Repository } from 'typeorm';
-import { SummonerInfoDTO } from './dto/summoner.dto';
+import { SummonerRequestDTO } from './dto/summoner.dto';
 import { SummonerEntity } from './entities/summoner.entity';
 
 export class SummonerRepository {
@@ -48,8 +48,8 @@ export class SummonerRepository {
     return summoner;
   }
 
-  async insertSummoner(summonerInfo: SummonerInfoDTO) {
-    return this.summonerRepository
+  async insertSummoner(summonerInfo: SummonerRequestDTO) {
+    return await this.summonerRepository
       .createQueryBuilder()
       .insert()
       .into(SummonerEntity)
@@ -57,7 +57,7 @@ export class SummonerRepository {
       .execute();
   }
 
-  async updateSummoner(summonerInfo: SummonerInfoDTO) {
+  async updateSummoner(summonerInfo: SummonerRequestDTO) {
     return this.summonerRepository
       .createQueryBuilder()
       .update(SummonerEntity)
@@ -67,6 +67,4 @@ export class SummonerRepository {
       })
       .execute();
   }
-
-  async summonerInfo(summonerName: string) {}
 }
