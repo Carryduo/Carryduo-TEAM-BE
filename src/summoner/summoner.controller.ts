@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseFilters } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
-import { SummonerInfoDTO } from './dto/summoner.dto';
+import { SummonerResponseDTO } from './dto/summoner.dto';
 import { SummonerService } from './summoner.service';
 
 @Controller('summoner')
@@ -14,7 +14,7 @@ export class SummonerController {
   @ApiResponse({
     status: 200,
     description: '소환사 전적 정보 새로고침',
-    type: SummonerInfoDTO,
+    type: SummonerResponseDTO,
   })
   @ApiParam({
     name: 'summonerName',
@@ -29,7 +29,7 @@ export class SummonerController {
   @ApiResponse({
     status: 200,
     description: '소환사 전적 정보 조회',
-    type: SummonerInfoDTO,
+    type: SummonerResponseDTO,
   })
   @ApiParam({
     name: 'summonerName',
