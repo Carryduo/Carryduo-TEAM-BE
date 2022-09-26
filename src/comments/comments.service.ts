@@ -3,13 +3,17 @@ import { PostCommentDTO } from './dto/comment.request.dto';
 import { Injectable, HttpException } from '@nestjs/common';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 import { stringify } from 'querystring';
+import { CommentGetResponseDTO } from './dto/comment.response.dto';
 
 @Injectable()
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  getComments(category: string, target: string) {
-    return this.commentRepository.getComments(category, target);
+  async getComments(
+    category: string,
+    target: string,
+  ): Promise<CommentGetResponseDTO> {
+    return await this.commentRepository.getComments(category, target);
   }
 
   postComment(

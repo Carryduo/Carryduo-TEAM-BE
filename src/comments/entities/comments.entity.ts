@@ -81,7 +81,6 @@ export class CommentEntity extends CommonEntity {
     {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-      eager: true,
     },
   )
   @ApiProperty({
