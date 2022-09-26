@@ -16,30 +16,60 @@ export class CommentRepository {
 
   // : Promise<UserBasicInfoResponseDTO[]>
   async getComments(category: string, target: string) {
-    const data = await this.commentsRepository
-      .createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.userId', 'user')
-      .leftJoinAndSelect('comment.champId', 'champ')
-      .leftJoinAndSelect('comment.summonerId', 'summoner')
-      .select([
-        'comment.content',
-        'comment.id',
-        'user.id',
-        'user.profileImg',
-        'user.nickname',
-        'champ.id',
-        'comment.reportNum',
-        'comment.createdAt',
-        'comment.category',
-        'comment.summonerId',
-        'summoner.id',
-      ])
-      .where('comment.category = :category', { category })
-      .andWhere('comment.champId = :champId', { champId: target })
-      .orderBy({
-        'comment.createdAt': 'DESC',
-      })
-      .getMany();
+    let data;
+    if (category === 'champ') {
+      data = await this.commentsRepository
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.userId', 'user')
+        .leftJoinAndSelect('comment.champId', 'champ')
+        .leftJoinAndSelect('comment.summonerId', 'summoner')
+        .select([
+          'comment.content',
+          'comment.id',
+          'user.id',
+          'user.profileImg',
+          'user.nickname',
+          'champ.id',
+          'comment.reportNum',
+          'comment.createdAt',
+          'comment.category',
+          'comment.summonerId',
+          'summoner.id',
+        ])
+        .where('comment.category = :category', { category })
+        .andWhere('comment.champId = :champId', { champId: target })
+        .orderBy({
+          'comment.createdAt': 'DESC',
+        })
+        .getMany();
+    } else if (category === 'summoner') {
+      console.log(category, target);
+      data = await this.commentsRepository
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.userId', 'user')
+        .leftJoinAndSelect('comment.champId', 'champ')
+        .leftJoinAndSelect('comment.summonerId', 'summoner')
+        .select([
+          'comment.content',
+          'comment.id',
+          'user.id',
+          'user.profileImg',
+          'user.nickname',
+          'champ.id',
+          'comment.reportNum',
+          'comment.createdAt',
+          'comment.category',
+          'comment.summonerId',
+          'summoner.id',
+        ])
+        .where('comment.category = :category', { category })
+        // .andWhere('comment.summonerId = :summonerId', { summonerId: target })
+        .orderBy({
+          'comment.createdAt': 'DESC',
+        })
+        .getMany();
+    }
+    console.log(data);
     return data;
   }
   async postComment(
