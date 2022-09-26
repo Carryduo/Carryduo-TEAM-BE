@@ -41,11 +41,7 @@ export class ChampService {
 
   async getPreferChampUsers(champId: string) {
     const targetUser = await this.champRepository.findPreferChampUsers(champId);
-    if (targetUser.length === 0)
-      throw new HttpException(
-        '선호챔피언 유저 정보 조회 실패',
-        HttpStatus.NOT_FOUND,
-      );
+
     return targetUser;
   }
 }
