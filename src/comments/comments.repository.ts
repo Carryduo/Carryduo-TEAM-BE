@@ -43,7 +43,6 @@ export class CommentRepository {
         })
         .getMany();
     } else if (category === 'summoner') {
-      console.log(category, target);
       data = await this.commentsRepository
         .createQueryBuilder('comment')
         .leftJoinAndSelect('comment.userId', 'user')
@@ -63,13 +62,12 @@ export class CommentRepository {
           'summoner.id',
         ])
         .where('comment.category = :category', { category })
-        // .andWhere('comment.summonerId = :summonerId', { summonerId: target })
+        .andWhere('comment.summonerId = :summonerId', { summonerId: target })
         .orderBy({
           'comment.createdAt': 'DESC',
         })
         .getMany();
     }
-    console.log(data);
     return data;
   }
   async postComment(
