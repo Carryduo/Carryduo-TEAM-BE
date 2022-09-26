@@ -16,13 +16,15 @@ export class CommentGetResponseDTO extends PickType(CommentEntity, [
   })
   userId: UserBasicInfoResponseDTO;
   @ApiProperty({
-    example: 1,
+    example: { id: 15 },
     description: '평판이 등록된 챔피언 고유 ID',
   })
   champId: { id: string } | null;
 
   @ApiProperty({
-    example: 'sdfdsxv1235pqwcm',
+    example: {
+      id: 'asdnqwodwndok645',
+    },
     description: '평판이 등록된 소환사 고유 ID',
   })
   SummonerId: { id: string } | null;
