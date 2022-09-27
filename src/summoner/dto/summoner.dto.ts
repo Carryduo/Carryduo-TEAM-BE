@@ -1,5 +1,4 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ.response.dto';
 import { SummonerEntity } from '../entities/summoner.entity';
 
 export class SummonerResponseDTO extends PickType(SummonerEntity, [

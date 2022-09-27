@@ -12,46 +12,16 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
   name: 'CHAMP',
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
-  @ApiProperty({
-    example: 86,
-    description: '챔피언 고유 ID',
-    required: true,
-  })
-  @PrimaryColumn({
-    name: 'chmapId',
-    type: 'varchar',
-  })
-  @IsString()
+  @PrimaryColumn({ name: 'chmapId', type: 'varchar' })
   id: string;
 
-  @ApiProperty({
-    example: '가렌',
-    description: '챔피언 한글 이름',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   champNameKo: string;
 
-  @ApiProperty({
-    example: 'Garen',
-    description: '챔피언 영문 이름',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   champNameEn: string;
 
-  @ApiProperty({
-    example: 'example.png',
-    description: '챔피언 이미지 url',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   champImg: string;
 
   @OneToMany(
