@@ -147,10 +147,10 @@ export class CommentsController {
   updateContent(
     @Param('id', ParseUUIDPipe) id,
     @Req() req,
-    @Body('content') content,
+    @Body() body: PostCommentDTO,
   ) {
     const userId = req.user.userId;
-    return this.commentService.updateContent(id, userId, content);
+    return this.commentService.updateContent(id, userId, body.content);
   }
 
   @ApiOperation({ summary: '평판 삭제' })

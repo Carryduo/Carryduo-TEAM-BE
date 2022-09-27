@@ -1,5 +1,9 @@
 import { AdminRepository } from './../admin.repository';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { jwtPayload } from '../dto/jwt.payload';
@@ -24,7 +28,7 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
         profileImg: user.profileImg,
       }; // request의 user 파라미터 안에 cat을 삽입.
     } else {
-      throw new UnauthorizedException('토큰 에러');
+      throw new HttpException('토큰 에러', 401);
     }
   }
 }

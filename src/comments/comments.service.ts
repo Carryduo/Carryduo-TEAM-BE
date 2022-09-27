@@ -2,7 +2,6 @@ import { CommentRepository } from './comments.repository';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { Injectable, HttpException } from '@nestjs/common';
 import { AdminResponseDTO } from 'src/admin/dto/admin.response';
-import { stringify } from 'querystring';
 import { CommentGetResponseDTO } from './dto/comment.response.dto';
 
 @Injectable()
