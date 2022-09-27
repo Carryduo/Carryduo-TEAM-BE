@@ -10,105 +10,37 @@ import { ApiProperty } from '@nestjs/swagger';
   name: 'SUMMONER',
 })
 export class SummonerEntity extends CommonEntity {
-  @ApiProperty({
-    example: '할배탈',
-    description: '소환사 이름',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   summonerName: string;
 
-  @ApiProperty({
-    example: 'example.png',
-    description: '소환사 아이콘',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   summonerIcon: string;
 
-  @ApiProperty({
-    example: '120',
-    description: '소환사 레벨',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   summonerLevel: string;
 
-  @ApiProperty({
-    example: 'SILVER I',
-    description: '소환사 티어',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   tier: string;
 
-  @ApiProperty({
-    example: 'example.png',
-    description: '소환사 티어 이미지',
-    required: true,
-  })
   @Column({ type: 'varchar', nullable: false })
-  @IsString()
-  @IsNotEmpty()
   tierImg: string;
 
-  @ApiProperty({
-    example: '98',
-    description: '소환사 리그 포인트',
-    required: true,
-  })
   @Column({ type: 'int', nullable: false })
-  @IsNumber()
-  @IsNotEmpty()
   lp: number;
 
-  @ApiProperty({
-    example: '75',
-    description: '소환사 승리 수',
-    required: true,
-  })
   @Column({ type: 'int', nullable: false })
-  @IsNumber()
-  @IsNotEmpty()
   win: number;
 
-  @ApiProperty({
-    example: '55',
-    description: '소환사 패배 수',
-    required: true,
-  })
   @Column({ type: 'int', nullable: false })
-  @IsNumber()
-  @IsNotEmpty()
   lose: number;
 
-  @ApiProperty({
-    example: '57',
-    description: '소환사 승률',
-    required: true,
-  })
   @Column({ type: 'int', nullable: false })
-  @IsNumber()
-  @IsNotEmpty()
   winRate: number;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     eager: true,
-  })
-  @ApiProperty({
-    example: '81',
-    description: '모스트 챔피언1',
-    required: true,
   })
   @JoinColumn([
     {
@@ -123,11 +55,6 @@ export class SummonerEntity extends CommonEntity {
     onUpdate: 'CASCADE',
     eager: true,
   })
-  @ApiProperty({
-    example: '412',
-    description: '모스트 챔피언2',
-    required: true,
-  })
   @JoinColumn([
     {
       name: 'mostChamp2',
@@ -140,11 +67,6 @@ export class SummonerEntity extends CommonEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     eager: true,
-  })
-  @ApiProperty({
-    example: '222',
-    description: '모스트 챔피언3',
-    required: true,
   })
   @JoinColumn([
     {
