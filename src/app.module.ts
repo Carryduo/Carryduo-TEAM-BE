@@ -19,6 +19,7 @@ import { SummonerEntity } from './summoner/entities/summoner.entity';
 import { CommentEntity } from './comments/entities/comments.entity';
 import { CombinationStatEntity } from './combination-stat/entities/combination-stat.entity';
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
+import { EventsModule } from './events/events.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -60,6 +61,7 @@ const typeOrmModuleOptions = {
     CommentsModule,
     CombinationStatModule,
     SubscriptionModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
