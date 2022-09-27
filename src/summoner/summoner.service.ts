@@ -1,6 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SummonerResponseDTO } from './dto/summoner.dto';
+import {
+  SummonerDataCleansingDTO,
+  SummonerRequestDTO,
+} from './dto/summoner.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -10,7 +13,7 @@ export class SummonerService {
     private readonly axios: HttpService,
   ) {}
 
-  async summonerDataCleansing(summoner: SummonerResponseDTO) {
+  async summonerDataCleansing(summoner: SummonerDataCleansingDTO) {
     const summonerData = {
       id: summoner.id,
       summonerName: summoner.summonerName,
