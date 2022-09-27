@@ -20,6 +20,7 @@ import { CommentEntity } from './comments/entities/comments.entity';
 import { CombinationStatEntity } from './combination-stat/entities/combination-stat.entity';
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { EventsModule } from './events/events.module';
+import { ChatModule } from './chat/chat.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -62,6 +63,7 @@ const typeOrmModuleOptions = {
     CombinationStatModule,
     SubscriptionModule,
     EventsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

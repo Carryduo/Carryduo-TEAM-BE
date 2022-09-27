@@ -1,15 +1,17 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { Repository } from 'typeorm';
-import { SummonerRequestDTO } from './dto/summoner.dto';
+import {
+  SummonerDataCleansingDTO,
+  SummonerRequestDTO,
+  SummonerResponseDTO,
+} from './dto/summoner.dto';
 import { SummonerEntity } from './entities/summoner.entity';
 
 export class SummonerRepository {
   constructor(
     @InjectRepository(SummonerEntity)
     private readonly summonerRepository: Repository<SummonerEntity>,
-    @InjectRepository(ChampEntity)
-    private readonly champRepository: Repository<ChampEntity>,
   ) {}
 
   async findSummoner(summonerName: string) {
