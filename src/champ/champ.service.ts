@@ -18,7 +18,6 @@ export class ChampService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log(champInfo);
     champInfo.champSkillInfo.map((value) => {
       skill.push({
         id: value.skillId,
