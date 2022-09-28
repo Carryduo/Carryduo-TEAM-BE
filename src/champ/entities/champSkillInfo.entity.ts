@@ -26,6 +26,7 @@ export class ChampSkillInfoEntity extends CommonEntity {
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn([
     {
