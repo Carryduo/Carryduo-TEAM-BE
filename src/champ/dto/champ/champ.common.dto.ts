@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ChampCommonDTO {
   @ApiProperty({
@@ -9,6 +9,7 @@ export class ChampCommonDTO {
   })
   @IsString()
   id: string;
+
   @ApiProperty({
     example: '가렌',
     description: '챔피언 한글 이름',
@@ -35,4 +36,28 @@ export class ChampCommonDTO {
   @IsString()
   @IsNotEmpty()
   champImg: string;
+
+  @ApiProperty({
+    example: '50',
+    description: '챔피언 승률',
+    required: true,
+  })
+  @IsNumber()
+  winRate: number;
+
+  @ApiProperty({
+    example: '50',
+    description: '챔피언 밴률',
+    required: true,
+  })
+  @IsNumber()
+  banRate: number;
+
+  @ApiProperty({
+    example: '50',
+    description: '챔피언 픽률',
+    required: true,
+  })
+  @IsNumber()
+  pickRate: number;
 }

@@ -1,10 +1,16 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { SummonerHistoryEntity } from './summoner.history.entity';
 
 @Entity({
   name: 'SUMMONER',
@@ -36,6 +42,15 @@ export class SummonerEntity extends CommonEntity {
 
   @Column({ type: 'int', nullable: false })
   winRate: number;
+
+  @OneToOne(
+    () => SummonerHistoryEntity,
+    (summonerHistory: SummonerHistoryEntity) => summonerHistory.summonerName,
+    {
+      cascade: true,
+    },
+  )
+  summonerHistory: SummonerHistoryEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',

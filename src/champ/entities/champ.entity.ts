@@ -1,12 +1,12 @@
 import { CombinationStatEntity } from './../../combination-stat/entities/combination-stat.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { IsNotEmpty, IsString } from 'class-validator';
 import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/swagger';
+import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -24,6 +24,15 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
+  @Column({ type: 'int', nullable: true })
+  winRate: number;
+
+  @Column({ type: 'int', nullable: true })
+  banRate: number;
+
+  @Column({ type: 'int', nullable: true })
+  pickRate: number;
+
   @OneToMany(
     () => ChampSkillInfoEntity,
     (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId,
@@ -32,6 +41,19 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     },
   )
   champSkillInfo: ChampSkillInfoEntity;
+
+  @OneToMany(
+    () => SummonerHistoryEntity,
+    (summonerHistory: SummonerHistoryEntity) => [
+      summonerHistory.recentChamp1,
+      summonerHistory.recentChamp2,
+      summonerHistory.recentChamp3,
+    ],
+    {
+      cascade: true,
+    },
+  )
+  summonerHistory: SummonerHistoryEntity;
 
   @OneToMany(
     () => SummonerEntity,
