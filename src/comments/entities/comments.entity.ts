@@ -90,7 +90,7 @@ export class CommentEntity extends CommonEntity {
   })
   @JoinColumn([
     {
-      name: 'summonerId',
+      name: 'summonerName',
       referencedColumnName: 'summonerName',
     },
   ])
