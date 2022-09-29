@@ -77,7 +77,7 @@ export class CommentEntity extends CommonEntity {
 
   @ManyToOne(
     () => SummonerEntity,
-    (summonerEntity: SummonerEntity) => summonerEntity.id,
+    (summonerEntity: SummonerEntity) => summonerEntity.summonerName,
     {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
@@ -85,14 +85,14 @@ export class CommentEntity extends CommonEntity {
   )
   @ApiProperty({
     example: 'xzczcaQWWWE23',
-    description: '소환사 ID',
+    description: '소환사 이름',
     required: false,
   })
   @JoinColumn([
     {
       name: 'summonerId',
-      referencedColumnName: 'id',
+      referencedColumnName: 'summonerName',
     },
   ])
-  summonerId: string;
+  summonerName: string;
 }

@@ -8,7 +8,7 @@ export class CommentParamDTO {
   category: 'summoner' | 'champ';
 
   @IsNotEmpty()
-  target: SummonerEntity['id'] | ChampEntity['id'];
+  target: SummonerEntity['summonerName'] | ChampEntity['id'];
 }
 
 export class PostCommentDTO {
