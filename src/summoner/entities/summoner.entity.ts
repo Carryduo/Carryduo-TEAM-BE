@@ -6,17 +6,19 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
 } from 'typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { SummonerHistoryEntity } from './summoner.history.entity';
+import { OmitType } from '@nestjs/swagger';
 
 @Entity({
   name: 'SUMMONER',
 })
-export class SummonerEntity extends CommonEntity {
-  @Column({ type: 'varchar', nullable: false })
+export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
+  @PrimaryColumn({ name: 'summonerName', type: 'varchar' })
   summonerName: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -93,7 +95,7 @@ export class SummonerEntity extends CommonEntity {
 
   @OneToMany(
     () => SubscriptionEntity,
-    (subscription: SubscriptionEntity) => subscription.summonerId,
+    (subscription: SubscriptionEntity) => subscription.summonerName,
     {
       cascade: true,
     },
@@ -102,7 +104,7 @@ export class SummonerEntity extends CommonEntity {
 
   @OneToMany(
     () => CommentEntity,
-    (comment: CommentEntity) => comment.summonerId,
+    (comment: CommentEntity) => comment.summonerName,
     {
       cascade: true,
     },

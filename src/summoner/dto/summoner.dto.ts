@@ -18,7 +18,6 @@ class SummonerMostChamp {
 }
 
 export class SummonerResponseDTO extends PickType(SummonerCommonDTO, [
-  'id',
   'summonerName',
   'summonerIcon',
   'summonerLevel',
@@ -62,7 +61,6 @@ export class SummonerRequestDTO extends PickType(SummonerCommonDTO, [
 }
 
 export class SummonerDataCleansingDTO extends PickType(SummonerCommonDTO, [
-  'id',
   'summonerName',
   'summonerIcon',
   'summonerLevel',
