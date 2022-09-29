@@ -59,7 +59,7 @@ export class CommentsController {
   @Get('/:category/:target')
   getComments(
     @Param('category', CommentCategoryPipe) category: string,
-    @Param('target', CommentTargetPipe) target: string,
+    @Param('target') target: string,
   ) {
     if (isNaN(Number(target))) {
       if (category === 'champ') {
@@ -95,7 +95,7 @@ export class CommentsController {
   @UseGuards(jwtGuard)
   postComment(
     @Param('category', CommentCategoryPipe) category: string,
-    @Param('target', CommentTargetPipe) target: string,
+    @Param('target') target: string,
     @Req() req,
     @Body() body: PostCommentDTO,
   ) {
