@@ -21,7 +21,7 @@ export class CommentRepository {
         .createQueryBuilder('comment')
         .leftJoinAndSelect('comment.userId', 'user')
         .leftJoinAndSelect('comment.champId', 'champ')
-        .leftJoinAndSelect('comment.summonerId', 'summoner')
+        .leftJoinAndSelect('comment.summonerName', 'summoner')
         .select([
           'comment.content',
           'comment.id',
@@ -32,8 +32,8 @@ export class CommentRepository {
           'comment.reportNum',
           'comment.createdAt',
           'comment.category',
-          'comment.summonerId',
-          'summoner.id',
+          'comment.summonerName',
+          'summoner.summonerName',
         ])
         .where('comment.category = :category', { category })
         .andWhere('comment.champId = :champId', { champId: target })
@@ -46,7 +46,7 @@ export class CommentRepository {
         .createQueryBuilder('comment')
         .leftJoinAndSelect('comment.userId', 'user')
         .leftJoinAndSelect('comment.champId', 'champ')
-        .leftJoinAndSelect('comment.summonerId', 'summoner')
+        .leftJoinAndSelect('comment.summonerName', 'summoner')
         .select([
           'comment.content',
           'comment.id',
@@ -57,11 +57,13 @@ export class CommentRepository {
           'comment.reportNum',
           'comment.createdAt',
           'comment.category',
-          'comment.summonerId',
-          'summoner.id',
+          'comment.summonerName',
+          'summoner.summonerName',
         ])
         .where('comment.category = :category', { category })
-        .andWhere('comment.summonerId = :summonerId', { summonerId: target })
+        .andWhere('comment.summonerName = :summonerName', {
+          summonerName: target,
+        })
         .orderBy({
           'comment.createdAt': 'DESC',
         })
@@ -99,7 +101,7 @@ export class CommentRepository {
           // Promise로 묶인 column은 다음과 같이 function 형태로 주입해주어야 한다.
           userId: user.userId,
           category,
-          summonerId: target,
+          summonerName: target,
           content: data.content,
         })
         .execute();

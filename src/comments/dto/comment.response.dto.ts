@@ -23,9 +23,9 @@ export class CommentGetResponseDTO extends PickType(CommentEntity, [
 
   @ApiProperty({
     example: {
-      id: 'asdnqwodwndok645',
+      summonerName: '쿠바버샷추가',
     },
-    description: '평판이 등록된 소환사 고유 ID',
+    description: '평판이 등록된 소환사 이름',
   })
-  SummonerId: { id: string } | null;
+  summonerName: { id: string } | null;
 }
