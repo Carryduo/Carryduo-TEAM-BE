@@ -3,13 +3,18 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from './entities/summoner.entity';
+import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { SummonerController } from './summoner.controller';
 import { SummonerRepository } from './summoner.repository';
 import { SummonerService } from './summoner.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SummonerEntity, ChampEntity]),
+    TypeOrmModule.forFeature([
+      SummonerHistoryEntity,
+      SummonerEntity,
+      ChampEntity,
+    ]),
     HttpModule,
   ],
   controllers: [SummonerController],
