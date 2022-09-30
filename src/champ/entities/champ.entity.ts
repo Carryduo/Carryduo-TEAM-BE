@@ -13,7 +13,7 @@ import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.en
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @PrimaryColumn({ name: 'chmapId', type: 'varchar' })
-  id: string;
+  id: number;
 
   @Column({ type: 'varchar', nullable: false })
   champNameKo: string;
@@ -41,19 +41,6 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     },
   )
   champSkillInfo: ChampSkillInfoEntity;
-
-  @OneToMany(
-    () => SummonerHistoryEntity,
-    (summonerHistory: SummonerHistoryEntity) => [
-      summonerHistory.recentChamp1,
-      summonerHistory.recentChamp2,
-      summonerHistory.recentChamp3,
-    ],
-    {
-      cascade: true,
-    },
-  )
-  summonerHistory: SummonerHistoryEntity;
 
   @OneToMany(
     () => SummonerEntity,
