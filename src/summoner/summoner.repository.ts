@@ -110,110 +110,38 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async recentChampRate(summonerName, recentChampsList) {
+  async recentChampRate(summonerName, champId) {
     const win = await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.champId IN (:...champIds)', {
-        champIds: recentChampsList,
+      .andWhere('history.champId = :champId', {
+        champId,
       })
       .select('history.champId')
       .addSelect('COUNT(*) AS winCnt')
-      .groupBy('history.win')
-      .having('history.win  = :win', { win: 1 })
-      .getRawMany();
+      .andWhere('history.win  = :win', { win: 1 })
+      .getRawOne();
 
     const lose = await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.champId IN (:...champIds)', {
-        champIds: recentChampsList,
+      .andWhere('history.champId = :champId', {
+        champId,
       })
       .select('history.champId')
       .addSelect('COUNT(*) AS loseCnt')
-      .groupBy('history.win')
-      .having('history.win = :lose', { lose: 0 })
-      .getRawMany();
+      .andWhere('history.win = :lose', { lose: 0 })
+      .getRawOne();
 
     return { win, lose };
   }
 
-  // async recentChampRate1(summonerName, recentChampsList) {
-  //   const winCnt1 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 1 })
-  //     .select('history.champId')
-  //     .getCount();
-
-  //   const loseCnt1 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 0 })
-  //     .select('history.champId')
-  //     .getCount();
-  //   return { winCnt1, loseCnt1 };
-  // }
-
-  // async recentChampRate2(summonerName, recentChampsList) {
-  //   const winCnt2 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 1 })
-  //     .select('history.champId')
-  //     .getCount();
-
-  //   const loseCnt2 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 0 })
-  //     .select('history.champId')
-  //     .getCount();
-  //   return { winCnt2, loseCnt2 };
-  // }
-
-  // async recentChampRate3(summonerName, recentChampsList) {
-  //   const winCnt3 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 1 })
-  //     .select('history.champId')
-  //     .getCount();
-
-  //   const loseCnt3 = await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .andWhere('history.champId = :champId', {
-  //       champId: recentChampsList,
-  //     })
-  //     .andWhere('history.win = :win', { win: 0 })
-  //     .select('history.champId')
-  //     .getCount();
-  //   return { winCnt3, loseCnt3 };
-  // }
-
-  async champImg(champIds) {
-    console.log(champIds);
+  async champImg(champId) {
     return await this.champRepository
       .createQueryBuilder('champ')
-      .where('champ.id IN (:...champIds)', { champIds })
+      .where('champ.id = :champId', { champId })
       .select('champ.champImg')
-      .getRawMany();
+      .getRawOne();
   }
 
   async beforeMatchId(summonerId: string) {

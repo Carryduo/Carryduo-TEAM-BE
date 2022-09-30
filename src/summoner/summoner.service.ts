@@ -24,88 +24,57 @@ export class SummonerService {
     const recentChamps = await this.summonerRepository.recentChamp(
       summonerName,
     );
-    // console.log(recentChamps);
 
     for (let r of recentChamps) {
       recentChampsList.push(r.history_champ_id);
     }
 
-    const recentChampRate = await this.summonerRepository.recentChampRate(
-      summonerName,
-      recentChampsList,
-    );
-    console.log(recentChampRate);
+    let recentChampRate = [];
 
-    // for (let r of recentChampRate) {
-    //   for (let rc of recentChampsList) {
-    //     if(r. history_champ_id === rc && ){
-    //     }
-    //   }
-    // }
+    for (let rc of recentChampsList) {
+      const recentChampImg = await this.summonerRepository.champImg(rc);
 
-    // const recentChamp1 = await this.summonerRepository.recentChampRate1(
-    //   summonerName,
-    //   recentChampsList[0],
-    // );
-    // const recentChamp2 = await this.summonerRepository.recentChampRate2(
-    //   summonerName,
-    //   recentChampsList[1],
-    // );
-    // const recentChamp3 = await this.summonerRepository.recentChampRate3(
-    //   summonerName,
-    //   recentChampsList[2],
-    // );
+      const recentChampRateInfo = await this.summonerRepository.recentChampRate(
+        summonerName,
+        rc,
+      );
+      if (!recentChampRateInfo.win.history_champ_id) {
+        recentChampRateInfo.win.history_champ_id = rc;
+      } else if (!recentChampRateInfo.lose.history_champ_id) {
+        recentChampRateInfo.lose.history_champ_id = rc;
+      }
+      const recentChamp = recentChampRateInfo.win.history_champ_id;
+      const recentChampWin = Number(recentChampRateInfo.win.winCnt);
+      const recentChampLose = Number(recentChampRateInfo.lose.loseCnt);
+      const recentChampTotal = recentChampWin + recentChampLose;
+      const recentCahmpRate = (recentChampWin / recentChampTotal) * 100;
 
-    // const recentChampImg = await this.summonerRepository.champImg(
-    //   recentChampsList,
-    // );
+      recentChampRate.push({
+        recentChamp,
+        recentChampImg: recentChampImg.champ_champ_img,
+        recentChampWin,
+        recentChampLose,
+        recentChampTotal,
+        recentCahmpRate,
+      });
+    }
 
-    // let positions = [];
-    // const position = await this.summonerRepository.position(summonerName);
-    // for (let p of position) {
-    //   positions.push({ id: p.history_position, cnt: Number(p.positionCnt) });
-    // }
-    // const rate = {
-    //   total: Number(winInfo.totalCnt),
-    //   win: Number(winInfo.winCnt),
-    //   lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
-    //   winRate: (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
-    //   positions,
-    // recentChampRate: [
-    //   {
-    //     recentChamp1: recentChampsList[0],
-    //     recentChampWin1: recentChamp1.winCnt1,
-    //     recentChampLose1: recentChamp1.loseCnt1,
-    //     recentChampRate1:
-    //       (recentChamp1.winCnt1 /
-    //         (recentChamp1.winCnt1 + recentChamp1.loseCnt1)) *
-    //       100,
-    //     recentChampImg: recentChampImg[0].champ_champ_img,
-    //   },
-    //   {
-    //     recentChamp2: recentChampsList[1],
-    //     recentChampWin2: recentChamp2.winCnt2,
-    //     recentChampLose2: recentChamp2.loseCnt2,
-    //     recentChampRate2:
-    //       (recentChamp2.winCnt2 /
-    //         (recentChamp2.winCnt2 + recentChamp2.loseCnt2)) *
-    //       100,
-    //     recentChampImg: recentChampImg[1].champ_champ_img,
-    //   },
-    //   {
-    //     recentChamp3: recentChampsList[2],
-    //     recentChampWin3: recentChamp3.winCnt3,
-    //     recentChampLose3: recentChamp3.loseCnt3,
-    //     recentChampRate3:
-    //       (recentChamp3.winCnt3 /
-    //         (recentChamp3.winCnt3 + recentChamp3.loseCnt3)) *
-    //       100,
-    //     recentChampImg: recentChampImg[2].champ_champ_img,
-    //   },
-    // ],
-    // };
+    let positions = [];
+    const position = await this.summonerRepository.position(summonerName);
+    for (let p of position) {
+      positions.push({ id: p.history_position, cnt: Number(p.positionCnt) });
+    }
 
-    // return rate;
+    const rate = {
+      total: Number(winInfo.totalCnt),
+      win: Number(winInfo.winCnt),
+      lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
+      winRate: (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
+      positions,
+      recentChampRate: recentChampRate,
+    };
+
+    return rate;
   }
 
   ///-----------------------------------------------------------------------------------------------/

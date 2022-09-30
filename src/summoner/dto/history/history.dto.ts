@@ -21,33 +21,39 @@ export class SummonerHistoryRequestDTO extends PickType(
 export class RecentChampRate {
   @ApiProperty({
     example: '32',
-    description: '첫번째로 많이 한 챔피언 정보',
+    description: '최근 플레이 챔피언 정보',
   })
-  recentChamp1: number;
-
-  @ApiProperty({
-    example: '5',
-    description: '첫번째로 많이 한 챔피언 승 수',
-  })
-  recentChampWin1: number;
-
-  @ApiProperty({
-    example: '5',
-    description: '첫번째로 많이 한 챔피언 패 수',
-  })
-  recentChampLose1: number;
-
-  @ApiProperty({
-    example: '50',
-    description: '첫번째로 많이 한 챔피언 승률',
-  })
-  recentChampRate1: number;
+  recentChamp: number;
 
   @ApiProperty({
     example: 'example.png',
-    description: '첫번째로 많이 한 챔피언 이미지',
+    description: '최근 플레이 챔피언 이미지',
   })
   recentChampImg: string;
+
+  @ApiProperty({
+    example: '5',
+    description: '최근 플레이 챔피언 승 수',
+  })
+  recentChampWin: number;
+
+  @ApiProperty({
+    example: '5',
+    description: '최근 플레이 챔피언 패 수',
+  })
+  recentChampLose: number;
+
+  @ApiProperty({
+    example: '10',
+    description: '챔피언으로 플레이한 게임 수',
+  })
+  recentChampTotal: number;
+
+  @ApiProperty({
+    example: '50',
+    description: '최근 플레이 챔피언 승률',
+  })
+  recentChampRate: number;
 }
 
 /---------------------------------------------------------------------------------------------------------/;
