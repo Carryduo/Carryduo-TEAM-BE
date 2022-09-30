@@ -45,7 +45,7 @@ export class ChampRepository {
     return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
-      .where('champ.chmapId=:chmapId', { chmapId: champId })
+      .where('champ.champId=:chmapId', { chmapId: champId })
       .orderBy('skillInfo.createdAt', 'ASC')
       .getOne();
   }
