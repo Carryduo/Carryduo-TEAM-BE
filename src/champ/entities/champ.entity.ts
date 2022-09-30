@@ -24,13 +24,13 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
   winRate: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
   banRate: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
   pickRate: number;
 
   @OneToMany(
