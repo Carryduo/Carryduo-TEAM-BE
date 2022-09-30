@@ -48,6 +48,7 @@ const typeOrmModuleOptions = {
     logging: true,
     keepConnectionAlive: true,
     timezone: 'local',
+    charset: 'utf8mb4',
   }),
   inject: [ConfigService],
 };

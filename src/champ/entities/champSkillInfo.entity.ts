@@ -34,5 +34,5 @@ export class ChampSkillInfoEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: string;
+  champId: number;
 }
