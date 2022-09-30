@@ -13,6 +13,15 @@ export class SummonerCommonDTO extends CommonEntity {
   summonerName: string;
 
   @ApiProperty({
+    example: 'uuid',
+    description: '소환사 id',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  summonerId: string;
+
+  @ApiProperty({
     example: 'example.png',
     description: '소환사 아이콘',
     required: true,

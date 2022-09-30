@@ -22,6 +22,9 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
   summonerName: string;
 
   @Column({ type: 'varchar', nullable: false })
+  summonerId: string;
+
+  @Column({ type: 'varchar', nullable: false })
   summonerIcon: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -44,15 +47,6 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
 
   @Column({ type: 'int', nullable: false })
   winRate: number;
-
-  @OneToOne(
-    () => SummonerHistoryEntity,
-    (summonerHistory: SummonerHistoryEntity) => summonerHistory.summonerName,
-    {
-      cascade: true,
-    },
-  )
-  summonerHistory: SummonerHistoryEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',

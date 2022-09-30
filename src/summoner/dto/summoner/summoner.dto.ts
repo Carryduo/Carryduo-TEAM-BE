@@ -1,20 +1,21 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
+import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
+import { SummonerHistoryResponseDTO } from '../history/history.dto';
 import { SummonerCommonDTO } from './summoner.common.dto';
 
 class SummonerMostChamp {
   @ApiProperty({
     description: '모스트챔피언1 정보',
   })
-  mostChamp1: ChampCommonDTO;
+  mostChamp1: ChampBasicInfoDTO;
   @ApiProperty({
     description: '모스트챔피언2 정보',
   })
-  mostChamp2: ChampCommonDTO;
+  mostChamp2: ChampBasicInfoDTO;
   @ApiProperty({
     description: '모스트챔피언3 정보',
   })
-  mostChamp3: ChampCommonDTO;
+  mostChamp3: ChampBasicInfoDTO;
 }
 
 export class SummonerResponseDTO extends PickType(SummonerCommonDTO, [
@@ -33,6 +34,10 @@ export class SummonerResponseDTO extends PickType(SummonerCommonDTO, [
     isArray: true,
   })
   mostChamps: SummonerMostChamp;
+  @ApiProperty({
+    description: '모스트챔피언 정보',
+  })
+  history: SummonerHistoryResponseDTO;
 }
 
 export class SummonerRequestDTO extends PickType(SummonerCommonDTO, [
@@ -62,6 +67,7 @@ export class SummonerRequestDTO extends PickType(SummonerCommonDTO, [
 
 export class SummonerDataCleansingDTO extends PickType(SummonerCommonDTO, [
   'summonerName',
+  'summonerId',
   'summonerIcon',
   'summonerLevel',
   'tier',
