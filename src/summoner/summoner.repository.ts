@@ -209,4 +209,11 @@ export class SummonerRepository {
       .getRawOne();
     return { kill, death, assist };
   }
+
+  async getSummoner(summonerName) {
+    return await this.historyRepository
+      .createQueryBuilder('history')
+      .where('history.summonerName = :summonerName', { summonerName })
+      .getRawOne();
+  }
 }

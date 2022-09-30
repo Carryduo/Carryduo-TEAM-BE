@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataDTO } from './dto/history/history.dto';
-import { SummonerDataCleansingDTO } from './dto/summoner/summoner.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -15,7 +14,14 @@ export class SummonerService {
   async historyDataCleansing(summonerName: string) {
     const matchIdList = []; //최신 10경기 리스트
 
+    const check = await this.summonerRepository.getSummoner(summonerName);
+
+    if (!check) {
+      return;
+    }
+
     const matchIds = await this.summonerRepository.getMatchId(summonerName);
+
     for (let m of matchIds) {
       matchIdList.push(m.history_match_id);
     }
@@ -99,11 +105,14 @@ export class SummonerService {
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
       lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
-      winRate:
-        Math.floor(Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
+      winRate: Math.floor(
+        (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
+      ),
+
       positions,
       recentChampRate: recentChampRates,
     };
+    console.log(rate.winRate, rate.winRate, rate.winRate);
 
     return rate;
   }
@@ -112,41 +121,78 @@ export class SummonerService {
 
   // response 데이터 구조 정렬 함수
   async summonerDataCleansing(summoner, history: SummonerHistoryDataDTO) {
-    const summonerData = {
-      summonerName: summoner.summoner_summonerName,
-      summonerIcon: summoner.summoner_summoner_icon,
-      summonerLevel: summoner.summoner_summoner_level,
-      tier: summoner.summoner_tier,
-      lp: summoner.summoner_lp,
-      tierImg: summoner.summoner_tier_img,
-      win: summoner.summoner_win,
-      lose: summoner.summoner_lose,
-      winRate: summoner.summoner_win_rate,
-      mostChamps: [
-        {
-          mostChamp1: {
-            id: summoner.most1_champId,
-            champNameKo: summoner.most1_champ_name_ko,
-            champNameEn: summoner.most1_champ_name_en,
-            champImg: summoner.most1_champ_img,
+    if (!history) {
+      const summonerData = {
+        summonerName: summoner.summoner_summonerName,
+        summonerIcon: summoner.summoner_summoner_icon,
+        summonerLevel: summoner.summoner_summoner_level,
+        tier: summoner.summoner_tier,
+        lp: summoner.summoner_lp,
+        tierImg: summoner.summoner_tier_img,
+        win: summoner.summoner_win,
+        lose: summoner.summoner_lose,
+        winRate: summoner.summoner_win_rate,
+        mostChamps: [
+          {
+            mostChamp1: {
+              id: summoner.most1_champId,
+              champNameKo: summoner.most1_champ_name_ko,
+              champNameEn: summoner.most1_champ_name_en,
+              champImg: summoner.most1_champ_img,
+            },
+            mostChamp2: {
+              id: summoner.most2_champId,
+              champNameKo: summoner.most2_champ_name_ko,
+              champNameEn: summoner.most2_champ_name_en,
+              champImg: summoner.most2_champ_img,
+            },
+            mostChamp3: {
+              id: summoner.most3_champId,
+              champNameKo: summoner.most3_champ_name_ko,
+              champNameEn: summoner.most3_champ_name_en,
+              champImg: summoner.most1_champ_img,
+            },
           },
-          mostChamp2: {
-            id: summoner.most2_champId,
-            champNameKo: summoner.most2_champ_name_ko,
-            champNameEn: summoner.most2_champ_name_en,
-            champImg: summoner.most2_champ_img,
+        ],
+      };
+      return summonerData;
+    } else {
+      const summonerData = {
+        summonerName: summoner.summoner_summonerName,
+        summonerIcon: summoner.summoner_summoner_icon,
+        summonerLevel: summoner.summoner_summoner_level,
+        tier: summoner.summoner_tier,
+        lp: summoner.summoner_lp,
+        tierImg: summoner.summoner_tier_img,
+        win: summoner.summoner_win,
+        lose: summoner.summoner_lose,
+        winRate: summoner.summoner_win_rate,
+        mostChamps: [
+          {
+            mostChamp1: {
+              id: summoner.most1_champId,
+              champNameKo: summoner.most1_champ_name_ko,
+              champNameEn: summoner.most1_champ_name_en,
+              champImg: summoner.most1_champ_img,
+            },
+            mostChamp2: {
+              id: summoner.most2_champId,
+              champNameKo: summoner.most2_champ_name_ko,
+              champNameEn: summoner.most2_champ_name_en,
+              champImg: summoner.most2_champ_img,
+            },
+            mostChamp3: {
+              id: summoner.most3_champId,
+              champNameKo: summoner.most3_champ_name_ko,
+              champNameEn: summoner.most3_champ_name_en,
+              champImg: summoner.most1_champ_img,
+            },
           },
-          mostChamp3: {
-            id: summoner.most3_champId,
-            champNameKo: summoner.most3_champ_name_ko,
-            champNameEn: summoner.most3_champ_name_en,
-            champImg: summoner.most1_champ_img,
-          },
-        },
-      ],
-      history,
-    };
-    return summonerData;
+        ],
+        history,
+      };
+      return summonerData;
+    }
   }
 
   ///-----------------------------------------------------------------------------------------------/
