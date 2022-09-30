@@ -76,7 +76,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @OneToMany(
     () => CombinationStatEntity,
     (combinationStat: CombinationStatEntity) => [
-      combinationStat.mainChampId,
+      combinationStat.targetChampId,
       combinationStat.subChampId,
     ],
     {
