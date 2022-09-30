@@ -16,8 +16,6 @@ export class SummonerHistoryRequestDTO extends PickType(
   ],
 ) {}
 
-/---------------------------------------------------------------------------------------------------------/;
-
 export class RecentChampRate {
   @ApiProperty({
     example: '32',
@@ -56,8 +54,6 @@ export class RecentChampRate {
   recentChampRate: number;
 }
 
-/---------------------------------------------------------------------------------------------------------/;
-
 export class SummonerPosition {
   @ApiProperty({
     example: '10',
@@ -69,15 +65,19 @@ export class SummonerPosition {
   @ApiProperty({
     example: '10',
     type: Number,
-
     description: '소환사 해당 포지션 게임 수 ',
   })
   cnt: number;
 }
 
-/---------------------------------------------------------------------------------------------------------/;
-
 export class SummonerHistoryResponseDTO {
+  @ApiProperty({
+    example: '2.8',
+    description: '소환사 KDA',
+    required: true,
+  })
+  KDA: number;
+
   @ApiProperty({
     example: '10',
     description: '소환사 게임 판 수',
@@ -86,21 +86,21 @@ export class SummonerHistoryResponseDTO {
   total: number;
 
   @ApiProperty({
-    example: '7',
+    example: '5',
     description: '소환사 이긴 게임 수',
     required: true,
   })
   win: number;
 
   @ApiProperty({
-    example: '10',
+    example: '5',
     description: '소환사 진 게임 수',
     required: true,
   })
   lose: number;
 
   @ApiProperty({
-    example: '10',
+    example: '50',
     description: '소환사 승률',
     required: true,
   })
@@ -123,4 +123,12 @@ export class SummonerHistoryResponseDTO {
   recentChampRate: RecentChampRate;
 }
 
-/---------------------------------------------------------------------------------------------------------/;
+export class SummonerHistoryDataDTO {
+  KDA: number;
+  total: number;
+  win: number;
+  lose: number;
+  winRate: number;
+  positions: any[];
+  recentChampRate: any[];
+}
