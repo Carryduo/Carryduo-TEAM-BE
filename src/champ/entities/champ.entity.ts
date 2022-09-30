@@ -12,7 +12,7 @@ import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.en
   name: 'CHAMP',
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
-  @PrimaryColumn({ name: 'chmapId', type: 'varchar' })
+  @PrimaryColumn({ name: 'champId', type: 'varchar' })
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
@@ -24,7 +24,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'decimal', nullable: true })
   winRate: number;
 
   @Column({ type: 'int', nullable: true })

@@ -58,7 +58,6 @@ export class ChampRepository {
     champNameKo: string,
     champImg: string,
   ) {
-    console.log(champId);
     return this.champRepository
       .createQueryBuilder()
       .insert()
