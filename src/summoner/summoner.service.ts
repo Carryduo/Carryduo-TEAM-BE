@@ -1,9 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  SummonerDataCleansingDTO,
-  SummonerRequestDTO,
-} from './dto/summoner/summoner.dto';
+import { SummonerHistoryDataDTO } from './dto/history/history.dto';
+import { SummonerDataCleansingDTO } from './dto/summoner/summoner.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -13,16 +11,25 @@ export class SummonerService {
     private readonly axios: HttpService,
   ) {}
 
-  ///-----------------------------------------------------------------------------------------------/
-
   // summoner 전적 데이터 연산 및 구조 정렬 함수
   async historyDataCleansing(summonerName: string) {
-    const winInfo = await this.summonerRepository.sumWin(summonerName);
+    const matchIdList = []; //최신 10경기 리스트
 
-    const recentChampsList = [];
+    const matchIds = await this.summonerRepository.getMatchId(summonerName);
+    for (let m of matchIds) {
+      matchIdList.push(m.history_match_id);
+    }
+
+    const winInfo = await this.summonerRepository.sumWin(
+      matchIdList,
+      summonerName,
+    );
+
+    const recentChampsList = []; //10경기 중 많이 플레이 한 챔피언 리스트
 
     const recentChamps = await this.summonerRepository.recentChamp(
       summonerName,
+      matchIdList,
     );
 
     for (let r of recentChamps) {
@@ -37,12 +44,16 @@ export class SummonerService {
       const recentChampRateInfo = await this.summonerRepository.recentChampRate(
         summonerName,
         rc,
+        matchIdList,
       );
+
+      //이기거나 진 카운트가 없으면 champId는 undifined가 돼서 champId 따로 추가
       if (!recentChampRateInfo.win.history_champ_id) {
         recentChampRateInfo.win.history_champ_id = rc;
       } else if (!recentChampRateInfo.lose.history_champ_id) {
         recentChampRateInfo.lose.history_champ_id = rc;
       }
+
       const recentChamp = recentChampRateInfo.win.history_champ_id;
       const recentChampWin = Number(recentChampRateInfo.win.winCnt);
       const recentChampLose = Number(recentChampRateInfo.lose.loseCnt);
@@ -60,18 +71,37 @@ export class SummonerService {
     }
 
     let positions = [];
-    const position = await this.summonerRepository.position(summonerName);
+
+    const position = await this.summonerRepository.position(
+      summonerName,
+      matchIdList,
+    );
+
     for (let p of position) {
-      positions.push({ id: p.history_position, cnt: Number(p.positionCnt) });
+      positions.push({
+        id: Number(p.history_position),
+        cnt: Number(p.positionCnt),
+      });
     }
 
+    const kdaInfo = await this.summonerRepository.kdaAverage(
+      summonerName,
+      matchIdList,
+    );
+    const kill = Number(kdaInfo.kill.killSum);
+    const death = Number(kdaInfo.death.deathSum);
+    const assist = Number(kdaInfo.assist.assistSum);
+
+    const kdaAverage = Math.floor(((kill + assist) / death) * 100) / 100;
+
     const rate = {
+      KDA: kdaAverage,
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
       lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
       winRate: (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
       positions,
-      recentChampRate: recentChampRate,
+      recentChampRate,
     };
 
     return rate;
@@ -80,7 +110,10 @@ export class SummonerService {
   ///-----------------------------------------------------------------------------------------------/
 
   // response 데이터 구조 정렬 함수
-  async summonerDataCleansing(summoner: SummonerDataCleansingDTO, history) {
+  async summonerDataCleansing(
+    summoner: SummonerDataCleansingDTO,
+    history: SummonerHistoryDataDTO,
+  ) {
     const summonerData = {
       summonerName: summoner.summonerName,
       summonerId: summoner.summonerId,
@@ -106,9 +139,9 @@ export class SummonerService {
 
   //DB summoner 조회 및 라이엇API 요청 함수
   async findSummoner(summonerName: string) {
-    const summoner = await this.summonerRepository.findSummoner(summonerName); //한글 안먹음
+    const summoner = await this.summonerRepository.findSummoner(summonerName); //기존 유저 찾기
     if (!summoner) {
-      const result = await this.summonerRiotRequest(summonerName);
+      const result = await this.summonerRiotRequest(summonerName); //없으면 라이엇 요청
 
       await this.summonerRepository.insertSummoner(result);
 
@@ -119,7 +152,7 @@ export class SummonerService {
       return await this.summonerDataCleansing(summonerInfo, newHistory);
     }
     const history = await this.historyDataCleansing(summonerName);
-    return await this.summonerDataCleansing(summoner, history);
+    return await this.summonerDataCleansing(summoner, history); //있으면 꺼내서 보여주기
   }
 
   ///-----------------------------------------------------------------------------------------------/
@@ -132,13 +165,22 @@ export class SummonerService {
         '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
         HttpStatus.BAD_REQUEST,
       );
+
     const result = await this.summonerRiotRequest(summonerName);
     await this.summonerRepository.updateSummoner(result);
+
     const summonerInfo = await this.summonerRepository.findSummoner(
       summonerName,
     );
-    // const summonerData = await this.summonerDataCleansing(summonerInfo);
-    // return summonerData;
+
+    const history = await this.historyDataCleansing(summonerName);
+
+    const summonerData = await this.summonerDataCleansing(
+      summonerInfo,
+      history,
+    );
+
+    return summonerData;
   }
 
   ///-----------------------------------------------------------------------------------------------/
@@ -230,8 +272,10 @@ export class SummonerService {
         )
         .toPromise();
 
-      const summonerId = data.id;
+      //------------------------------------------------------------------------------------------------------------------------------------//
 
+      //유저 최근 전적 요청 부분
+      const summonerId = data.id;
       const beforeMatchId = await this.summonerRepository.beforeMatchId(
         summonerId,
       );
