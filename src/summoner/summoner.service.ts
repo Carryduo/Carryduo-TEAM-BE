@@ -121,6 +121,26 @@ export class SummonerService {
 
   // response 데이터 구조 정렬 함수
   async summonerDataCleansing(summoner, history: SummonerHistoryDataDTO) {
+    const mostChamp1 = {
+      id: summoner.most1_champId,
+      champNameKo: summoner.most1_champ_name_ko,
+      champNameEn: summoner.most1_champ_name_en,
+      champImg: summoner.most1_champ_img,
+    };
+
+    const mostChamp2 = {
+      id: summoner.most2_champId,
+      champNameKo: summoner.most2_champ_name_ko,
+      champNameEn: summoner.most2_champ_name_en,
+      champImg: summoner.most2_champ_img,
+    };
+    const mostChamp3 = {
+      id: summoner.most3_champId,
+      champNameKo: summoner.most3_champ_name_ko,
+      champNameEn: summoner.most3_champ_name_en,
+      champImg: summoner.most1_champ_img,
+    };
+
     if (!history) {
       const summonerData = {
         summonerName: summoner.summoner_summonerName,
@@ -132,28 +152,7 @@ export class SummonerService {
         win: summoner.summoner_win,
         lose: summoner.summoner_lose,
         winRate: summoner.summoner_win_rate,
-        mostChamps: [
-          {
-            mostChamp1: {
-              id: summoner.most1_champId,
-              champNameKo: summoner.most1_champ_name_ko,
-              champNameEn: summoner.most1_champ_name_en,
-              champImg: summoner.most1_champ_img,
-            },
-            mostChamp2: {
-              id: summoner.most2_champId,
-              champNameKo: summoner.most2_champ_name_ko,
-              champNameEn: summoner.most2_champ_name_en,
-              champImg: summoner.most2_champ_img,
-            },
-            mostChamp3: {
-              id: summoner.most3_champId,
-              champNameKo: summoner.most3_champ_name_ko,
-              champNameEn: summoner.most3_champ_name_en,
-              champImg: summoner.most1_champ_img,
-            },
-          },
-        ],
+        mostChamps: [mostChamp1, mostChamp2, mostChamp3],
       };
       return summonerData;
     } else {
@@ -167,28 +166,7 @@ export class SummonerService {
         win: summoner.summoner_win,
         lose: summoner.summoner_lose,
         winRate: summoner.summoner_win_rate,
-        mostChamps: [
-          {
-            mostChamp1: {
-              id: summoner.most1_champId,
-              champNameKo: summoner.most1_champ_name_ko,
-              champNameEn: summoner.most1_champ_name_en,
-              champImg: summoner.most1_champ_img,
-            },
-            mostChamp2: {
-              id: summoner.most2_champId,
-              champNameKo: summoner.most2_champ_name_ko,
-              champNameEn: summoner.most2_champ_name_en,
-              champImg: summoner.most2_champ_img,
-            },
-            mostChamp3: {
-              id: summoner.most3_champId,
-              champNameKo: summoner.most3_champ_name_ko,
-              champNameEn: summoner.most3_champ_name_en,
-              champImg: summoner.most1_champ_img,
-            },
-          },
-        ],
+        mostChamps: [mostChamp1, mostChamp2, mostChamp3],
         history,
       };
       return summonerData;
