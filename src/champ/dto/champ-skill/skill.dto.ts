@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from '../champ/champ.dto';
+import { ChampWinRateDTO } from '../champ/champ.dto';
 import { ChampSkillCommonDTO } from './skill.common.dto';
 
 export class ChmapSkillInfoDTO extends PickType(ChampSkillCommonDTO, [
@@ -43,11 +43,14 @@ class skillData {
   image: ChmapSkillInfoDTO['skillImg'];
 }
 
-export class ChmapSkillInfoResponseDTO extends PickType(ChampBasicInfoDTO, [
+export class ChmapSkillInfoResponseDTO extends PickType(ChampWinRateDTO, [
   'id',
   'champNameEn',
   'champNameKo',
   'champImg',
+  'winRate',
+  'banRate',
+  'pickRate',
 ]) {
   @ApiProperty({
     description: '챔피언 스킬 정보',
