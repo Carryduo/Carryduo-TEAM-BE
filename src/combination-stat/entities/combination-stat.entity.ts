@@ -13,10 +13,10 @@ export class CombinationStatEntity extends CommonEntity {
     description: '조합승률을 보여줄',
     required: false,
   })
-  @Column({ type: 'varchar', nullable: false })
-  @IsString()
+  @Column({ type: 'int', nullable: false })
+  @IsNumber()
   @IsNotEmpty()
-  category: string;
+  category: number;
 
   @ApiProperty({
     example: '1',
@@ -69,11 +69,11 @@ export class CombinationStatEntity extends CommonEntity {
   })
   @JoinColumn([
     {
-      name: 'targetChampId',
+      name: 'mainChampId',
       referencedColumnName: 'id',
     },
   ])
-  targetChampId: ChampEntity;
+  mainChampId: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
