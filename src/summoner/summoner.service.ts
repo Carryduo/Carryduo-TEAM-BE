@@ -36,7 +36,7 @@ export class SummonerService {
       recentChampsList.push(r.history_champ_id);
     }
 
-    let recentChampRate = [];
+    let recentChampRates = [];
 
     for (let rc of recentChampsList) {
       const recentChampImg = await this.summonerRepository.champImg(rc);
@@ -58,15 +58,15 @@ export class SummonerService {
       const recentChampWin = Number(recentChampRateInfo.win.winCnt);
       const recentChampLose = Number(recentChampRateInfo.lose.loseCnt);
       const recentChampTotal = recentChampWin + recentChampLose;
-      const recentCahmpRate = (recentChampWin / recentChampTotal) * 100;
+      const recentChampRate = (recentChampWin / recentChampTotal) * 100;
 
-      recentChampRate.push({
-        recentChamp,
+      recentChampRates.push({
+        recentChampId: recentChamp,
         recentChampImg: recentChampImg.champ_champ_img,
         recentChampWin,
         recentChampLose,
         recentChampTotal,
-        recentCahmpRate,
+        recentChampRate,
       });
     }
 
@@ -99,9 +99,10 @@ export class SummonerService {
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
       lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
-      winRate: (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
+      winRate:
+        Math.floor(Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
       positions,
-      recentChampRate,
+      recentChampRate: recentChampRates,
     };
 
     return rate;
@@ -110,25 +111,38 @@ export class SummonerService {
   ///-----------------------------------------------------------------------------------------------/
 
   // response 데이터 구조 정렬 함수
-  async summonerDataCleansing(
-    summoner: SummonerDataCleansingDTO,
-    history: SummonerHistoryDataDTO,
-  ) {
+  async summonerDataCleansing(summoner, history: SummonerHistoryDataDTO) {
     const summonerData = {
-      summonerName: summoner.summonerName,
-      summonerId: summoner.summonerId,
-      summonerIcon: summoner.summonerIcon,
-      summonerLevel: summoner.summonerLevel,
-      tier: summoner.tier,
-      lp: summoner.lp,
-      tierImg: summoner.tierImg,
-      win: summoner.win,
-      lose: summoner.lose,
-      winRate: summoner.winRate,
+      summonerName: summoner.summoner_summonerName,
+      summonerIcon: summoner.summoner_summoner_icon,
+      summonerLevel: summoner.summoner_summoner_level,
+      tier: summoner.summoner_tier,
+      lp: summoner.summoner_lp,
+      tierImg: summoner.summoner_tier_img,
+      win: summoner.summoner_win,
+      lose: summoner.summoner_lose,
+      winRate: summoner.summoner_win_rate,
       mostChamps: [
-        summoner.mostChamp1,
-        summoner.mostChamp2,
-        summoner.mostChamp3,
+        {
+          mostChamp1: {
+            id: summoner.most1_champId,
+            champNameKo: summoner.most1_champ_name_ko,
+            champNameEn: summoner.most1_champ_name_en,
+            champImg: summoner.most1_champ_img,
+          },
+          mostChamp2: {
+            id: summoner.most2_champId,
+            champNameKo: summoner.most2_champ_name_ko,
+            champNameEn: summoner.most2_champ_name_en,
+            champImg: summoner.most2_champ_img,
+          },
+          mostChamp3: {
+            id: summoner.most3_champId,
+            champNameKo: summoner.most3_champ_name_ko,
+            champNameEn: summoner.most3_champ_name_en,
+            champImg: summoner.most1_champ_img,
+          },
+        },
       ],
       history,
     };
@@ -152,7 +166,8 @@ export class SummonerService {
       return await this.summonerDataCleansing(summonerInfo, newHistory);
     }
     const history = await this.historyDataCleansing(summonerName);
-    return await this.summonerDataCleansing(summoner, history); //있으면 꺼내서 보여주기
+    const summonerData = await this.summonerDataCleansing(summoner, history); //있으면 꺼내서 보여주기
+    return summonerData;
   }
 
   ///-----------------------------------------------------------------------------------------------/

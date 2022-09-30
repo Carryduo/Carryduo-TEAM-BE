@@ -17,11 +17,37 @@ export class SummonerRepository {
   ) {}
 
   async findSummoner(summonerName: string) {
-    const summoner = this.summonerRepository.findOne({
-      where: {
-        summonerName,
-      },
-    });
+    const summoner = this.summonerRepository
+      .createQueryBuilder('summoner')
+      .leftJoinAndSelect('summoner.mostChamp1', 'most1')
+      .leftJoinAndSelect('summoner.mostChamp2', 'most2')
+      .leftJoinAndSelect('summoner.mostChamp3', 'most3')
+      .where('summonerName = :summonerName', { summonerName })
+      .select([
+        'summoner.summonerName',
+        'summoner.summonerIcon',
+        'summoner.summonerLevel',
+        'summoner.tier',
+        'summoner.tierImg',
+        'summoner.lp',
+        'summoner.win',
+        'summoner.lose',
+        'summoner.winRate',
+        'most1.id',
+        'most1.champNameKo',
+        'most1.champNameEn',
+        'most1.champImg',
+        'most2.id',
+        'most2.champNameKo',
+        'most2.champNameEn',
+        'most2.champImg',
+        'most3.id',
+        'most3.champNameKo',
+        'most3.champNameEn',
+        'most3.champImg',
+      ])
+      .getRawOne();
+
     return summoner;
   }
 

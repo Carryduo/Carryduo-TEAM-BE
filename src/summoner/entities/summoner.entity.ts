@@ -51,7 +51,6 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {
@@ -64,7 +63,6 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {
@@ -77,7 +75,6 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {

@@ -36,6 +36,9 @@ export class ChampService {
 
     const data = {
       id: champInfo.id,
+      winRate: champInfo.winRate,
+      banRate: champInfo.banRate,
+      pickRate: champInfo.pickRate,
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
       champImg: champInfo.champImg,
