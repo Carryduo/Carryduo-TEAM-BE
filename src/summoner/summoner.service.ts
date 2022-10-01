@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SummonerHistoryDataDTO } from './dto/history/history.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -12,30 +11,20 @@ export class SummonerService {
 
   // summoner 전적 데이터 연산 및 구조 정렬 함수
   async historyDataCleansing(summonerName: string) {
-    const matchIdList = []; //최신 10경기 리스트
-
-    const check = await this.summonerRepository.getSummoner(summonerName);
+    const check = await this.summonerRepository.getSummonerHistory(
+      summonerName,
+    );
 
     if (!check) {
       return;
     }
 
-    const matchIds = await this.summonerRepository.getMatchId(summonerName);
-
-    for (let m of matchIds) {
-      matchIdList.push(m.history_match_id);
-    }
-
-    const winInfo = await this.summonerRepository.sumWin(
-      matchIdList,
-      summonerName,
-    );
+    const winInfo = await this.summonerRepository.sumWin(summonerName);
 
     const recentChampsList = []; //10경기 중 많이 플레이 한 챔피언 리스트
 
     const recentChamps = await this.summonerRepository.recentChamp(
       summonerName,
-      matchIdList,
     );
 
     for (let r of recentChamps) {
@@ -50,7 +39,6 @@ export class SummonerService {
       const recentChampRateInfo = await this.summonerRepository.recentChampRate(
         summonerName,
         rc,
-        matchIdList,
       );
 
       //이기거나 진 카운트가 없으면 champId는 undifined가 돼서 champId 따로 추가
@@ -78,10 +66,7 @@ export class SummonerService {
 
     let positions = [];
 
-    const position = await this.summonerRepository.position(
-      summonerName,
-      matchIdList,
-    );
+    const position = await this.summonerRepository.position(summonerName);
 
     for (let p of position) {
       positions.push({
@@ -90,17 +75,20 @@ export class SummonerService {
       });
     }
 
-    const kdaInfo = await this.summonerRepository.kdaAverage(
-      summonerName,
-      matchIdList,
-    );
-    const kill = Number(kdaInfo.kill.killSum);
-    const death = Number(kdaInfo.death.deathSum);
-    const assist = Number(kdaInfo.assist.assistSum);
+    const kdaInfo = await this.summonerRepository.kdaAverage(summonerName);
+    const kill = Number(kdaInfo.killSum);
+    const death = Number(kdaInfo.deathSum);
+    const assist = Number(kdaInfo.assistSum);
 
     const kdaAverage = Math.floor(((kill + assist) / death) * 100) / 100;
+    const killAver = kill / 10;
+    const deathAver = death / 10;
+    const assiAver = assist / 10;
 
     const rate = {
+      kill: killAver,
+      death: deathAver,
+      assist: assiAver,
       KDA: kdaAverage,
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
@@ -112,7 +100,6 @@ export class SummonerService {
       positions,
       recentChampRate: recentChampRates,
     };
-    console.log(rate.winRate, rate.winRate, rate.winRate);
 
     return rate;
   }
@@ -120,7 +107,7 @@ export class SummonerService {
   ///-----------------------------------------------------------------------------------------------/
 
   // response 데이터 구조 정렬 함수
-  async summonerDataCleansing(summoner, history: SummonerHistoryDataDTO) {
+  async summonerDataCleansing(summoner, history) {
     const mostChamp1 = {
       id: summoner.most1_champId,
       champNameKo: summoner.most1_champ_name_ko,
@@ -138,7 +125,7 @@ export class SummonerService {
       id: summoner.most3_champId,
       champNameKo: summoner.most3_champ_name_ko,
       champNameEn: summoner.most3_champ_name_en,
-      champImg: summoner.most1_champ_img,
+      champImg: summoner.most3_champ_img,
     };
 
     if (!history) {
@@ -235,6 +222,7 @@ export class SummonerService {
   //라이엇 API 요청, 데이터 저장 API
   async summonerRiotRequest(summonerName: string) {
     try {
+      //SUMMONER
       const response = await this.axios
         .get(
           `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/ + ${encodeURIComponent(
@@ -248,12 +236,14 @@ export class SummonerService {
 
       const summonerIcon = `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${data.profileIconId}.png`;
 
+      //SUMMONER LEAGUE INFO
       const detailResponse = await this.axios
         .get(
           `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${data.id}?api_key=${process.env.RIOT_API_KEY}`,
         )
         .toPromise();
 
+      //SUMMONER CHAMP MASTERY
       const mostChampResponse = await this.axios
         .get(
           `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}
@@ -272,8 +262,8 @@ export class SummonerService {
 
       const win = detailData.wins;
       const lose = detailData.losses;
+      const winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
 
-      const winRate = Math.floor((win / (win + lose)) * 100);
       let image: string;
       switch (detailData.tier) {
         case 'IRON':
@@ -304,6 +294,8 @@ export class SummonerService {
           image = 'https://erunjrun.com/tier/Challenger.png';
           break;
       }
+
+      //SUMMONER MATCH ID
       const matchIdResponse = await this.axios
         .get(
           `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}
@@ -315,16 +307,15 @@ export class SummonerService {
 
       //유저 최근 전적 요청 부분
       const summonerId = data.id;
-      const beforeMatchId = await this.summonerRepository.beforeMatchId(
-        summonerId,
-      );
+      const getSummonerHistory =
+        await this.summonerRepository.getSummonerHistory(summonerName);
 
-      let beforeMatchIds = [];
-
-      for (let b of beforeMatchId) {
-        beforeMatchIds.push(b.history_match_id);
+      if (getSummonerHistory) {
+        await this.summonerRepository.deleteSummonerHistory(summonerName);
       }
+
       for (let m of matchIdResponse.data) {
+        //SUMMONER MATCH DATA
         const matchDataResponse = await this.axios
           .get(
             `https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${process.env.RIOT_API_KEY}`,
@@ -337,8 +328,7 @@ export class SummonerService {
 
         if (matchData.gameMode === 'CLASSIC') {
           for (let p of matchData.participants) {
-            // => 기존에 있는 matchId 와 중복되지 않는 matchId만 사용/summonerName이 rds에서 먹히지 않아 puuId 사용
-            if (!beforeMatchIds.includes(m) && p.puuid === puuId) {
+            if (p.puuid === puuId) {
               switch (p.teamPosition) {
                 case 'TOP':
                   position = 1;
@@ -368,6 +358,7 @@ export class SummonerService {
                 summonerId: p.summonerId,
                 matchId: m,
               };
+              console.log(history.matchId);
               await this.summonerRepository.createSummonerHistory(history);
             } else {
               continue;

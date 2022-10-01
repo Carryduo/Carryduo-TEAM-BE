@@ -122,13 +122,3 @@ export class SummonerHistoryResponseDTO {
   })
   recentChampRate: RecentChampRate;
 }
-
-export class SummonerHistoryDataDTO {
-  KDA: number;
-  total: number;
-  win: number;
-  lose: number;
-  winRate: number;
-  positions: any[];
-  recentChampRate: any[];
-}

@@ -19,9 +19,9 @@ export class SummonerRepository {
   async findSummoner(summonerName: string) {
     const summoner = this.summonerRepository
       .createQueryBuilder('summoner')
-      .leftJoinAndSelect('summoner.mostChamp1', 'most1')
-      .leftJoinAndSelect('summoner.mostChamp2', 'most2')
-      .leftJoinAndSelect('summoner.mostChamp3', 'most3')
+      .leftJoin('summoner.mostChamp1', 'most1')
+      .leftJoin('summoner.mostChamp2', 'most2')
+      .leftJoin('summoner.mostChamp3', 'most3')
       .where('summonerName = :summonerName', { summonerName })
       .select([
         'summoner.summonerName',
@@ -71,6 +71,10 @@ export class SummonerRepository {
       .execute();
   }
 
+  //-------------------------------------------------------------------------------//
+
+  //summoner 최근 전적 쿼리
+
   async createSummonerHistory(data: SummonerHistoryRequestDTO) {
     return this.historyRepository
       .createQueryBuilder()
@@ -90,37 +94,24 @@ export class SummonerRepository {
       .execute();
   }
 
-  async getMatchId(summonerName: string) {
-    return this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .select('history.matchId')
-      .orderBy('history.createdAt', 'ASC')
-      .limit(10)
-      .execute();
-  }
-
-  async sumWin(matchIds, summonerName: string) {
+  async sumWin(summonerName: string) {
     const totalCnt = await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .getCount();
 
     const { winCnt } = await this.historyRepository
       .createQueryBuilder('history')
       .select('SUM(history.win)', 'winCnt')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .getRawOne();
     return { totalCnt, winCnt };
   }
 
-  async recentChamp(summonerName: string, matchIds) {
+  async recentChamp(summonerName: string) {
     return await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .select('history.champId')
       .addSelect('COUNT(*) AS champCnt')
       .groupBy('history.champId')
@@ -130,27 +121,13 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async position(summonerName: string, matchIds) {
-    return await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
-      .select('history.position')
-      .addSelect('COUNT(*) AS positionCnt')
-      .groupBy('history.position')
-      .having('COUNT(*) > :count', { count: 0 })
-      .orderBy('positionCnt', 'DESC')
-      .getRawMany();
-  }
-
-  async recentChampRate(summonerName: string, champId: number, matchIds) {
+  async recentChampRate(summonerName: string, champId: number) {
     const win = await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
       .andWhere('history.champId = :champId', {
         champId,
       })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .select('history.champId')
       .addSelect('COUNT(*) AS winCnt')
       .andWhere('history.win  = :win', { win: 1 })
@@ -162,13 +139,24 @@ export class SummonerRepository {
       .andWhere('history.champId = :champId', {
         champId,
       })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .select('history.champId')
       .addSelect('COUNT(*) AS loseCnt')
       .andWhere('history.win = :lose', { lose: 0 })
       .getRawOne();
 
     return { win, lose };
+  }
+
+  async position(summonerName: string) {
+    return await this.historyRepository
+      .createQueryBuilder('history')
+      .where('history.summonerName = :summonerName', { summonerName })
+      .select('history.position')
+      .addSelect('COUNT(*) AS positionCnt')
+      .groupBy('history.position')
+      .having('COUNT(*) > :count', { count: 0 })
+      .orderBy('positionCnt', 'DESC')
+      .getRawMany();
   }
 
   async champImg(champId: number) {
@@ -186,34 +174,29 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async kdaAverage(summonerName: string, matchIds) {
-    const kill = await this.historyRepository
+  async kdaAverage(summonerName: string) {
+    return await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
       .select('SUM(history.kill)', 'killSum')
+      .addSelect('SUM(history.death)', 'deathSum')
+      .addSelect('SUM(history.assist)', 'assistSum')
       .getRawOne();
-
-    const death = await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
-      .select('SUM(history.death)', 'deathSum')
-      .getRawOne();
-
-    const assist = await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.matchId IN (:...matchIds)', { matchIds })
-      .select('SUM(history.assist)', 'assistSum')
-      .getRawOne();
-    return { kill, death, assist };
   }
 
-  async getSummoner(summonerName) {
+  async getSummonerHistory(summonerName) {
     return await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
       .getRawOne();
+  }
+
+  async deleteSummonerHistory(summonerName) {
+    return this.historyRepository
+      .createQueryBuilder()
+      .delete()
+      .from(SummonerHistoryEntity)
+      .where('summonerName = :summonerName', { summonerName })
+      .execute();
   }
 }
