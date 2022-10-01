@@ -147,16 +147,17 @@ export class SummonerRepository {
     return { win, lose };
   }
 
-  async position(summonerName: string) {
+  async position(summonerName: string, positionId) {
     return await this.historyRepository
       .createQueryBuilder('history')
       .where('history.summonerName = :summonerName', { summonerName })
+      .andWhere('history.position = :positionId', { positionId })
       .select('history.position')
       .addSelect('COUNT(*) AS positionCnt')
       .groupBy('history.position')
       .having('COUNT(*) > :count', { count: 0 })
       .orderBy('positionCnt', 'DESC')
-      .getRawMany();
+      .getRawOne();
   }
 
   async champImg(champId: number) {
