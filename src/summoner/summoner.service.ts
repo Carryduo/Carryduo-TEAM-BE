@@ -64,15 +64,26 @@ export class SummonerService {
       });
     }
 
-    let positions = [];
+    /*탑:1, 정글:2 미드:3, 원딜:4, 서포터:5 */
+    const positionId = [1, 2, 3, 4, 5];
 
-    const position = await this.summonerRepository.position(summonerName);
+    const positions = [];
 
-    for (let p of position) {
-      positions.push({
-        id: Number(p.history_position),
-        cnt: Number(p.positionCnt),
-      });
+    for (let pI of positionId) {
+      const position = await this.summonerRepository.position(summonerName, pI);
+      //해당 positionId가 없으면 0
+      if (!position) {
+        positions.push({
+          id: pI,
+          cnt: 0,
+        });
+      } else if (position) {
+        //해당 positionId가 있으면 해당 포지션과 합계
+        positions.push({
+          id: Number(position.history_position),
+          cnt: Number(position.positionCnt),
+        });
+      }
     }
 
     const kdaInfo = await this.summonerRepository.kdaAverage(summonerName);
@@ -96,7 +107,6 @@ export class SummonerService {
       winRate: Math.floor(
         (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
       ),
-
       positions,
       recentChampRate: recentChampRates,
     };
@@ -358,7 +368,6 @@ export class SummonerService {
                 summonerId: p.summonerId,
                 matchId: m,
               };
-              console.log(history.matchId);
               await this.summonerRepository.createSummonerHistory(history);
             } else {
               continue;
