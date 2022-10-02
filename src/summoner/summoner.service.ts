@@ -71,14 +71,14 @@ export class SummonerService {
 
     for (let pI of positionId) {
       const position = await this.summonerRepository.position(summonerName, pI);
-      //해당 positionId가 없으면 0
+      //해당 positionId가 없으면 임의로 positionId와 0 을 넣어준다.
       if (!position) {
         positions.push({
           id: pI,
           cnt: 0,
         });
       } else if (position) {
-        //해당 positionId가 있으면 해당 포지션과 합계
+        //해당 positionId가 있으면 해당 포지션과 positionId의 합을 넣어준다.
         positions.push({
           id: Number(position.history_position),
           cnt: Number(position.positionCnt),
@@ -286,7 +286,7 @@ export class SummonerService {
           image = 'https://erunjrun.com/tier/Silver.png';
           break;
         case 'GOLD':
-          image = 'https://erunjrun.com//tier/Gold.png';
+          image = 'https://erunjrun.com/tier/Gold.png';
           break;
         case 'PLATINUM':
           image = 'https://erunjrun.com/tier/Platinum.png';
