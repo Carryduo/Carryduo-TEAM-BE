@@ -17,3 +17,26 @@ export class ChampWinRateDTO extends PickType(ChampCommonDTO, [
   'banRate',
   'pickRate',
 ]) {}
+
+export class champDataDTO {
+  championId: number;
+  championNameEn: string;
+  championNameKo: string;
+  championMainImg: string;
+  championImg: string;
+}
+
+export class champSkillDTO {
+  id: string;
+  name: string;
+  desc: string;
+  tooltip: string;
+  image: string;
+}
+
+export class champPassiveSkillDTO {
+  id: string;
+  name: string;
+  desc: string;
+  image: string;
+}

@@ -22,6 +22,9 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   champNameEn: string;
 
   @Column({ type: 'varchar', nullable: false })
+  champMainImg: string;
+
+  @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
   @Column('decimal', { precision: 5, scale: 2, nullable: false })

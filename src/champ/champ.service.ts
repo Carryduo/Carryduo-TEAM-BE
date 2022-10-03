@@ -41,7 +41,7 @@ export class ChampService {
       pickRate: champInfo.pickRate,
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
-      champImg: champInfo.champImg,
+      champImg: champInfo.champMainImg,
       skill,
     };
     return data;
@@ -73,17 +73,20 @@ export class ChampService {
         .toPromise();
       const targetChampionInfo = targetChampionResult.data.data;
 
-      const championId = targetChampionInfo[value].key;
-      const championNameEn = targetChampionInfo[value].id;
-      const championNameKo = targetChampionInfo[value].name;
-      const championImg = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
+      const championId: number = targetChampionInfo[value].key;
+      const championNameEn: string = targetChampionInfo[value].id;
+      const championNameKo: string = targetChampionInfo[value].name;
+      const championMainImg: string = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
+      const championImg: string = `https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/${championNameEn}.png`;
 
-      await this.champRepository.targetChampionInfoSave(
+      const data = {
         championId,
         championNameEn,
         championNameKo,
+        championMainImg,
         championImg,
-      );
+      };
+      await this.champRepository.targetChampionInfoSave(data);
 
       const { spells } = targetChampionInfo[value];
       const { passive } = targetChampionInfo[value];

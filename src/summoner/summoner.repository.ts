@@ -36,15 +36,15 @@ export class SummonerRepository {
         'most1.id',
         'most1.champNameKo',
         'most1.champNameEn',
-        'most1.champImg',
+        'most1.champMainImg',
         'most2.id',
         'most2.champNameKo',
         'most2.champNameEn',
-        'most2.champImg',
+        'most2.champMainImg',
         'most3.id',
         'most3.champNameKo',
         'most3.champNameEn',
-        'most3.champImg',
+        'most3.champMainImg',
       ])
       .getRawOne();
 

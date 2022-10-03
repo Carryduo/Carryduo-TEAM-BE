@@ -1,6 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
+import {
+  champDataDTO,
+  champPassiveSkillDTO,
+  champSkillDTO,
+} from './dto/champ/champ.dto';
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
@@ -52,51 +57,41 @@ export class ChampRepository {
 
   //--------------------------------------------------------------------------------------------
 
-  async targetChampionInfoSave(
-    champId: number,
-    champNameEn: string,
-    champNameKo: string,
-    champImg: string,
-  ) {
+  async targetChampionInfoSave(data: champDataDTO) {
     return this.champRepository
       .createQueryBuilder()
       .insert()
       .into(ChampEntity)
-      .values({ id: champId, champNameKo, champNameEn, champImg })
+      .values({
+        id: data.championId,
+        champNameEn: data.championNameEn,
+        champNameKo: data.championNameKo,
+        champMainImg: data.championMainImg,
+        champImg: data.championImg,
+      })
       .execute();
   }
 
   async targetChampionSkillInfoSave(
     championId: number,
-    qSkillInfo: object,
-    wSkillInfo: object,
-    eSkillInfo: object,
-    rSkillInfo: object,
-    passiveInfo: object,
+    qSkillInfo: champSkillDTO,
+    wSkillInfo: champSkillDTO,
+    eSkillInfo: champSkillDTO,
+    rSkillInfo: champSkillDTO,
+    passiveInfo: champPassiveSkillDTO,
   ) {
-    let qSkill: any = {};
-    let wSkill: any = {};
-    let eSkill: any = {};
-    let rSkill: any = {};
-    let passive: any = {};
-
-    qSkill = Object.assign({}, qSkillInfo);
-    wSkill = Object.assign({}, wSkillInfo);
-    eSkill = Object.assign({}, eSkillInfo);
-    rSkill = Object.assign({}, rSkillInfo);
-    passive = Object.assign({}, passiveInfo);
-
+    console.log(qSkillInfo.id, qSkillInfo.name, qSkillInfo.desc);
     await this.skillRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
         champId: championId,
-        skillId: qSkill.id,
-        skillName: qSkill.name,
-        sikllDesc: qSkill.desc,
-        skillToolTip: qSkill.tooltip,
-        skillImg: qSkill.image,
+        skillId: qSkillInfo.id,
+        skillName: qSkillInfo.name,
+        sikllDesc: qSkillInfo.desc,
+        skillToolTip: qSkillInfo.tooltip,
+        skillImg: qSkillInfo.image,
       })
       .execute();
 
@@ -106,11 +101,11 @@ export class ChampRepository {
       .into(ChampSkillInfoEntity)
       .values({
         champId: championId,
-        skillId: wSkill.id,
-        skillName: wSkill.name,
-        sikllDesc: wSkill.desc,
-        skillToolTip: wSkill.tooltip,
-        skillImg: wSkill.image,
+        skillId: wSkillInfo.id,
+        skillName: wSkillInfo.name,
+        sikllDesc: wSkillInfo.desc,
+        skillToolTip: wSkillInfo.tooltip,
+        skillImg: wSkillInfo.image,
       })
       .execute();
 
@@ -120,11 +115,11 @@ export class ChampRepository {
       .into(ChampSkillInfoEntity)
       .values({
         champId: championId,
-        skillId: eSkill.id,
-        skillName: eSkill.name,
-        sikllDesc: eSkill.desc,
-        skillToolTip: eSkill.tooltip,
-        skillImg: eSkill.image,
+        skillId: eSkillInfo.id,
+        skillName: eSkillInfo.name,
+        sikllDesc: eSkillInfo.desc,
+        skillToolTip: eSkillInfo.tooltip,
+        skillImg: eSkillInfo.image,
       })
       .execute();
 
@@ -134,11 +129,11 @@ export class ChampRepository {
       .into(ChampSkillInfoEntity)
       .values({
         champId: championId,
-        skillId: rSkill.id,
-        skillName: rSkill.name,
-        sikllDesc: rSkill.desc,
-        skillToolTip: rSkill.tooltip,
-        skillImg: rSkill.image,
+        skillId: rSkillInfo.id,
+        skillName: rSkillInfo.name,
+        sikllDesc: rSkillInfo.desc,
+        skillToolTip: rSkillInfo.tooltip,
+        skillImg: rSkillInfo.image,
       })
       .execute();
 
@@ -148,10 +143,10 @@ export class ChampRepository {
       .into(ChampSkillInfoEntity)
       .values({
         champId: championId,
-        skillId: passive.id,
-        skillName: passive.name,
-        sikllDesc: passive.desc,
-        skillImg: passive.image,
+        skillId: passiveInfo.id,
+        skillName: passiveInfo.name,
+        sikllDesc: passiveInfo.desc,
+        skillImg: passiveInfo.image,
       })
       .execute();
   }
