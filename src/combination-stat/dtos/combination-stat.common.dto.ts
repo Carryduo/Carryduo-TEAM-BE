@@ -1,6 +1,5 @@
 import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
 
 export class CombinationStatCommonDto {
