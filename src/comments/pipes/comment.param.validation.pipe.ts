@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   PipeTransform,
   ParseIntPipe,
   ParseUUIDPipe,
