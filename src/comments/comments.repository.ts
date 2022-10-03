@@ -110,7 +110,7 @@ export class CommentRepository {
   }
 
   // TODO: 조회 + 생성 트랜젝션 연결하기
-  async updateReportNum(id, userId) {
+  async updateReportNum(id) {
     return await this.commentsRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const data = await transactionalEntityManager
