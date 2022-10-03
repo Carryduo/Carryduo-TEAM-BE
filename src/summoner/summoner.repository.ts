@@ -160,11 +160,11 @@ export class SummonerRepository {
       .getRawOne();
   }
 
-  async champImg(champId: number) {
+  async recentChampInfo(champId: number) {
     return await this.champRepository
       .createQueryBuilder('champ')
       .where('champ.id = :champId', { champId })
-      .select('champ.champImg')
+      .select(['champ.champImg', 'champ.champNameKo'])
       .getRawOne();
   }
 

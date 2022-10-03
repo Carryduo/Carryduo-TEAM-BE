@@ -34,7 +34,7 @@ export class SummonerService {
     let recentChampRates = [];
 
     for (let rc of recentChampsList) {
-      const recentChampImg = await this.summonerRepository.champImg(rc);
+      const recentChampInfo = await this.summonerRepository.recentChampInfo(rc);
 
       const recentChampRateInfo = await this.summonerRepository.recentChampRate(
         summonerName,
@@ -56,11 +56,12 @@ export class SummonerService {
 
       recentChampRates.push({
         recentChampId: recentChamp,
-        recentChampImg: recentChampImg.champ_champ_img,
+        recentChampImg: recentChampInfo.champ_champ_img,
+        recnetChampName: recentChampInfo.champ_champ_name_ko,
         recentChampWin,
         recentChampLose,
         recentChampTotal,
-        recentChampRate,
+        recentChampRate: Number(recentChampRate.toFixed(2)),
       });
     }
 
@@ -91,7 +92,7 @@ export class SummonerService {
     const death = Number(kdaInfo.deathSum);
     const assist = Number(kdaInfo.assistSum);
 
-    const kdaAverage = Math.floor(((kill + assist) / death) * 100) / 100;
+    const kdaAverage = (kill + assist) / death;
     const killAver = kill / 10;
     const deathAver = death / 10;
     const assiAver = assist / 10;
@@ -100,7 +101,7 @@ export class SummonerService {
       kill: killAver,
       death: deathAver,
       assist: assiAver,
-      KDA: kdaAverage,
+      KDA: Number(kdaAverage.toFixed(2)),
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
       lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
@@ -242,7 +243,9 @@ export class SummonerService {
         .toPromise();
 
       const { data } = response;
+      const summonerId = data.id;
       const puuId = data.puuid;
+      const summonerLevel = data.summonerLevel;
 
       const summonerIcon = `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${data.profileIconId}.png`;
 
@@ -260,9 +263,27 @@ export class SummonerService {
         `,
         )
         .toPromise();
-      const mostchamp = mostChampResponse.data;
+      const mostChamp = mostChampResponse.data;
 
-      const detailData = detailResponse.data[0];
+      const detailData = detailResponse.data;
+
+      let win: number,
+        lose: number,
+        winRate: number,
+        tier: string,
+        rank: string,
+        lp: number;
+
+      for (let dD of detailData) {
+        if (dD.queueType === 'RANKED_SOLO_5x5') {
+          win = dD.wins;
+          lose = dD.losses;
+          winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
+          tier = dD.tier;
+          rank = dD.rank;
+          lp = dD.leaguePoints;
+        }
+      }
 
       if (!detailData)
         throw new HttpException(
@@ -270,40 +291,54 @@ export class SummonerService {
           HttpStatus.BAD_REQUEST,
         );
 
-      const win = detailData.wins;
-      const lose = detailData.losses;
-      const winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
-
-      let image: string;
-      switch (detailData.tier) {
+      let tierImg: string;
+      switch (tier) {
         case 'IRON':
-          image = 'https://erunjrun.com/tier/Iron.png';
+          tierImg = 'https://erunjrun.com/tier/Iron.png';
           break;
         case 'BRONZE':
-          image = 'https://erunjrun.com/tier/Bronze.png';
+          tierImg = 'https://erunjrun.com/tier/Bronze.png';
           break;
         case 'SILVER':
-          image = 'https://erunjrun.com/tier/Silver.png';
+          tierImg = 'https://erunjrun.com/tier/Silver.png';
           break;
         case 'GOLD':
-          image = 'https://erunjrun.com/tier/Gold.png';
+          tierImg = 'https://erunjrun.com/tier/Gold.png';
           break;
         case 'PLATINUM':
-          image = 'https://erunjrun.com/tier/Platinum.png';
+          tierImg = 'https://erunjrun.com/tier/Platinum.png';
           break;
         case 'DIAMOND':
-          image = 'https://erunjrun.com/tier/Diamond.png';
+          tierImg = 'https://erunjrun.com/tier/Diamond.png';
           break;
         case 'MASTER':
-          image = 'https://erunjrun.com/tier/Master.png';
+          tierImg = 'https://erunjrun.com/tier/Master.png';
           break;
         case 'GRANDMASTER':
-          image = 'https://erunjrun.com/tier/Grandmaster.png';
+          tierImg = 'https://erunjrun.com/tier/Grandmaster.png';
           break;
         case 'CHALLENGER':
-          image = 'https://erunjrun.com/tier/Challenger.png';
+          tierImg = 'https://erunjrun.com/tier/Challenger.png';
+          break;
+        case 'Solo Unranked':
+          tierImg;
           break;
       }
+      const summonerData = {
+        summonerName,
+        summonerId,
+        summonerIcon,
+        summonerLevel,
+        tier: tier + ' ' + rank,
+        lp,
+        tierImg,
+        win,
+        lose,
+        winRate,
+        mostChamp1: mostChamp[0].championId,
+        mostChamp2: mostChamp[1].championId,
+        mostChamp3: mostChamp[2].championId,
+      };
 
       //SUMMONER MATCH ID
       const matchIdResponse = await this.axios
@@ -316,7 +351,7 @@ export class SummonerService {
       //------------------------------------------------------------------------------------------------------------------------------------//
 
       //유저 최근 전적 요청 부분
-      const summonerId = data.id;
+
       const getSummonerHistory =
         await this.summonerRepository.getSummonerHistory(summonerName);
 
@@ -375,22 +410,6 @@ export class SummonerService {
           }
         }
       }
-
-      const summonerData = {
-        summonerName: data.name,
-        summonerId,
-        summonerIcon,
-        summonerLevel: data.summonerLevel,
-        tier: detailData.tier + ' ' + detailData.rank,
-        lp: detailData.leaguePoints,
-        tierImg: image,
-        win: detailData.wins,
-        lose: detailData.losses,
-        winRate,
-        mostChamp1: mostchamp[0].championId,
-        mostChamp2: mostchamp[1].championId,
-        mostChamp3: mostchamp[2].championId,
-      };
       return summonerData;
     } catch (err) {
       console.log(err);
