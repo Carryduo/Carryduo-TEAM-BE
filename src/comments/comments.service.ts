@@ -24,9 +24,9 @@ export class CommentsService {
     return this.commentRepository.postComment(category, target, user, data);
   }
 
-  async updateReportNum(id: string, userId: string) {
+  async updateReportNum(id: string) {
     try {
-      await this.commentRepository.updateReportNum(id, userId);
+      await this.commentRepository.updateReportNum(id);
       return {
         message: '평판 신고 완료되었습니다',
         success: true,
