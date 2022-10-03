@@ -55,4 +55,9 @@ export class ChampController {
   async getPreferChampUser(@Param('champId') champId: string) {
     return await this.champService.getPreferChampUsers(champId);
   }
+
+  @Get('/save/champInfo')
+  async saveChampInfo() {
+    return await this.champService.riotChampData();
+  }
 }

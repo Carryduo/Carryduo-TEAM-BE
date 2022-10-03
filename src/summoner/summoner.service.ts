@@ -122,20 +122,20 @@ export class SummonerService {
       id: summoner.most1_champId,
       champNameKo: summoner.most1_champ_name_ko,
       champNameEn: summoner.most1_champ_name_en,
-      champImg: summoner.most1_champ_img,
+      champImg: summoner.most1_champ_main_img,
     };
 
     const mostChamp2 = {
       id: summoner.most2_champId,
       champNameKo: summoner.most2_champ_name_ko,
       champNameEn: summoner.most2_champ_name_en,
-      champImg: summoner.most2_champ_img,
+      champImg: summoner.most2_champ_main_img,
     };
     const mostChamp3 = {
       id: summoner.most3_champId,
       champNameKo: summoner.most3_champ_name_ko,
       champNameEn: summoner.most3_champ_name_en,
-      champImg: summoner.most3_champ_img,
+      champImg: summoner.most3_champ_main_img,
     };
 
     if (!history) {
