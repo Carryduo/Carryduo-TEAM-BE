@@ -25,10 +25,7 @@ import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter'
 import { CommentsService } from './comments.service';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentGetResponseDTO } from './dto/comment.response.dto';
-import {
-  CommentCategoryPipe,
-  CommentTargetPipe,
-} from './pipes/comment.param.validation.pipe';
+import { CommentCategoryPipe } from './pipes/comment.param.validation.pipe';
 
 @Controller('comments')
 @ApiTags('comment')
@@ -125,9 +122,8 @@ export class CommentsController {
   })
   @Patch('/report/:id')
   @UseGuards(jwtGuard)
-  updateReportNum(@Param('id', ParseUUIDPipe) id, @Req() req) {
-    const userId = req.user.userId;
-    return this.commentService.updateReportNum(id, userId);
+  updateReportNum(@Param('id', ParseUUIDPipe) id) {
+    return this.commentService.updateReportNum(id);
   }
 
   @ApiOperation({ summary: '평판 수정' })
