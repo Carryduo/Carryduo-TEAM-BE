@@ -20,7 +20,12 @@ export class CombinationStatService {
         category = 2;
         break;
     }
-    return await this.combinationStatRepository.getTierList(category);
+    const data = await this.combinationStatRepository.getTierList(category);
+    data.map((value) => {
+      value.winrate = Number((value.winrate * 100).toFixed(2));
+      return value;
+    });
+    return data;
   }
 
   async getIndiviualChampData(champId: string, position: string) {
@@ -106,9 +111,11 @@ export class CombinationStatService {
       for (const data of dataList) {
         if (position === 'jungle' || position === 'support') {
           data.subChampId = data.mainChampId;
+          data.winrate = Number((data.winrate * 100).toFixed(2));
           delete data.mainChampId;
           result.push(data);
         } else {
+          data.winrate = Number((data.winrate * 100).toFixed(2));
           delete data.mainChampId;
           result.push(data);
         }
