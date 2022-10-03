@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CombinationStatEntity } from './entities/combination-stat.entity';
 
 @Injectable()
@@ -46,8 +46,9 @@ export class CombinationStatRepository {
   //   챔피언 상세페이지 TOP 5 데이터
   //   TODO: 멀티 포지션에 대한 분기
   //   TODO: 표본 수에 대한 예외처리
-  async getIndividualChampData(champId) {
-    const data = await this.combinationStatRepository
+  async getIndividualChampData(option) {
+    // 탑, 미드, 원딜
+    return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
       .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
@@ -56,10 +57,8 @@ export class CombinationStatRepository {
         'COMBINATION_STAT.createdAt',
         'COMBINATION_STAT.updatedAt',
         'COMBINATION_STAT.category',
-        'COMBINATION_STAT.tier',
         'COMBINATION_STAT.winrate',
         'COMBINATION_STAT.sampleNum',
-        'COMBINATION_STAT.rankInCategory',
         'champ1.id',
         'champ1.champNameKo',
         'champ1.champNameEn',
@@ -69,20 +68,13 @@ export class CombinationStatRepository {
         'champ2.champNameEn',
         'champ2.champImg',
       ])
-      .where(
-        new Brackets((qb) => {
-          qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-            mainChampId: champId,
-          }).orWhere('COMBINATION_STAT.subChampId = :subChampId', {
-            subChampId: champId,
-          });
-        }),
-      )
+      .where(option.category)
+      .andWhere(option.champ)
       .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', {
         sampleNum: 5,
       })
       .orderBy({ 'COMBINATION_STAT.winRate': 'DESC' })
+      .limit(5)
       .getMany();
-    return data;
   }
 }
