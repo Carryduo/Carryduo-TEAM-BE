@@ -282,6 +282,13 @@ export class SummonerService {
           tier = dD.tier;
           rank = dD.rank;
           lp = dD.leaguePoints;
+        } else {
+          win = 0;
+          lose = 0;
+          winRate = 0;
+          tier = 'Unranked';
+          rank = '';
+          lp = 0;
         }
       }
 
@@ -320,7 +327,7 @@ export class SummonerService {
         case 'CHALLENGER':
           tierImg = 'https://erunjrun.com/tier/Challenger.png';
           break;
-        case 'Solo Unranked':
+        case 'Unranked':
           tierImg;
           break;
       }

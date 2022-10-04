@@ -15,7 +15,7 @@ export class CombinationStatEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   tier: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: false })
+  @Column({ type: 'decimal', precision: 7, scale: 4, nullable: false })
   winrate: number;
 
   @Column({ type: 'int', nullable: false })
