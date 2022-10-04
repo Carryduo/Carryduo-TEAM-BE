@@ -137,4 +137,59 @@ export class ChampService {
       );
     }
   }
+
+  async fixTooltip() {
+    const dataList = await this.champRepository.getTooltip();
+
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].sikllDesc) {
+        dataList[i].sikllDesc = validateToolTip(dataList[i].sikllDesc);
+      }
+      if (dataList[i].skillToolTip) {
+        dataList[i].skillToolTip = validateToolTip(dataList[i].skillToolTip);
+      }
+      const result = await this.champRepository.editToolTip(
+        dataList[i].id,
+        dataList[i].skillToolTip,
+        dataList[i].sikllDesc,
+      );
+      console.log(result);
+    }
+
+    return { succes: true };
+  }
+}
+
+function validateToolTip(value: string): string {
+  const data = value.split('');
+  const checkUnique = /[<>/:*#'="-]/;
+  const checkEng = /[a-zA-Z]/;
+  const checkNum = /[0-9]/;
+  const result = [];
+
+  for (let i = 0; i < data.length; i++) {
+    if (!checkUnique.test(data[i])) {
+      if (!checkEng.test(data[i])) {
+        if (checkNum.test(data[i])) {
+          data[i] = '';
+        }
+        result.push(data[i]);
+      }
+    }
+  }
+  let secondData = result.join('');
+
+  while (secondData.includes('{{') && secondData.includes('}}')) {
+    replace(secondData);
+  }
+  function replace(value: string) {
+    secondData = value
+      .replace('{{', '!')
+      .replace('}}', '?')
+      .replace('!  ?', '?')
+      .replace('!', '')
+      .replace('.?', '.');
+    return;
+  }
+  return secondData;
 }

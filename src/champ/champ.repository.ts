@@ -150,4 +150,27 @@ export class ChampRepository {
       })
       .execute();
   }
+
+  async getTooltip() {
+    return await this.skillRepository
+      .createQueryBuilder('CHAMPSKILLINFO')
+      .leftJoinAndSelect('CHAMPSKILLINFO.champId', 'champ')
+      .select()
+      .getMany();
+  }
+
+  async editToolTip(id, skillToolTip, sikllDesc) {
+    try {
+      await this.skillRepository
+        .createQueryBuilder('CHAMPSKILLINFO')
+        .update()
+        .set({ skillToolTip, sikllDesc })
+        .where('CHAMPSKILLINFO.id = :id', { id })
+        .execute();
+      return 'success';
+    } catch (error) {
+      console.log(error);
+      return 'fail';
+    }
+  }
 }
