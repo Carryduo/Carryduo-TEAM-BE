@@ -42,6 +42,13 @@ export class ChampService {
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
       champImg: champInfo.champMainImg,
+      rate: {
+        top: champInfo.topRate,
+        jungle: champInfo.jungleRate,
+        mid: champInfo.midRate,
+        ad: champInfo.adRate,
+        support: champInfo.supportRate,
+      },
       skill,
     };
     return data;
