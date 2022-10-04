@@ -18,10 +18,16 @@ export class SummonerHistoryRequestDTO extends PickType(
 
 export class RecentChampRate {
   @ApiProperty({
-    example: '32',
+    example: '86',
     description: '최근 플레이 챔피언 정보',
   })
   recentChamp: number;
+
+  @ApiProperty({
+    example: '가렌',
+    description: '최근 플레이 챔피언 이름',
+  })
+  recentChampName: string;
 
   @ApiProperty({
     example: 'example.png',

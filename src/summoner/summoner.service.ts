@@ -57,7 +57,7 @@ export class SummonerService {
       recentChampRates.push({
         recentChampId: recentChamp,
         recentChampImg: recentChampInfo.champ_champ_img,
-        recnetChampName: recentChampInfo.champ_champ_name_ko,
+        recentChampName: recentChampInfo.champ_champ_name_ko,
         recentChampWin,
         recentChampLose,
         recentChampTotal,
@@ -328,7 +328,7 @@ export class SummonerService {
           tierImg = 'https://erunjrun.com/tier/Challenger.png';
           break;
         case 'Unranked':
-          tierImg;
+          tierImg = '';
           break;
       }
       const summonerData = {
