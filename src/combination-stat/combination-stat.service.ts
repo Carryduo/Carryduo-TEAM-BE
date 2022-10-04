@@ -111,11 +111,11 @@ export class CombinationStatService {
       for (const data of dataList) {
         if (position === 'jungle' || position === 'support') {
           data.subChampId = data.mainChampId;
-          data.winrate = data.winrate * 100;
+          data.winrate = Number((data.winrate * 100).toFixed(2));
           delete data.mainChampId;
           result.push(data);
         } else {
-          data.winrate = data.winrate * 100;
+          data.winrate = Number((data.winrate * 100).toFixed(2));
           delete data.mainChampId;
           result.push(data);
         }
