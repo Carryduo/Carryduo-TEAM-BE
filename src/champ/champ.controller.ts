@@ -60,4 +60,9 @@ export class ChampController {
   async saveChampInfo() {
     return await this.champService.riotChampData();
   }
+
+  @Get('/fix/tooltip')
+  async fixTooltip() {
+    return await this.champService.fixTooltip();
+  }
 }

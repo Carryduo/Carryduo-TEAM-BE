@@ -36,6 +36,21 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column('decimal', { precision: 5, scale: 2, nullable: false })
   pickRate: number;
 
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
+  topRate: number;
+
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
+  jungleRate: number;
+
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
+  midRate: number;
+
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
+  adRate: number;
+
+  @Column('decimal', { precision: 5, scale: 2, nullable: false })
+  supportRate: number;
+
   @OneToMany(
     () => ChampSkillInfoEntity,
     (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId,
