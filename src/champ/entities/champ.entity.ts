@@ -7,6 +7,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { OmitType } from '@nestjs/swagger';
 import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
+import { ChampSpellEntity } from './champ.spell';
 
 @Entity({
   name: 'CHAMP',
@@ -50,6 +51,15 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
 
   @Column('decimal', { precision: 5, scale: 2, nullable: false })
   supportRate: number;
+
+  @OneToMany(
+    () => ChampSpellEntity,
+    (champSpell: ChampSpellEntity) => champSpell.champId,
+    {
+      cascade: true,
+    },
+  )
+  champSpell: ChampSpellEntity;
 
   @OneToMany(
     () => ChampSkillInfoEntity,

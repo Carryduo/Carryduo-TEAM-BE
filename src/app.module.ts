@@ -21,6 +21,7 @@ import { CommentEntity } from './comments/entities/comments.entity';
 import { CombinationStatEntity } from './combination-stat/entities/combination-stat.entity';
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
+import { ChampSpellEntity } from './champ/entities/champ.spell';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -37,6 +38,7 @@ const typeOrmModuleOptions = {
       UserEntity,
       ChampEntity,
       ChampSkillInfoEntity,
+      ChampSpellEntity,
       SummonerEntity,
       CombinationStatEntity,
       CommentEntity,
