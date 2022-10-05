@@ -89,7 +89,7 @@ export class ChampRepository {
         champId: championId,
         skillId: qSkillInfo.id,
         skillName: qSkillInfo.name,
-        sikllDesc: qSkillInfo.desc,
+        skillDesc: qSkillInfo.desc,
         skillToolTip: qSkillInfo.tooltip,
         skillImg: qSkillInfo.image,
       })
@@ -103,7 +103,7 @@ export class ChampRepository {
         champId: championId,
         skillId: wSkillInfo.id,
         skillName: wSkillInfo.name,
-        sikllDesc: wSkillInfo.desc,
+        skillDesc: wSkillInfo.desc,
         skillToolTip: wSkillInfo.tooltip,
         skillImg: wSkillInfo.image,
       })
@@ -117,7 +117,7 @@ export class ChampRepository {
         champId: championId,
         skillId: eSkillInfo.id,
         skillName: eSkillInfo.name,
-        sikllDesc: eSkillInfo.desc,
+        skillDesc: eSkillInfo.desc,
         skillToolTip: eSkillInfo.tooltip,
         skillImg: eSkillInfo.image,
       })
@@ -131,7 +131,7 @@ export class ChampRepository {
         champId: championId,
         skillId: rSkillInfo.id,
         skillName: rSkillInfo.name,
-        sikllDesc: rSkillInfo.desc,
+        skillDesc: rSkillInfo.desc,
         skillToolTip: rSkillInfo.tooltip,
         skillImg: rSkillInfo.image,
       })
@@ -145,7 +145,7 @@ export class ChampRepository {
         champId: championId,
         skillId: passiveInfo.id,
         skillName: passiveInfo.name,
-        sikllDesc: passiveInfo.desc,
+        skillDesc: passiveInfo.desc,
         skillImg: passiveInfo.image,
       })
       .execute();
@@ -159,12 +159,12 @@ export class ChampRepository {
       .getMany();
   }
 
-  async editToolTip(id, skillToolTip, sikllDesc) {
+  async editToolTip(id, skillToolTip, skillDesc) {
     try {
       await this.skillRepository
         .createQueryBuilder('CHAMPSKILLINFO')
         .update()
-        .set({ skillToolTip, sikllDesc })
+        .set({ skillToolTip, skillDesc })
         .where('CHAMPSKILLINFO.id = :id', { id })
         .execute();
       return 'success';

@@ -5,7 +5,7 @@ import { ChampSkillCommonDTO } from './skill.common.dto';
 export class ChmapSkillInfoDTO extends PickType(ChampSkillCommonDTO, [
   'skillId',
   'skillName',
-  'sikllDesc',
+  'skillDesc',
   'skillToolTip',
   'skillImg',
 ]) {}
@@ -28,7 +28,7 @@ class skillData {
     description: 'q | w | e | r | passive의 스킬 설명',
     required: true,
   })
-  desc: ChmapSkillInfoDTO['sikllDesc'];
+  desc: ChmapSkillInfoDTO['skillDesc'];
   @ApiProperty({
     example: '가렌에게 적용된 모든 둔화 효과가 제거되고.....',
     description: 'q | w | e | r | passive의 스킬 툴팁',

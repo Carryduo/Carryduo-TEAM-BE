@@ -28,7 +28,7 @@ export class ChampService {
       skill.push({
         id: value.skillId,
         name: value.skillName,
-        desc: value.sikllDesc,
+        desc: value.skillDesc,
         toolTip: value.skillToolTip,
         image: value.skillImg,
       });
@@ -149,8 +149,8 @@ export class ChampService {
     const dataList = await this.champRepository.getTooltip();
 
     for (let i = 0; i < dataList.length; i++) {
-      if (dataList[i].sikllDesc) {
-        dataList[i].sikllDesc = validateToolTip(dataList[i].sikllDesc);
+      if (dataList[i].skillDesc) {
+        dataList[i].skillDesc = validateToolTip(dataList[i].skillDesc);
       }
       if (dataList[i].skillToolTip) {
         dataList[i].skillToolTip = validateToolTip(dataList[i].skillToolTip);
@@ -158,7 +158,7 @@ export class ChampService {
       const result = await this.champRepository.editToolTip(
         dataList[i].id,
         dataList[i].skillToolTip,
-        dataList[i].sikllDesc,
+        dataList[i].skillDesc,
       );
       console.log(result);
     }

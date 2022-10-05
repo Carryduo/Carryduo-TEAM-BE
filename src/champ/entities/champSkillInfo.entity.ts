@@ -16,7 +16,7 @@ export class ChampSkillInfoEntity extends CommonEntity {
   skillName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  sikllDesc: string;
+  skillDesc: string;
 
   @Column({ type: 'varchar', nullable: true })
   skillToolTip: string;
