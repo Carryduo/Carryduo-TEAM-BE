@@ -27,7 +27,7 @@ export class ChampSkillCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  sikllDesc: string;
+  skillDesc: string;
 
   @ApiProperty({
     example: '가렌에게 적용된 모든 둔화 효과가 제거되고.....',
