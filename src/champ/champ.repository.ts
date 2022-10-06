@@ -7,6 +7,7 @@ import {
   champSkillDTO,
 } from './dto/champ/champ.dto';
 import { ChampEntity } from './entities/champ.entity';
+import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
 export class ChampRepository {
@@ -15,6 +16,9 @@ export class ChampRepository {
     private readonly champRepository: Repository<ChampEntity>,
     @InjectRepository(ChampSkillInfoEntity)
     private readonly skillRepository: Repository<ChampSkillInfoEntity>,
+
+    @InjectRepository(ChampSpellEntity)
+    private readonly champSpellRepository: Repository<ChampSpellEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
@@ -53,6 +57,15 @@ export class ChampRepository {
       .where('champ.champId=:chmapId', { chmapId: champId })
       .orderBy('skillInfo.createdAt', 'ASC')
       .getOne();
+  }
+
+  async getChampSpell(champId) {
+    return await this.champSpellRepository
+      .createQueryBuilder('spell')
+      .where('spell.champId = :champId', { champId })
+      .orderBy('spell.pickRate', 'DESC')
+      .limit(2)
+      .execute();
   }
 
   //--------------------------------------------------------------------------------------------

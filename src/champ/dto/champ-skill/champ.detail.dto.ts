@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { ChampWinRateDTO } from '../champ/champ.dto';
-import { ChampSkillCommonDTO } from './skill.common.dto';
+import { ChampDetailCommonDTO } from './champ.detail.common.dto';
 
-export class ChmapSkillInfoDTO extends PickType(ChampSkillCommonDTO, [
+export class ChmapSkillInfoDTO extends PickType(ChampDetailCommonDTO, [
   'skillId',
   'skillName',
   'skillDesc',
@@ -43,7 +43,35 @@ class skillData {
   image: ChmapSkillInfoDTO['skillImg'];
 }
 
-export class ChmapSkillInfoResponseDTO extends PickType(ChampWinRateDTO, [
+class spellData {
+  @ApiProperty({
+    example: '20',
+    description: '스펠 총 게임수',
+    required: true,
+  })
+  total: number;
+
+  @ApiProperty({
+    example: '80.00',
+    description: '스펠 픽률',
+    required: true,
+  })
+  pickRate: number;
+  @ApiProperty({
+    example: 'example.png',
+    description: '스펠 1 이미지',
+    required: true,
+  })
+  spell1Img: string;
+  @ApiProperty({
+    example: 'example.png',
+    description: '스펠 2 이미지',
+    required: true,
+  })
+  spell2Img: string;
+}
+
+export class ChampDetailResponseDTO extends PickType(ChampWinRateDTO, [
   'id',
   'champNameEn',
   'champNameKo',
@@ -57,4 +85,10 @@ export class ChmapSkillInfoResponseDTO extends PickType(ChampWinRateDTO, [
     isArray: true,
   })
   skill: skillData;
+
+  @ApiProperty({
+    description: '챔피언 스펠 정보',
+    isArray: true,
+  })
+  spellInfo: spellData;
 }

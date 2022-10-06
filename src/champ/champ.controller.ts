@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { ChampService } from './champ.service';
-import { ChmapSkillInfoResponseDTO } from './dto/champ-skill/skill.dto';
+import { ChampDetailResponseDTO } from './dto/champ-skill/champ.detail.dto';
 import { ChampBasicInfoDTO } from './dto/champ/champ.dto';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
@@ -33,7 +33,7 @@ export class ChampController {
   @ApiResponse({
     status: 200,
     description: '특정 챔피언 스킬 정보 조회 응답 예시',
-    type: ChmapSkillInfoResponseDTO,
+    type: ChampDetailResponseDTO,
   })
   @Get('/:champId')
   async getTargetChampion(@Param('champId') champId: string) {

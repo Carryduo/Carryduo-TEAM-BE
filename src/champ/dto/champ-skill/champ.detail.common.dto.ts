@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class ChampSkillCommonDTO {
+export class ChampDetailCommonDTO {
   @ApiProperty({
     example: 'q',
     description: 'q | w | e | r | passive',
