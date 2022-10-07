@@ -15,10 +15,10 @@ export class ChampSkillInfoEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false })
   skillName: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', length: 500, nullable: false })
   skillDesc: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   skillToolTip: string;
 
   @Column({ type: 'varchar', nullable: false })
