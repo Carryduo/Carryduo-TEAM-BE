@@ -76,7 +76,6 @@ export class UserCommonDto {
     description: 'bio',
     required: true,
   })
-  @IsString()
   bio: string | null;
 
   @ApiProperty({
