@@ -22,6 +22,7 @@ import { CombinationStatEntity } from './combination-stat/entities/combination-s
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ/entities/champ.spell';
+import { SimulationModule } from './simulation/simulation.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -68,6 +69,7 @@ const typeOrmModuleOptions = {
     SubscriptionModule,
     EventsModule,
     ChatModule,
+    SimulationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
