@@ -23,6 +23,7 @@ import { SubscriptionEntity } from './subscription/entities/subscription.entity'
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ/entities/champ.spell';
 import { SimulationModule } from './simulation/simulation.module';
+import { SimulationEntity } from './simulation/entities/simulation.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -45,6 +46,7 @@ const typeOrmModuleOptions = {
       CommentEntity,
       SubscriptionEntity,
       SummonerHistoryEntity,
+      SimulationEntity,
     ],
     synchronize: false, //! set 'false' in production = 동기화 여부, 리셋되는 것이므로 prod 레벨에선 해제
     autoLoadEntities: true,
