@@ -8,6 +8,7 @@ import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { OmitType } from '@nestjs/swagger';
 import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ.spell';
+import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -112,4 +113,18 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     },
   )
   combinationStat: CombinationStatEntity;
+
+  @OneToMany(
+    () => SimulationEntity,
+    (simulation: SimulationEntity) => [
+      simulation.champ1Id,
+      simulation.champ2Id,
+      simulation.champ3Id,
+      simulation.champ4Id,
+    ],
+    {
+      cascade: true,
+    },
+  )
+  simulation: SimulationEntity;
 }
