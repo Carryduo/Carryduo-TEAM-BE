@@ -274,22 +274,34 @@ export class SummonerService {
         rank: string,
         lp: number;
 
-      for (let dD of detailData) {
-        if (dD.queueType === 'RANKED_SOLO_5x5') {
-          win = dD.wins;
-          lose = dD.losses;
-          winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
-          tier = dD.tier;
-          rank = dD.rank;
-          lp = dD.leaguePoints;
-        } else {
-          win = 0;
-          lose = 0;
-          winRate = 0;
-          tier = 'Unranked';
-          rank = '';
-          lp = 0;
-        }
+      const soloRankInfo = detailData.find(
+        (ele) => ele.queueType === 'RANKED_SOLO_5x5',
+      );
+      const flexRankInfo = detailData.find(
+        (ele) => ele.queueType === 'RANKED_FLEX_SR',
+      );
+
+      if (soloRankInfo) {
+        win = soloRankInfo.wins;
+        lose = soloRankInfo.losses;
+        winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
+        tier = soloRankInfo.tier;
+        rank = soloRankInfo.rank;
+        lp = soloRankInfo.leaguePoints;
+      } else if (!soloRankInfo && flexRankInfo) {
+        win = flexRankInfo.wins;
+        lose = flexRankInfo.losses;
+        winRate = Math.floor((win / (win + lose)) * 100); // 소수점 버리기
+        tier = flexRankInfo.tier;
+        rank = flexRankInfo.rank;
+        lp = flexRankInfo.leaguePoints;
+      } else {
+        win = 0;
+        lose = 0;
+        winRate = 0;
+        tier = 'Unranked';
+        rank = '';
+        lp = 0;
       }
 
       if (!detailData)
