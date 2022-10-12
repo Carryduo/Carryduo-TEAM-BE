@@ -22,6 +22,8 @@ import { CombinationStatEntity } from './combination-stat/entities/combination-s
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ/entities/champ.spell';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -57,6 +59,10 @@ const typeOrmModuleOptions = {
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 1,
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AdminModule,
