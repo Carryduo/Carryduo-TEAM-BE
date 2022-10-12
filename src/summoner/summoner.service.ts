@@ -202,21 +202,16 @@ export class SummonerService {
         '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
         HttpStatus.BAD_REQUEST,
       );
-
     const result = await this.summonerRiotRequest(summonerName);
     await this.summonerRepository.updateSummoner(result);
-
     const summonerInfo = await this.summonerRepository.findSummoner(
       summonerName,
     );
-
     const history = await this.historyDataCleansing(summonerName);
-
     const summonerData = await this.summonerDataCleansing(
       summonerInfo,
       history,
     );
-
     return summonerData;
   }
 

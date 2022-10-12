@@ -22,6 +22,7 @@ import { CombinationStatEntity } from './combination-stat/entities/combination-s
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ/entities/champ.spell';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { SimulationModule } from './simulation/simulation.module';
 import { SimulationEntity } from './simulation/entities/simulation.entity';
 
@@ -60,6 +61,10 @@ const typeOrmModuleOptions = {
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 1,
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AdminModule,
