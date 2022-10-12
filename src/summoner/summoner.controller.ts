@@ -4,6 +4,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { SummonerResponseDTO } from './dto/summoner/summoner.dto';
 import { SummonerService } from './summoner.service';
+import { ThrottlerBehindProxyGuard } from './throttler.guard';
 
 @Controller('summoner')
 @ApiTags('Summoner')
@@ -22,7 +23,7 @@ export class SummonerController {
     required: true,
     description: '소환사 이름',
   })
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(ThrottlerBehindProxyGuard)
   @Get('refresh/:summonerName')
   async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
     return await this.summonerService.RefreshSummoner(summonerName);
