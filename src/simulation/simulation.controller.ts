@@ -8,7 +8,13 @@ import {
   Query,
   UseFilters,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { simulationBodyDto } from './dto/simulation.request.dto';
 import { simulationResponseDto } from './dto/simulation.response.dto';
@@ -30,6 +36,30 @@ export class SimulationController {
     status: 200,
     description: '대전 시뮬레이션 응답 예시',
     type: simulationResponseDto,
+  })
+  @ApiQuery({
+    name: 'champ1Id',
+    required: true,
+    description: '팀A champ1 고유 ID',
+    example: '56',
+  })
+  @ApiQuery({
+    name: 'champ2Id',
+    required: true,
+    description: '팀A champ1 고유 ID',
+    example: '56',
+  })
+  @ApiQuery({
+    name: 'champ3Id',
+    required: true,
+    description: '팀A champ1 고유 ID',
+    example: '56',
+  })
+  @ApiQuery({
+    name: 'champ4Id',
+    required: true,
+    description: '팀A champ1 고유 ID',
+    example: '56',
   })
   @Get('/:category')
   getSimulationData(
