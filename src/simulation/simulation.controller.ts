@@ -1,6 +1,13 @@
 import { TierListParamPipe } from './../combination-stat/pipes/combination-stat.param.validator.pipe';
 import { SimulationService } from './simulation.service';
-import { Body, Controller, Get, Param, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { simulationBodyDto } from './dto/simulation.request.dto';
@@ -27,9 +34,11 @@ export class SimulationController {
   @Get('/:category')
   getSimulationData(
     @Param('category', TierListParamPipe) category: string,
-    @Body() body: simulationBodyDto,
+    @Query('champ1Id') champ1Id: string,
+    @Query('champ2Id') champ2Id: string,
+    @Query('champ3Id') champ3Id: string,
+    @Query('champ4Id') champ4Id: string,
   ): Promise<simulationResponseDto> {
-    const { champ1Id, champ2Id, champ3Id, champ4Id } = body;
     return this.simulaitionService.getSimulationData(
       category,
       champ1Id,

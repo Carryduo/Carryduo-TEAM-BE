@@ -45,7 +45,7 @@ export class SimulationService {
     );
     const champ1 = data.champ1Id;
     const champ2 = data.champ2Id;
-    if (champ1Id === Number(data.champ3Id.id)) {
+    if (champ1Id === data.champ3Id.id) {
       data.winrate = Number(((1 - data.winrate) * 100).toFixed(2));
       data.champ1Id = data.champ3Id;
       data.champ2Id = data.champ4Id;
