@@ -61,7 +61,7 @@ export class SimulationController {
     example: '56',
   })
   @Get('/:category')
-  getSimulationData(
+  async getSimulationData(
     @Param('category', TierListParamPipe) category: string,
     @Query('champ1Id') champ1Id: string,
     @Query('champ2Id') champ2Id: string,
@@ -76,12 +76,17 @@ export class SimulationController {
     ) {
       throw new HttpException(`champId는 숫자형태여야 합니다.`, 400);
     }
-    return this.simulaitionService.getSimulationData(
+
+    const data = await this.simulaitionService.getSimulationData(
       category,
       champ1Id,
       champ2Id,
       champ3Id,
       champ4Id,
     );
+    if (!data) {
+      throw new HttpException(`대전 시뮬레이션 데이터가 없습니다`, 400);
+    }
+    return data;
   }
 }
