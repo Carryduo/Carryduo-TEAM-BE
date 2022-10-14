@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseFilters, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseFilters } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { SummonerResponseDTO } from './dto/summoner/summoner.dto';

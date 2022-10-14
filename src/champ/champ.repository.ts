@@ -9,6 +9,8 @@ import {
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 export class ChampRepository {
   constructor(
@@ -21,7 +23,13 @@ export class ChampRepository {
     private readonly champSpellRepository: Repository<ChampSpellEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
+
+  async redisTest() {
+    await this.redis.set('key', 'value');
+    return await this.redis.get('key');
+  }
 
   async findPreferChampUsers(champId: string) {
     return this.userRepository
