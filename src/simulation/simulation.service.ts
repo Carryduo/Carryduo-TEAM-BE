@@ -65,6 +65,9 @@ export class SimulationService {
     if (!data) {
       data = await this.simulationRepository.getSimulationData(reverseOption);
     }
+    if (!data) {
+      return data;
+    }
     const champ1 = data.champ1Id;
     const champ2 = data.champ2Id;
     if (champ1Id === data.champ3Id.id) {
