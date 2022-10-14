@@ -10,7 +10,7 @@ export class SimulationRepository {
     private readonly simulationRepository: Repository<SimulationEntity>,
   ) {}
 
-  async getSimulationData(category: string | number, option1, option2) {
+  async getSimulationData(option) {
     return await this.simulationRepository
       .createQueryBuilder('SIMULATION')
       .leftJoinAndSelect('SIMULATION.champ1Id', 'champ1')
@@ -45,9 +45,7 @@ export class SimulationRepository {
         'champ4.champNameEn',
         'champ4.champImg',
       ])
-      .where('SIMULATION.category = :category', { category })
-      .orWhere(option1)
-      .orWhere(option2)
+      .where(option)
       .getOne();
   }
 }
