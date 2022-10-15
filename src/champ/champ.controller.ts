@@ -13,10 +13,11 @@ import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
-  // @Get('/redis')
-  // async redisTest() {
-  //   return await this.champService.getRedis();
-  // }
+  @Get('/redis')
+  async redisTest() {
+    return await this.champService.getRedis();
+  }
+
   @Get()
   @ApiOperation({ summary: '챔피언 리스트 조회' })
   @ApiResponse({

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -24,7 +24,7 @@ import { SummonerHistoryEntity } from './summoner/entities/summoner.history.enti
 import { ChampSpellEntity } from './champ/entities/champ.spell';
 import { SimulationModule } from './simulation/simulation.module';
 import { SimulationEntity } from './simulation/entities/simulation.entity';
-// import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
+import * as redisStore from 'cache-manager-redis-store';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -61,21 +61,17 @@ const typeOrmModuleOptions = {
 
 @Module({
   imports: [
-    // RedisModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (
-    //     configService: ConfigService,
-    //   ): Promise<RedisModuleOptions> => {
-    //     return {
-    //       config: {
-    //         host: configService.get('REDIS_HOST'),
-    //         port: configService.get('REDIS_PORT'),
-    //         password: configService.get('REDIS_PASSWORD'),
-    //       },
-    //     };
-    //   },
-    // }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      isGlobal: true,
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('REDIS_HOST'),
+        port: configService.get('REDIS_PORT'),
+        no_ready_check: true,
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AdminModule,
