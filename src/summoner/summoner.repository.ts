@@ -1,3 +1,4 @@
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { Repository } from 'typeorm';
@@ -5,6 +6,7 @@ import { SummonerHistoryRequestDTO } from './dto/history/history.dto';
 import { SummonerRequestDTO } from './dto/summoner/summoner.dto';
 import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
+import { Cache } from 'cache-manager';
 
 export class SummonerRepository {
   constructor(
@@ -14,7 +16,14 @@ export class SummonerRepository {
     private readonly summonerRepository: Repository<SummonerEntity>,
     @InjectRepository(SummonerHistoryEntity)
     private readonly historyRepository: Repository<SummonerHistoryEntity>,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
+
+  async cacheSummoner(summonerName: string, data) {
+    const encodeUrl = encodeURIComponent(summonerName);
+    await this.cacheManager.set(`/summoner/${encodeUrl}`, data);
+  }
 
   async findSummoner(summonerName: string) {
     const summoner = this.summonerRepository
@@ -46,7 +55,7 @@ export class SummonerRepository {
         'most3.champNameEn',
         'most3.champMainImg',
       ])
-      .getRawOne();
+      .getOne();
 
     return summoner;
   }
@@ -61,7 +70,7 @@ export class SummonerRepository {
   }
 
   async updateSummoner(summonerInfo: SummonerRequestDTO) {
-    return this.summonerRepository
+    return await this.summonerRepository
       .createQueryBuilder()
       .update(SummonerEntity)
       .set(summonerInfo)

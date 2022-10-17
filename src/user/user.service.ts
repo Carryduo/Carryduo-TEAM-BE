@@ -17,7 +17,7 @@ export class UserService {
   ): Promise<UserBasicInfoResponseDTO | UserSpecificInfoResponseDTO> {
     const result = await this.userRepository.getUserInfo(data);
     const {
-      id,
+      userId,
       nickname,
       tier,
       bio,
@@ -30,13 +30,13 @@ export class UserService {
     } = result;
     if (category === 'login') {
       return {
-        userId: id,
+        userId,
         nickname,
         profileImg,
       };
     } else if (category === 'option') {
       return {
-        userId: id,
+        userId,
         nickname,
         tier,
         bio,
@@ -69,7 +69,7 @@ export class UserService {
   ): Promise<UserSpecificInfoResponseDTO> {
     const result = await this.userRepository.getIndividualUserInfo(data);
     const {
-      id,
+      userId,
       nickname,
       tier,
       bio,
@@ -82,7 +82,7 @@ export class UserService {
     } = result;
 
     return {
-      userId: id,
+      userId,
       nickname,
       tier,
       bio,

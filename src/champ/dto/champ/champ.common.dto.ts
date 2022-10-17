@@ -7,8 +7,8 @@ export class ChampCommonDTO {
     description: '챔피언 고유 ID',
     required: true,
   })
-  @IsNumber()
-  id: number;
+  @IsString()
+  id: string;
 
   @ApiProperty({
     example: '가렌',

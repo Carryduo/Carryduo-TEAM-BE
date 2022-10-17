@@ -1,4 +1,11 @@
-import { Controller, Get, Param, UseFilters } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  Controller,
+  Get,
+  Param,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { SummonerResponseDTO } from './dto/summoner/summoner.dto';
@@ -37,6 +44,7 @@ export class SummonerController {
     required: true,
     description: '소환사 이름',
   })
+  @UseInterceptors(CacheInterceptor)
   @Get('/:summonerName')
   async summonerInfo(@Param('summonerName') summonerName: string) {
     return await this.summonerService.getSummoner(summonerName);

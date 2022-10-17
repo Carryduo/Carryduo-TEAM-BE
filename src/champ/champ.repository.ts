@@ -1,3 +1,4 @@
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
@@ -9,8 +10,8 @@ import {
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
-// import { InjectRedis } from '@liaoliaots/nestjs-redis';
-// import Redis from 'ioredis';
+import { Cache } from 'cache-manager';
+
 export class ChampRepository {
   constructor(
     @InjectRepository(ChampEntity)
@@ -23,11 +24,6 @@ export class ChampRepository {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>, // @InjectRedis() private readonly redis: Redis,
   ) {}
-
-  // async redisTest() {
-  //   await this.redis.set('key', 'value');
-  //   return await this.redis.get('key');
-  // }
 
   async findPreferChampUsers(champId: string) {
     return this.userRepository
@@ -92,20 +88,21 @@ export class ChampRepository {
   }
 
   async targetChampionSkillInfoSave(
-    championId: number,
+    championId: string,
     qSkillInfo: champSkillDTO,
     wSkillInfo: champSkillDTO,
     eSkillInfo: champSkillDTO,
     rSkillInfo: champSkillDTO,
     passiveInfo: champPassiveSkillDTO,
   ) {
-    console.log(qSkillInfo.id, qSkillInfo.name, qSkillInfo.desc);
     await this.skillRepository
       .createQueryBuilder()
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: qSkillInfo.id,
         skillName: qSkillInfo.name,
         skillDesc: qSkillInfo.desc,
@@ -119,7 +116,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: wSkillInfo.id,
         skillName: wSkillInfo.name,
         skillDesc: wSkillInfo.desc,
@@ -133,7 +132,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: eSkillInfo.id,
         skillName: eSkillInfo.name,
         skillDesc: eSkillInfo.desc,
@@ -147,7 +148,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: rSkillInfo.id,
         skillName: rSkillInfo.name,
         skillDesc: rSkillInfo.desc,
@@ -161,7 +164,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: passiveInfo.id,
         skillName: passiveInfo.name,
         skillDesc: passiveInfo.desc,

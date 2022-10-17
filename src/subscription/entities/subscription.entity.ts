@@ -8,7 +8,7 @@ import { ApiProperty } from '@nestjs/swagger';
   name: 'SUBSCRIPTION',
 })
 export class SubscriptionEntity extends CommonEntity {
-  @ManyToOne(() => UserEntity, (user: UserEntity) => user.id, {
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.userId, {
     onDelete: 'CASCADE',
   })
   @ApiProperty({
@@ -19,7 +19,7 @@ export class SubscriptionEntity extends CommonEntity {
   @JoinColumn([
     {
       name: 'userId',
-      referencedColumnName: 'id',
+      referencedColumnName: 'userId',
     },
   ])
   userId: UserEntity;

@@ -47,16 +47,16 @@ export class AdminRepository {
     return user;
   }
 
-  async findById(id: string) {
-    return await this.usersRepository.findOne({ where: { id } });
+  async findById(userId: string) {
+    return await this.usersRepository.findOne({ where: { userId } });
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(userId: string) {
     await this.usersRepository
       .createQueryBuilder()
       .delete()
       .from(UserEntity)
-      .where('id = :id', { id })
+      .where('userId = :userId', { userId })
       .execute();
     return { success: true, message: '회원 탈퇴 완료되었습니다' };
   }

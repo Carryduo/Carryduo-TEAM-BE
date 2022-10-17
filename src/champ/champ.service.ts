@@ -8,17 +8,12 @@ export class ChampService {
     private readonly champRepository: ChampRepository,
     private readonly axios: HttpService,
   ) {}
-
-  // async getRedis() {
-  //   return await this.champRepository.redisTest();
-  // }
-
   async getChampList() {
     return await this.champRepository.getChmapList();
   }
 
   async getTargetChampion(champId: string) {
-    let skill = [];
+    const skill = [];
 
     const champInfo = await this.champRepository.getTargetChampion(champId);
     if (!champInfo) {
@@ -46,7 +41,7 @@ export class ChampService {
 
     const spellInfo = [];
 
-    for (let csd in chmapSpellData) {
+    for (const csd in chmapSpellData) {
       const key = csd;
       switch (chmapSpellData[key].spell_spell1) {
         case SummonerBarrier:
@@ -203,11 +198,11 @@ export class ChampService {
         .toPromise();
       const targetChampionInfo = targetChampionResult.data.data;
 
-      const championId: number = targetChampionInfo[value].key;
+      const championId: string = targetChampionInfo[value].key;
       const championNameEn: string = targetChampionInfo[value].id;
       const championNameKo: string = targetChampionInfo[value].name;
-      const championMainImg: string = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
-      const championImg: string = `https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/${championNameEn}.png`;
+      const championMainImg = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championNameEn}_0.jpg`;
+      const championImg = `https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/${championNameEn}.png`;
 
       const data = {
         championId,
