@@ -23,7 +23,7 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.adminRepository.findById(payload.sub);
     if (user) {
       return {
-        userId: user.id,
+        userId: user.userId,
         nickname: user.nickname,
         profileImg: user.profileImg,
       }; // request의 user 파라미터 안에 cat을 삽입.

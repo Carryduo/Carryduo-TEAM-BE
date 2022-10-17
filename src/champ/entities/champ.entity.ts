@@ -15,7 +15,7 @@ import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
 })
 export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @PrimaryColumn({ name: 'champId', type: 'varchar' })
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', nullable: false })
   champNameKo: string;

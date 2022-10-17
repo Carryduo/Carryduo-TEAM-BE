@@ -9,8 +9,10 @@ import { Brackets } from 'typeorm';
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  // Promise<CommentGetResponseDTO>
-  async getComments(category: string, target: string) {
+  async getComments(
+    category: string,
+    target: string,
+  ): Promise<CommentGetResponseDTO[]> {
     let option;
     if (category === 'champ') {
       option = new Brackets((qb) => {
@@ -29,7 +31,8 @@ export class CommentsService {
         );
       });
     }
-    return await this.commentRepository.getComments(option);
+    const data = await this.commentRepository.getComments(option);
+    return data;
   }
 
   postComment(
@@ -39,7 +42,8 @@ export class CommentsService {
     data: PostCommentDTO,
   ) {
     let value, option;
-    if ((category = 'champ')) {
+    console.log(category);
+    if (category === 'champ') {
       value = {
         userId: user.userId,
         category,
@@ -68,17 +72,41 @@ export class CommentsService {
         );
       });
     }
-    return this.commentRepository.postComment(value, option);
+    return this.commentRepository.postComment(value, option, target);
   }
 
   async updateReportNum(id: string) {
     try {
-      await this.commentRepository.updateReportNum(id);
+      const data = await this.commentRepository.updateReportNum(id);
+      const category = data.category;
+      let target, option;
+      if (!data.champId) {
+        // interceptor를 통한 캐싱과 한글 인코딩 통일
+        target = encodeURI(String(data.summonerName.summonerName));
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.summonerName = :summonerName',
+            {
+              summonerName: data.summonerName.summonerName,
+            },
+          );
+        });
+      } else {
+        target = data.champId.id;
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.champId = :champId',
+            { champId: target },
+          );
+        });
+      }
+      await this.commentRepository.setCommentCache(category, target, option);
       return {
         message: '평판 신고 완료되었습니다',
         success: true,
       };
-    } catch {
+    } catch (error) {
+      console.log(error);
       throw new HttpException('평판 신고 실패하였습니다', 400);
     }
   }

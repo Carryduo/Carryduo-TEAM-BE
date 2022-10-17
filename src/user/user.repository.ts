@@ -15,7 +15,7 @@ export class UserRepository {
     return await this.usersRepository.findOne({
       select: [
         'bio',
-        'id',
+        'userId',
         'nickname',
         'enableChat',
         'preferPosition',
@@ -25,7 +25,7 @@ export class UserRepository {
         'tier',
         'profileImg',
       ],
-      where: { id: data.userId },
+      where: { userId: data.userId },
     });
   }
 
@@ -34,16 +34,16 @@ export class UserRepository {
       .createQueryBuilder()
       .update(UserEntity)
       .set(body)
-      .where('id = :id', { id: data.userId })
+      .where('userId = :userId', { userId: data.userId })
       .execute();
   }
 
-  async getIndividualUserInfo(id: string) {
+  async getIndividualUserInfo(userId: string) {
     return await this.usersRepository.findOne({
-      where: { id },
+      where: { userId },
       select: [
         'bio',
-        'id',
+        'userId',
         'nickname',
         'enableChat',
         'preferPosition',

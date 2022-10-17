@@ -19,7 +19,7 @@ export class ChampWinRateDTO extends PickType(ChampCommonDTO, [
 ]) {}
 
 export class champDataDTO {
-  championId: number;
+  championId: string;
   championNameEn: string;
   championNameKo: string;
   championMainImg: string;

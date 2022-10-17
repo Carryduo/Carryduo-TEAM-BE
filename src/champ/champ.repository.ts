@@ -88,7 +88,7 @@ export class ChampRepository {
   }
 
   async targetChampionSkillInfoSave(
-    championId: number,
+    championId: string,
     qSkillInfo: champSkillDTO,
     wSkillInfo: champSkillDTO,
     eSkillInfo: champSkillDTO,
@@ -100,7 +100,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: qSkillInfo.id,
         skillName: qSkillInfo.name,
         skillDesc: qSkillInfo.desc,
@@ -114,7 +116,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: wSkillInfo.id,
         skillName: wSkillInfo.name,
         skillDesc: wSkillInfo.desc,
@@ -128,7 +132,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: eSkillInfo.id,
         skillName: eSkillInfo.name,
         skillDesc: eSkillInfo.desc,
@@ -142,7 +148,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: rSkillInfo.id,
         skillName: rSkillInfo.name,
         skillDesc: rSkillInfo.desc,
@@ -156,7 +164,9 @@ export class ChampRepository {
       .insert()
       .into(ChampSkillInfoEntity)
       .values({
-        champId: championId,
+        champId: () => {
+          return championId;
+        },
         skillId: passiveInfo.id,
         skillName: passiveInfo.name,
         skillDesc: passiveInfo.desc,
