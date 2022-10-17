@@ -2,7 +2,7 @@ import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { UserCommonDto } from './user.common.dto';
 
 export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
-  'id',
+  'userId',
   'createdAt',
   'socialId',
   'social',
