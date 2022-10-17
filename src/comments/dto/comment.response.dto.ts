@@ -27,5 +27,5 @@ export class CommentGetResponseDTO extends PickType(CommentEntity, [
     },
     description: '평판이 등록된 소환사 이름',
   })
-  summonerName: { id: string } | null;
+  summonerName: { summonerName: string } | null;
 }

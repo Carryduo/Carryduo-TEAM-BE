@@ -1,4 +1,10 @@
-import { Get, Param, UseFilters } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  Get,
+  Param,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
@@ -13,10 +19,6 @@ import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
-  // @Get('/redis')
-  // async redisTest() {
-  //   return await this.champService.getRedis();
-  // }
   @Get()
   @ApiOperation({ summary: '챔피언 리스트 조회' })
   @ApiResponse({
@@ -39,6 +41,7 @@ export class ChampController {
     description: '특정 챔피언 스킬 정보 조회 응답 예시',
     type: ChampDetailResponseDTO,
   })
+  @UseInterceptors(CacheInterceptor)
   @Get('/:champId')
   async getTargetChampion(@Param('champId') champId: string) {
     return await this.champService.getTargetChampion(champId);
@@ -55,6 +58,7 @@ export class ChampController {
     description: '특정 챔피언 선호한 유저 조회 응답 예시',
     type: preferChampUsersDTO,
   })
+  @UseInterceptors(CacheInterceptor)
   @Get('/:champId/users')
   async getPreferChampUser(@Param('champId') champId: string) {
     return await this.champService.getPreferChampUsers(champId);

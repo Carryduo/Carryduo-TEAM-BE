@@ -11,6 +11,8 @@ import {
   Patch,
   ParseUUIDPipe,
   HttpException,
+  UseInterceptors,
+  CacheInterceptor,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -53,11 +55,13 @@ export class CommentsController {
     description: '평판 조회 응답 예시',
     type: CommentGetResponseDTO,
   })
+  @UseInterceptors(CacheInterceptor)
   @Get('/:category/:target')
   getComments(
     @Param('category', CommentCategoryPipe) category: string,
     @Param('target') target: string,
   ) {
+    console.log('no cache here');
     if (isNaN(Number(target))) {
       if (category === 'champ') {
         throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
