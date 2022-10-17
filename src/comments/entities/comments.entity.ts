@@ -73,7 +73,7 @@ export class CommentEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: string;
+  champId: ChampEntity;
 
   @ManyToOne(
     () => SummonerEntity,
@@ -94,5 +94,5 @@ export class CommentEntity extends CommonEntity {
       referencedColumnName: 'summonerName',
     },
   ])
-  summonerName: string;
+  summonerName: SummonerEntity;
 }

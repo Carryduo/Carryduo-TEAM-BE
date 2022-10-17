@@ -73,12 +73,36 @@ export class CommentsService {
 
   async updateReportNum(id: string) {
     try {
-      await this.commentRepository.updateReportNum(id);
+      const data = await this.commentRepository.updateReportNum(id);
+      const category = data.category;
+      let target, option;
+      if (!data.champId) {
+        // interceptor를 통한 캐싱과 한글 인코딩 통일
+        target = encodeURI(String(data.summonerName.summonerName));
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.summonerName = :summonerName',
+            {
+              summonerName: data.summonerName.summonerName,
+            },
+          );
+        });
+      } else {
+        target = data.champId.id;
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.champId = :champId',
+            { champId: target },
+          );
+        });
+      }
+      await this.commentRepository.setCommentCache(category, target, option);
       return {
         message: '평판 신고 완료되었습니다',
         success: true,
       };
-    } catch {
+    } catch (error) {
+      console.log(error);
       throw new HttpException('평판 신고 실패하였습니다', 400);
     }
   }
