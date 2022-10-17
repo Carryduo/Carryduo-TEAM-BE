@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, CACHE_MANAGER } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
 import { CommentEntity } from './entities/comments.entity';
 
@@ -8,6 +9,9 @@ export class CommentRepository {
   constructor(
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
   //   TODO: 코드 사용성 개선 (쿼리가 불필요하게 많음)
 
@@ -71,6 +75,12 @@ export class CommentRepository {
         'comment.createdAt': 'DESC',
       })
       .getMany();
+
+    // 캐싱 set
+    await this.cacheManager.set(
+      `comments/${category}/${target}`,
+      JSON.stringify(result),
+    );
 
     return { success: true, message: '평판 업로드 완료했습니다' };
   }
