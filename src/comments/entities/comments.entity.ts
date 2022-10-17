@@ -5,6 +5,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
 
 @Entity({
   name: 'COMMENT',
@@ -40,7 +41,7 @@ export class CommentEntity extends CommonEntity {
   @IsNotEmpty()
   reportNum: number;
 
-  @ManyToOne(() => UserEntity, (user: UserEntity) => user.id, {
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.userId, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     eager: true,
@@ -53,10 +54,10 @@ export class CommentEntity extends CommonEntity {
   @JoinColumn([
     {
       name: 'userId',
-      referencedColumnName: 'id',
+      referencedColumnName: 'userId',
     },
   ])
-  userId: string;
+  userId: UserEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',

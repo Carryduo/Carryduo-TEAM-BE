@@ -27,7 +27,7 @@ export class CommentRepository {
       .select([
         'comment.content',
         'comment.id',
-        'user.id',
+        'user.userId AS userId',
         'user.profileImg',
         'user.nickname',
         'champ.id',
@@ -44,8 +44,10 @@ export class CommentRepository {
       .getMany();
   }
   // TODO: QUERY 분기점 service로 옮기기
-  async postComment(value, option) {
-    const { target, category } = option;
+  async postComment(value, option, target) {
+    const { category } = value;
+
+    console.log(category, target);
     // 챔피언 댓글
     await this.commentsRepository
       .createQueryBuilder()
@@ -80,8 +82,9 @@ export class CommentRepository {
 
     // 캐싱 set
     await this.cacheManager.set(
-      `comments/${category}/${target}`,
+      `/comments/${category}/${encodeURI(String(target))}`,
       JSON.stringify(result),
+      { ttl: this.configService.get('REDIS_TTL') },
     );
 
     return { success: true, message: '평판 업로드 완료했습니다' };

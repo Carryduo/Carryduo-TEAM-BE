@@ -9,8 +9,10 @@ import { Brackets } from 'typeorm';
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  // Promise<CommentGetResponseDTO>
-  async getComments(category: string, target: string) {
+  async getComments(
+    category: string,
+    target: string,
+  ): Promise<CommentGetResponseDTO[]> {
     let option;
     if (category === 'champ') {
       option = new Brackets((qb) => {
@@ -29,7 +31,8 @@ export class CommentsService {
         );
       });
     }
-    return await this.commentRepository.getComments(option);
+    const data = await this.commentRepository.getComments(option);
+    return data;
   }
 
   postComment(
@@ -39,7 +42,8 @@ export class CommentsService {
     data: PostCommentDTO,
   ) {
     let value, option;
-    if ((category = 'champ')) {
+    console.log(category);
+    if (category === 'champ') {
       value = {
         userId: user.userId,
         category,
@@ -68,7 +72,7 @@ export class CommentsService {
         );
       });
     }
-    return this.commentRepository.postComment(value, option);
+    return this.commentRepository.postComment(value, option, target);
   }
 
   async updateReportNum(id: string) {
