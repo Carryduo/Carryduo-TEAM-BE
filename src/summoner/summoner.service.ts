@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  RecentChampRate,
+  SummonerHistoryResponseDTO,
+  SummonerPosition,
+} from './dto/history/history.dto';
 import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
@@ -10,7 +15,9 @@ export class SummonerService {
   ) {}
 
   // summoner 전적 데이터 연산 및 구조 정렬 함수
-  async historyDataCleansing(summonerName: string) {
+  async historyDataCleansing(
+    summonerName: string,
+  ): Promise<SummonerHistoryResponseDTO> {
     const check = await this.summonerRepository.getSummonerHistory(
       summonerName,
     );
@@ -31,7 +38,7 @@ export class SummonerService {
       recentChampsList.push(r.history_champ_id);
     }
 
-    let recentChampRates = [];
+    let recentChampRates: RecentChampRate[] = [];
 
     for (let rc of recentChampsList) {
       const recentChampInfo = await this.summonerRepository.recentChampInfo(rc);
@@ -68,7 +75,7 @@ export class SummonerService {
     /*탑:1, 정글:2 미드:3, 원딜:4, 서포터:5 */
     const positionId = [1, 2, 3, 4, 5];
 
-    const positions = [];
+    const positions: SummonerPosition[] = [];
 
     for (let pI of positionId) {
       const position = await this.summonerRepository.position(summonerName, pI);
@@ -118,7 +125,7 @@ export class SummonerService {
   ///-----------------------------------------------------------------------------------------------/
 
   // response 데이터 구조 정렬 함수
-  async summonerDataCleansing(summoner, history) {
+  async summonerDataCleansing(summoner, history: SummonerHistoryResponseDTO) {
     const mostChamp1 = {
       id: summoner.most1_champId,
       champNameKo: summoner.most1_champ_name_ko,
@@ -132,6 +139,7 @@ export class SummonerService {
       champNameEn: summoner.most2_champ_name_en,
       champImg: summoner.most2_champ_main_img,
     };
+
     const mostChamp3 = {
       id: summoner.most3_champId,
       champNameKo: summoner.most3_champ_name_ko,
@@ -152,6 +160,10 @@ export class SummonerService {
         winRate: summoner.summoner_win_rate,
         mostChamps: [mostChamp1, mostChamp2, mostChamp3],
       };
+      await this.summonerRepository.cacheSummoner(
+        summoner.summoner_summonerName,
+        summonerData,
+      );
       return summonerData;
     } else {
       const summonerData = {
@@ -167,6 +179,10 @@ export class SummonerService {
         mostChamps: [mostChamp1, mostChamp2, mostChamp3],
         history,
       };
+      await this.summonerRepository.cacheSummoner(
+        summoner.summoner_summonerName,
+        summonerData,
+      );
       return summonerData;
     }
   }

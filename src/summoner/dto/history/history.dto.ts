@@ -21,7 +21,7 @@ export class RecentChampRate {
     example: '86',
     description: '최근 플레이 챔피언 정보',
   })
-  recentChamp: number;
+  recentChampId: number;
 
   @ApiProperty({
     example: '가렌',
@@ -116,15 +116,13 @@ export class SummonerHistoryResponseDTO {
     description: '소환사 포지션 정보',
     required: true,
     isArray: true,
-    type: SummonerPosition,
   })
-  positions: SummonerPosition;
+  positions: SummonerPosition[];
 
   @ApiProperty({
     description: '소환사 최근 많이 한 챔피언 정보',
     required: true,
     isArray: true,
-    type: RecentChampRate,
   })
-  recentChampRate: RecentChampRate;
+  recentChampRate: RecentChampRate[];
 }
