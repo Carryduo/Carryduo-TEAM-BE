@@ -1,6 +1,4 @@
-import { SummonerEntity } from './../../summoner/entities/summoner.entity';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { CommentEntity } from '../entities/comments.entity';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
 

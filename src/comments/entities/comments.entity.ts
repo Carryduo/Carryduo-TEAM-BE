@@ -5,7 +5,6 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
 
 @Entity({
   name: 'COMMENT',
