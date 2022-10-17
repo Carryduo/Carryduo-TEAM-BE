@@ -51,7 +51,7 @@ const typeOrmModuleOptions = {
     ],
     synchronize: false, //! set 'false' in production = 동기화 여부, 리셋되는 것이므로 prod 레벨에선 해제
     autoLoadEntities: true,
-    logging: true,
+    logging: false,
     keepConnectionAlive: true,
     timezone: 'local',
     charset: 'utf8mb4',
@@ -69,6 +69,7 @@ const typeOrmModuleOptions = {
         host: configService.get('REDIS_HOST'),
         port: configService.get('REDIS_PORT'),
         password: configService.get('REDIS_PASSWORD'),
+        ttl: configService.get('REDIS_TTL'),
         no_ready_check: true,
       }),
       inject: [ConfigService],

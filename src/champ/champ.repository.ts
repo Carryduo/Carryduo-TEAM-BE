@@ -10,8 +10,6 @@ import {
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
-// import { InjectRedis } from '@liaoliaots/nestjs-redis';
-// import Redis from 'ioredis';
 import { Cache } from 'cache-manager';
 
 export class ChampRepository {
@@ -25,13 +23,7 @@ export class ChampRepository {
     private readonly champSpellRepository: Repository<ChampSpellEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>, // @InjectRedis() private readonly redis: Redis,
-    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
-
-  async redisTest() {
-    await this.cacheService.set('key', 'value', { ttl: 60 });
-    return await this.cacheService.get('key');
-  }
 
   async findPreferChampUsers(champId: string) {
     return this.userRepository
@@ -103,7 +95,6 @@ export class ChampRepository {
     rSkillInfo: champSkillDTO,
     passiveInfo: champPassiveSkillDTO,
   ) {
-    console.log(qSkillInfo.id, qSkillInfo.name, qSkillInfo.desc);
     await this.skillRepository
       .createQueryBuilder()
       .insert()

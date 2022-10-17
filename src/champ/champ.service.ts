@@ -8,11 +8,6 @@ export class ChampService {
     private readonly champRepository: ChampRepository,
     private readonly axios: HttpService,
   ) {}
-
-  async getRedis() {
-    return await this.champRepository.redisTest();
-  }
-
   async getChampList() {
     return await this.champRepository.getChmapList();
   }
