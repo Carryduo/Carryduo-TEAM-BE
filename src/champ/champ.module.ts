@@ -21,5 +21,6 @@ import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
   ],
   controllers: [ChampController],
   providers: [ChampService, ChampRepository],
+  exports: [ChampRepository],
 })
 export class ChampModule {}

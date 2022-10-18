@@ -1,10 +1,14 @@
 import { UserRepository } from './user.repository';
 import { HttpException, Injectable } from '@nestjs/common';
 import { OptionRequestDTO } from './dto/user.request.dto';
+import { ChampRepository } from 'src/champ/champ.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly champRepository: ChampRepository,
+  ) {}
 
   async getUserInfo(category: string, userId: string) {
     try {
@@ -46,6 +50,16 @@ export class UserService {
   async updateUserOptionInfo(userId: string, body: OptionRequestDTO) {
     try {
       await this.userRepository.updateUserOptionInfo(userId, body);
+      const preferChampList = [
+        body.preferChamp1,
+        body.preferChamp2,
+        body.preferChamp3,
+      ];
+
+      for (const pcl of preferChampList) {
+        await this.champRepository.delPreferChampCache(pcl);
+      }
+
       return {
         success: true,
         message: '설정 변경 완료되었습니다',
