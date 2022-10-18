@@ -37,7 +37,6 @@ export class UserService {
         ];
       }
       const result = await this.userRepository.getUserInfo(option, userId);
-      console.log(result);
       return result;
     } catch (error) {
       throw new HttpException('카테고리가 잘못되었습니다', 400);

@@ -13,10 +13,10 @@ export class AdminService {
     // 유저 검증 및 생성
     const user = await this.adminRepository.checkAndSignUser(data);
     return {
-      id: user.id,
+      id: user.userId,
       nickname: user.nickname,
       token: await this.jwtService.signAsync(
-        { sub: user.id },
+        { sub: user.userId },
         { secret: process.env.JWT_SECRET_KEY },
       ),
     };
