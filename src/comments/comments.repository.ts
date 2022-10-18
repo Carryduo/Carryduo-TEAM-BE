@@ -47,7 +47,6 @@ export class CommentRepository {
   async postComment(value, option, target) {
     const { category } = value;
 
-    console.log(category, target);
     // 챔피언 댓글
     await this.commentsRepository
       .createQueryBuilder()
@@ -206,7 +205,6 @@ export class CommentRepository {
       .where(option)
       .getMany();
 
-    console.log(result);
     // 캐싱 적용
     await this.cacheManager.set(
       `/comments/${category}/${target}`,
