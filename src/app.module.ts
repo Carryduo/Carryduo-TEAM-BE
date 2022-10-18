@@ -49,9 +49,9 @@ const typeOrmModuleOptions = {
       SummonerHistoryEntity,
       SimulationEntity,
     ],
-    synchronize: false, //! set 'false' in production = 동기화 여부, 리셋되는 것이므로 prod 레벨에선 해제
+    synchronize: false,
     autoLoadEntities: true,
-    logging: true,
+    logging: false,
     keepConnectionAlive: true,
     timezone: 'local',
     charset: 'utf8mb4',
