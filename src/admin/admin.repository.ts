@@ -47,7 +47,6 @@ export class AdminRepository {
   }
 
   async findById(userId: string) {
-    console.log(userId);
     return await this.usersRepository
       .createQueryBuilder('user')
       .select()
