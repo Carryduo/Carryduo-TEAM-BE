@@ -41,7 +41,6 @@ export class AdminController {
   @Get('/kakao')
   @UseGuards(AuthGuard('kakao'))
   kakaoLogin() {
-    console.log('local kakao login');
     return;
   }
 
@@ -56,8 +55,6 @@ export class AdminController {
   @Get('/kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoCallback(@Req() req) {
-    // payload dto 만들기(카카오, jwt)
-    // jwt 생성하기
     return this.adminService.kakaoLogin(req.user);
   }
 }

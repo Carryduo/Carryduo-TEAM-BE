@@ -95,7 +95,6 @@ export class UserCommonDto {
   })
   @IsBoolean()
   enableChat: boolean;
-  //
 
   @ApiProperty({
     example: 56,
