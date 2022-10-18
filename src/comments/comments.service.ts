@@ -42,7 +42,6 @@ export class CommentsService {
     data: PostCommentDTO,
   ) {
     let value, option;
-    console.log(category);
     if (category === 'champ') {
       value = {
         userId: user.userId,

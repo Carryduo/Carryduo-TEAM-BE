@@ -12,7 +12,6 @@ export class SimulationService {
     champ3Id: string | number,
     champ4Id: string | number,
   ) {
-    console.log(champ1Id, champ2Id, champ3Id, champ4Id);
     switch (category) {
       case 'top-jungle':
         category = 0;

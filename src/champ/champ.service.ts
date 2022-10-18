@@ -278,7 +278,6 @@ export class ChampService {
         dataList[i].skillToolTip,
         dataList[i].skillDesc,
       );
-      console.log(result);
     }
 
     return { succes: true };
