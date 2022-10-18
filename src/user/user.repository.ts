@@ -11,7 +11,6 @@ export class UserRepository {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
   async getUserInfo(option, userId: string) {
-    console.log(option);
     return await this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.preferChamp1', 'preferChamp1')

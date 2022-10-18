@@ -1,3 +1,4 @@
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import {
 import { ChampEntity } from './entities/champ.entity';
 import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
+import { Cache } from 'cache-manager';
 
 export class ChampRepository {
   constructor(
@@ -20,7 +22,9 @@ export class ChampRepository {
     @InjectRepository(ChampSpellEntity)
     private readonly champSpellRepository: Repository<ChampSpellEntity>,
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>, // @InjectRedis() private readonly redis: Redis,
+    private readonly userRepository: Repository<UserEntity>,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
 
   async findPreferChampUsers(champId: string) {
@@ -40,8 +44,12 @@ export class ChampRepository {
         }),
       )
       .orderBy('user.tier', 'DESC')
-      .select(['user.id', 'user.nickname', 'user.profileImg', 'user.tier'])
+      .select(['user.userId', 'user.nickname', 'user.profileImg', 'user.tier'])
       .getMany();
+  }
+
+  async delPreferChampCache(key: string) {
+    await this.cacheManager.del(`/champ/${key}/users`);
   }
 
   async getChmapList() {

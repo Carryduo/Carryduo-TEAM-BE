@@ -12,6 +12,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
+import { KakaoStrategy } from './kakao.strategy';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
@@ -35,6 +36,13 @@ export class AdminController {
   @UseGuards(jwtGuard)
   async deleteUser(@Req() req) {
     return this.adminService.deleteUser(req.user.userId);
+  }
+
+  @Get('/kakao')
+  @UseGuards(AuthGuard('kakao'))
+  kakaoLogin(@Req() req) {
+    console.log('local kakao login');
+    return;
   }
 
   // 카카오 콜백

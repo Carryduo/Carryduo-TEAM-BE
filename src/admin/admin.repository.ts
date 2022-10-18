@@ -20,7 +20,6 @@ export class AdminRepository {
       .where('USER.socialId = :socialId', { socialId })
       .andWhere('USER.social = :social', { social })
       .getOne();
-    console.log(user);
     if (user === null) {
       let newUser;
       await this.usersRepository.manager.transaction(
@@ -48,7 +47,12 @@ export class AdminRepository {
   }
 
   async findById(userId: string) {
-    return await this.usersRepository.findOne({ where: { userId } });
+    console.log(userId);
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .select()
+      .where('user.userId = :userId', { userId })
+      .getOne();
   }
 
   async deleteUser(userId: string) {
@@ -56,7 +60,7 @@ export class AdminRepository {
       .createQueryBuilder()
       .delete()
       .from(UserEntity)
-      .where('userId = :userId', { userId })
+      .where('user.userId = :userId', { userId })
       .execute();
     return { success: true, message: '회원 탈퇴 완료되었습니다' };
   }
