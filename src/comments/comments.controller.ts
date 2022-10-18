@@ -35,8 +35,6 @@ import { CommentCategoryPipe } from './pipes/comment.param.validation.pipe';
 export class CommentsController {
   constructor(private readonly commentService: CommentsService) {}
 
-  //   TODO: category validation: summoner or champ
-  // TODO: 평판 수정 API
   @ApiOperation({ summary: '평판 조회' })
   @ApiParam({
     name: 'category',
