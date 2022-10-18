@@ -38,9 +38,10 @@ export class AdminController {
     return this.adminService.deleteUser(req.user.userId);
   }
 
+  // 로컬용 로그인
   @Get('/kakao')
   @UseGuards(AuthGuard('kakao'))
-  kakaoLogin(@Req() req) {
+  kakaoLogin() {
     console.log('local kakao login');
     return;
   }
