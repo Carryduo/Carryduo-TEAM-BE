@@ -59,7 +59,6 @@ export class CommentsController {
     @Param('category', CommentCategoryPipe) category: string,
     @Param('target') target: string,
   ) {
-    console.log('no cache here');
     if (isNaN(Number(target))) {
       if (category === 'champ') {
         throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
@@ -68,6 +67,7 @@ export class CommentsController {
       throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
     }
 
+    console.log(`no comment cache in /comments/${category}/${target}`);
     return this.commentService.getComments(category, target);
   }
 
