@@ -64,7 +64,7 @@ export class CommentRepository {
       .select([
         'comment.content',
         'comment.id',
-        'user.id',
+        'user.userId',
         'user.profileImg',
         'user.nickname',
         'champ.id',
@@ -121,7 +121,15 @@ export class CommentRepository {
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
   async deleteComment(id: string, userId: string) {
-    return await this.commentsRepository.manager.transaction(
+    const value = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .select()
+      .leftJoinAndSelect('comment.userId', 'user')
+      .leftJoinAndSelect('comment.champId', 'champ')
+      .leftJoinAndSelect('comment.summonerName', 'summoner')
+      .where('comment.id = :id', { id })
+      .getOne();
+    await this.commentsRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const data = await transactionalEntityManager
           .createQueryBuilder()
@@ -139,10 +147,12 @@ export class CommentRepository {
           .execute();
       },
     );
+
+    return value;
   }
 
   async updateContent(id: string, userId: string, content: string) {
-    return await this.commentsRepository.manager.transaction(
+    await this.commentsRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const data = await transactionalEntityManager
           .createQueryBuilder()
@@ -160,20 +170,46 @@ export class CommentRepository {
           .execute();
       },
     );
+    return await this.commentsRepository
+      .createQueryBuilder('comment')
+      .select()
+      .leftJoinAndSelect('comment.userId', 'user')
+      .leftJoinAndSelect('comment.champId', 'champ')
+      .leftJoinAndSelect('comment.summonerName', 'summoner')
+      .where('comment.id = :id', { id })
+      .getOne();
   }
 
+  // async deleteCommentCache(category: string, target: string | number) {
+  //   await this.cacheManager.del(`/commments/${category}/${target}`);
+  //   return;
+  // }
   async setCommentCache(category: string, target: string | number, option) {
     const result = await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')
       .leftJoinAndSelect('comment.champId', 'champ')
       .leftJoinAndSelect('comment.summonerName', 'summoner')
+      .select([
+        'comment.content',
+        'comment.id',
+        'user.userId',
+        'user.profileImg',
+        'user.nickname',
+        'champ.id',
+        'comment.reportNum',
+        'comment.createdAt',
+        'comment.category',
+        'comment.summonerName',
+        'summoner.summonerName',
+      ])
       .where(option)
       .getMany();
 
+    console.log(result);
     // 캐싱 적용
     await this.cacheManager.set(
-      `/commments/${category}/${target}`,
+      `/comments/${category}/${target}`,
       JSON.stringify(result),
       { ttl: this.configService.get('REDIS_TTL') },
     );

@@ -100,6 +100,7 @@ export class CommentsService {
           );
         });
       }
+      // 캐싱 적용
       await this.commentRepository.setCommentCache(category, target, option);
       return {
         message: '평판 신고 완료되었습니다',
@@ -114,19 +115,73 @@ export class CommentsService {
   async deleteComment(id: string, userId: string) {
     try {
       const data = await this.commentRepository.deleteComment(id, userId);
-      console.log(data);
+      const category = data.category;
+      let target, option;
+      if (!data.champId) {
+        // interceptor를 통한 캐싱과 한글 인코딩 통일
+        target = encodeURI(String(data.summonerName.summonerName));
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.summonerName = :summonerName',
+            {
+              summonerName: data.summonerName.summonerName,
+            },
+          );
+        });
+      } else {
+        target = data.champId.id;
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.champId = :champId',
+            { champId: target },
+          );
+        });
+      }
+
+      // 캐싱 적용
+      await this.commentRepository.setCommentCache(category, target, option);
+
       return {
         success: true,
         message: '평판 삭제 완료되었습니다',
       };
-    } catch {
+    } catch (error) {
+      console.log(error);
       throw new HttpException('평판 삭제 실패하였습니다', 400);
     }
   }
 
   async updateContent(id: string, userId: string, content: string) {
     try {
-      await this.commentRepository.updateContent(id, userId, content);
+      const data = await this.commentRepository.updateContent(
+        id,
+        userId,
+        content,
+      );
+      const category = data.category;
+      let target, option;
+      if (!data.champId) {
+        // interceptor를 통한 캐싱과 한글 인코딩 통일
+        target = encodeURI(String(data.summonerName.summonerName));
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.summonerName = :summonerName',
+            {
+              summonerName: data.summonerName.summonerName,
+            },
+          );
+        });
+      } else {
+        target = data.champId.id;
+        option = new Brackets((qb) => {
+          qb.where('comment.category = :category', { category }).andWhere(
+            'comment.champId = :champId',
+            { champId: target },
+          );
+        });
+      }
+      // 캐싱 적용
+      await this.commentRepository.setCommentCache(category, target, option);
       return {
         success: true,
         message: '평판 수정 완료되었습니다',
