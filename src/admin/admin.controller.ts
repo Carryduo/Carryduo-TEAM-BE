@@ -12,7 +12,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
-import { KakaoStrategy } from './kakao.strategy';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
