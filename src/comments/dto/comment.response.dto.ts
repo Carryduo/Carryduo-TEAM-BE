@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CommentEntity } from '../entities/comments.entity';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
+import { CommentCommonDto } from './comments.common.dto';
 
-export class CommentGetResponseDTO extends PickType(CommentEntity, [
+export class CommentGetResponseDTO extends PickType(CommentCommonDto, [
   'id',
   'category',
   'content',
