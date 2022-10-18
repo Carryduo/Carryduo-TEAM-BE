@@ -62,7 +62,6 @@ export class UserController {
   async getLoginUserOptionInfo(
     @Req() req,
   ): Promise<UserSpecificInfoResponseDTO> {
-    console.log(req);
     return this.userService.getUserInfo('option', req.user.userId);
   }
 
