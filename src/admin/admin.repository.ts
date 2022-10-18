@@ -59,7 +59,7 @@ export class AdminRepository {
       .createQueryBuilder()
       .delete()
       .from(UserEntity)
-      .where('user.userId = :userId', { userId })
+      .where('userId = :userId', { userId })
       .execute();
     return { success: true, message: '회원 탈퇴 완료되었습니다' };
   }
