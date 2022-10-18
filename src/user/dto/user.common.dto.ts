@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  IsNumber,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class UserCommonDto {
   @ApiProperty({
@@ -15,7 +9,7 @@ export class UserCommonDto {
   })
   @IsUUID()
   @IsNotEmpty()
-  id: string;
+  userId: string;
 
   @ApiProperty({
     example: '2022-09-17',
