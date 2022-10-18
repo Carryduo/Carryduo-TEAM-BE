@@ -55,7 +55,7 @@ export class SummonerRepository {
         'most3.champNameEn',
         'most3.champMainImg',
       ])
-      .getOne();
+      .getRawOne();
 
     return summoner;
   }
