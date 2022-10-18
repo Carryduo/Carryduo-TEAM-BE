@@ -31,6 +31,7 @@ export class UserRepository {
       preferChamp1,
       preferChamp2,
       preferChamp3,
+      tier,
     } = body;
 
     return await this.usersRepository
@@ -40,6 +41,7 @@ export class UserRepository {
         nickname,
         profileImg,
         bio,
+        tier,
         preferPosition,
         enableChat,
         preferChamp1: () => String(preferChamp1),
