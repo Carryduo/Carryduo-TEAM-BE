@@ -75,7 +75,7 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp1: string;
+  preferChamp1: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
@@ -88,7 +88,7 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp2: string;
+  preferChamp2: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
@@ -101,5 +101,5 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
       referencedColumnName: 'id',
     },
   ])
-  preferChamp3: string;
+  preferChamp3: ChampEntity;
 }

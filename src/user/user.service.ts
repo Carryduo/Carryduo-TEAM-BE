@@ -1,10 +1,5 @@
-import {
-  UserBasicInfoResponseDTO,
-  UserSpecificInfoResponseDTO,
-} from 'src/user/dto/user.response.dto';
 import { UserRepository } from './user.repository';
 import { HttpException, Injectable } from '@nestjs/common';
-import { AdminResponseDTO } from 'src/admin/dto/admin.response';
 import { OptionRequestDTO } from './dto/user.request.dto';
 import { ChampRepository } from 'src/champ/champ.repository';
 
@@ -15,51 +10,47 @@ export class UserService {
     private readonly champRepository: ChampRepository,
   ) {}
 
-  async getUserInfo(
-    category: string,
-    data: AdminResponseDTO,
-  ): Promise<UserBasicInfoResponseDTO | UserSpecificInfoResponseDTO> {
-    const result = await this.userRepository.getUserInfo(data);
-    const {
-      userId,
-      nickname,
-      tier,
-      bio,
-      profileImg,
-      preferPosition,
-      preferChamp1,
-      preferChamp2,
-      preferChamp3,
-      enableChat,
-    } = result;
-    if (category === 'login') {
-      return {
-        userId,
-        nickname,
-        profileImg,
-      };
-    } else if (category === 'option') {
-      return {
-        userId,
-        nickname,
-        tier,
-        bio,
-        profileImg,
-        preferPosition,
-        preferChamp1,
-        preferChamp2,
-        preferChamp3,
-        enableChat,
-      };
-    } else {
+  async getUserInfo(category: string, userId: string) {
+    try {
+      let option;
+      if (category === 'login') {
+        option = ['user.userId', 'user.nickname', 'user.profileImg'];
+      } else if (category === 'option' || category === 'individual') {
+        option = [
+          'user.userId',
+          'user.nickname',
+          'user.tier',
+          'user.bio',
+          'user.profileImg',
+          'user.preferPosition',
+          'user.preferChamp1',
+          'preferChamp1.id',
+          'preferChamp1.champNameKo',
+          'preferChamp1.champNameEn',
+          'preferChamp1.champImg',
+          'user.preferChamp2',
+          'preferChamp2.id',
+          'preferChamp2.champNameKo',
+          'preferChamp2.champNameEn',
+          'preferChamp2.champImg',
+          'user.preferChamp3',
+          'preferChamp3.id',
+          'preferChamp3.champNameKo',
+          'preferChamp3.champNameEn',
+          'preferChamp3.champImg',
+        ];
+      }
+      const result = await this.userRepository.getUserInfo(option, userId);
+      console.log(result);
+      return result;
+    } catch (error) {
       throw new HttpException('카테고리가 잘못되었습니다', 400);
     }
   }
 
-  async updateUserOptionInfo(data: AdminResponseDTO, body: OptionRequestDTO) {
+  async updateUserOptionInfo(userId: string, body: OptionRequestDTO) {
     try {
-      await this.userRepository.updateUserOptionInfo(data, body);
-
+      await this.userRepository.updateUserOptionInfo(userId, body);
       const preferChampList = [
         body.preferChamp1,
         body.preferChamp2,
@@ -77,36 +68,5 @@ export class UserService {
     } catch {
       throw new HttpException('설정 변경 실패했습니다', 400);
     }
-  }
-
-  async getIndividualUserInfo(
-    data: string,
-  ): Promise<UserSpecificInfoResponseDTO> {
-    const result = await this.userRepository.getIndividualUserInfo(data);
-    const {
-      userId,
-      nickname,
-      tier,
-      bio,
-      profileImg,
-      preferPosition,
-      preferChamp1,
-      preferChamp2,
-      preferChamp3,
-      enableChat,
-    } = result;
-
-    return {
-      userId,
-      nickname,
-      tier,
-      bio,
-      profileImg,
-      preferPosition,
-      preferChamp1,
-      preferChamp2,
-      preferChamp3,
-      enableChat,
-    };
   }
 }

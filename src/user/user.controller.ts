@@ -45,8 +45,8 @@ export class UserController {
   })
   @Get()
   @UseGuards(jwtGuard)
-  async getLoginUserInfo(@Req() req) {
-    return this.userService.getUserInfo('login', req.user);
+  async getLoginUserInfo(@Req() req): Promise<UserBasicInfoResponseDTO> {
+    return this.userService.getUserInfo('login', req.user.userId);
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 조회' })
@@ -59,8 +59,10 @@ export class UserController {
   // TODO: req -> user 데코레이터로 변겅
   @Get('/option')
   @UseGuards(jwtGuard)
-  async getLoginUserOptionInfo(@Req() req) {
-    return this.userService.getUserInfo('option', req.user);
+  async getLoginUserOptionInfo(
+    @Req() req,
+  ): Promise<UserSpecificInfoResponseDTO> {
+    return this.userService.getUserInfo('option', req.user.userId);
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 업데이트' })
@@ -76,7 +78,7 @@ export class UserController {
     @Req() req,
     @Body() body: OptionRequestDTO,
   ): Promise<CommonResponseDTO> {
-    return this.userService.updateUserOptionInfo(req.user, body);
+    return this.userService.updateUserOptionInfo(req.user.userId, body);
   }
 
   @ApiOperation({ summary: '특정 유저 정보 조회' })
@@ -91,8 +93,9 @@ export class UserController {
     type: UserSpecificInfoResponseDTO,
   })
   @Get('/:id')
-  @UseGuards(jwtGuard)
-  async getIndividualUserInfo(@Param('id', ParseUUIDPipe) param: string) {
-    return this.userService.getIndividualUserInfo(param);
+  async getIndividualUserInfo(
+    @Param('id', ParseUUIDPipe) param: string,
+  ): Promise<UserSpecificInfoResponseDTO> {
+    return this.userService.getUserInfo('individual', param);
   }
 }
