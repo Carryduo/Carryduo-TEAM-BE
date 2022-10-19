@@ -19,5 +19,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  exclude-path: './src'
   name: build-$(date +%Y-%m-%d)
