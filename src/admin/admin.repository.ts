@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { kakaoPayload } from './dto/kakao.payload';
+import { CommentEntity } from 'src/comments/entities/comments.entity';
 
 @Injectable()
 export class AdminRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
   async checkAndSignUser(data: kakaoPayload) {
@@ -61,6 +65,30 @@ export class AdminRepository {
       .from(UserEntity)
       .where('userId = :userId', { userId })
       .execute();
-    return { success: true, message: '회원 탈퇴 완료되었습니다' };
+    return;
+  }
+
+  async findCommentList(userId: string) {
+    return await this.commentRepository
+      .createQueryBuilder('comment')
+      .select(['comment.id'])
+      .where('comment.userId = :userId', { userId })
+      .getMany();
+  }
+
+  async findCommentOptions(id: string) {
+    return await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.champId', 'champ')
+      .leftJoinAndSelect('comment.summonerName', 'summoner')
+      .select([
+        'comment.category',
+        'comment.champId',
+        'comment.summonerName',
+        'champ.id',
+        'summoner.summonerName',
+      ])
+      .where('comment.id = :id', { id })
+      .getOne();
   }
 }
