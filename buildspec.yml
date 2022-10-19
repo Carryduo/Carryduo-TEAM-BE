@@ -19,7 +19,5 @@ phases:
 artifacts:
   files:
     - '**/*'
-  exclude-path:
-    - './src/*'
-    - './tsconfig.json'
+  exclude-path: './src'
   name: build-$(date +%Y-%m-%d)
