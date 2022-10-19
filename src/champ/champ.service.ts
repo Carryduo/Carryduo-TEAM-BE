@@ -178,8 +178,6 @@ export class ChampService {
     return targetUser;
   }
 
-  //-------------------------------------------------------------------------------------------------------------------------
-  //챔피언 정보 불러와서 DB 저장 함수
   async riotChampData() {
     const champRequest = await this.axios
       .get(
