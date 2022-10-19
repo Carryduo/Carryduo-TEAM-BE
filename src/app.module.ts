@@ -11,8 +11,6 @@ import { SummonerModule } from './summoner/summoner.module';
 import { CommentsModule } from './comments/comments.module';
 import { CombinationStatModule } from './combination-stat/combination-stat.module';
 import { SubscriptionModule } from './subscription/subscription.module';
-import { EventsModule } from './events/events.module';
-import { ChatModule } from './chat/chat.module';
 import { UserEntity } from './user/entities/user.entity';
 import { ChampEntity } from './champ/entities/champ.entity';
 import { ChampSkillInfoEntity } from './champ/entities/champSkillInfo.entity';
@@ -83,8 +81,6 @@ const typeOrmModuleOptions = {
     CommentsModule,
     CombinationStatModule,
     SubscriptionModule,
-    EventsModule,
-    ChatModule,
     SimulationModule,
   ],
   controllers: [AppController],
