@@ -184,6 +184,7 @@ export class CommentRepository {
   //   return;
   // }
   async setCommentCache(category: string, target: string | number, option) {
+    console.log(category, target);
     const result = await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')

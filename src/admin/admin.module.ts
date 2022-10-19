@@ -1,3 +1,4 @@
+import { CommentRepository } from './../comments/comments.repository';
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
@@ -9,9 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { jwtStrategy } from './jwt/jwt.strategy';
 import { AdminRepository } from './admin.repository';
+import { CommentEntity } from 'src/comments/entities/comments.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, CommentEntity]),
     ConfigModule.forRoot(),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
@@ -20,7 +22,13 @@ import { AdminRepository } from './admin.repository';
     }),
   ],
   controllers: [AdminController],
-  providers: [AdminService, KakaoStrategy, jwtStrategy, AdminRepository],
+  providers: [
+    AdminService,
+    KakaoStrategy,
+    jwtStrategy,
+    AdminRepository,
+    CommentRepository,
+  ],
   exports: [AdminRepository],
 })
 export class AdminModule {}

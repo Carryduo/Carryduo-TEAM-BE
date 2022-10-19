@@ -56,12 +56,12 @@ export class UserController {
     description: '설정 페이지 데이터 조회',
     type: UserSpecificInfoResponseDTO,
   })
-  // TODO: req -> user 데코레이터로 변겅
   @Get('/option')
   @UseGuards(jwtGuard)
   async getLoginUserOptionInfo(
     @Req() req,
   ): Promise<UserSpecificInfoResponseDTO> {
+    console.log('no cache here');
     return this.userService.getUserInfo('option', req.user.userId);
   }
 
