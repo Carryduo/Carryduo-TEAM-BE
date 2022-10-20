@@ -51,4 +51,12 @@ export class UserRepository {
       .where('userId = :userId', { userId })
       .execute();
   }
+
+  async findPreferchamps(userId) {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.preferChamp1', 'user.preferChamp2', 'user.preferChamp3'])
+      .where('user.userId = :userId', { userId })
+      .getRawOne();
+  }
 }

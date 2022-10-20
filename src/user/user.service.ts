@@ -49,16 +49,17 @@ export class UserService {
 
   async updateUserOptionInfo(userId: string, body: OptionRequestDTO) {
     try {
-      await this.userRepository.updateUserOptionInfo(userId, body);
+      const preferchamp = await this.userRepository.findPreferchamps(userId);
       const preferChampList = [
-        body.preferChamp1,
-        body.preferChamp2,
-        body.preferChamp3,
+        preferchamp.preferChamp1,
+        preferchamp.preferChamp2,
+        preferchamp.preferChamp3,
       ];
-
       for (const pcl of preferChampList) {
         await this.champRepository.delPreferChampCache(pcl);
       }
+
+      await this.userRepository.updateUserOptionInfo(userId, body);
 
       return {
         success: true,
