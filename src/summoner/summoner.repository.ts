@@ -3,10 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { Repository } from 'typeorm';
 import { SummonerHistoryRequestDTO } from './dto/history/history.dto';
-import { SummonerRequestDTO } from './dto/summoner/summoner.dto';
 import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { Cache } from 'cache-manager';
+import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
+import {
+  SummonerAllDataDTO,
+  SummonerDataDTO,
+} from './dto/summoner/summoner.data.dto';
 
 export class SummonerRepository {
   constructor(
@@ -20,17 +24,20 @@ export class SummonerRepository {
     private cacheManager: Cache,
   ) {}
 
-  async cacheSummoner(summonerName: string, data) {
+  async cacheSummoner(
+    summonerName: string,
+    data: SummonerAllDataDTO | SummonerDataDTO,
+  ) {
     const encodeUrl = encodeURIComponent(summonerName);
     await this.cacheManager.set(`/summoner/${encodeUrl}`, data);
   }
 
   async findSummoner(summonerName: string) {
-    const summoner = this.summonerRepository
+    const summoner = await this.summonerRepository
       .createQueryBuilder('summoner')
-      .leftJoin('summoner.mostChamp1', 'most1')
-      .leftJoin('summoner.mostChamp2', 'most2')
-      .leftJoin('summoner.mostChamp3', 'most3')
+      .leftJoinAndSelect('summoner.mostChamp1', 'most1')
+      .leftJoinAndSelect('summoner.mostChamp2', 'most2')
+      .leftJoinAndSelect('summoner.mostChamp3', 'most3')
       .where('summonerName = :summonerName', { summonerName })
       .select([
         'summoner.summonerName',
@@ -55,7 +62,7 @@ export class SummonerRepository {
         'most3.champNameEn',
         'most3.champMainImg',
       ])
-      .getRawOne();
+      .getOne();
 
     return summoner;
   }
