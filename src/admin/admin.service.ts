@@ -4,12 +4,16 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { kakaoPayload } from './dto/kakao.payload';
 import { Brackets } from 'typeorm';
+import { ChampRepository } from 'src/champ/champ.repository';
+import { UserRepository } from 'src/user/user.repository';
 @Injectable()
 export class AdminService {
   constructor(
     private readonly adminRepository: AdminRepository,
     private jwtService: JwtService,
     private readonly commentRepository: CommentRepository,
+    private readonly userRepository: UserRepository,
+    private readonly champRepository: ChampRepository,
   ) {}
 
   async kakaoLogin(data: kakaoPayload) {
@@ -59,6 +63,19 @@ export class AdminService {
         const cacheOptions = { category, target, option };
         cacheOptionList.push(cacheOptions);
       }
+
+      const preferchamp = await this.userRepository.findPreferchamps(userId);
+
+      const preferChampList = [
+        preferchamp.preferChamp1,
+        preferchamp.preferChamp2,
+        preferchamp.preferChamp3,
+      ];
+
+      for (const pcl of preferChampList) {
+        await this.champRepository.delPreferChampCache(pcl);
+      }
+
       // 유저 삭제
       await this.adminRepository.deleteUser(userId);
 
