@@ -116,6 +116,7 @@ export class SummonerHistoryResponseDTO {
     description: '소환사 포지션 정보',
     required: true,
     isArray: true,
+    type: SummonerPosition,
   })
   positions: SummonerPosition[];
 
@@ -123,6 +124,7 @@ export class SummonerHistoryResponseDTO {
     description: '소환사 최근 많이 한 챔피언 정보',
     required: true,
     isArray: true,
+    type: RecentChampRate,
   })
   recentChampRate: RecentChampRate[];
 }

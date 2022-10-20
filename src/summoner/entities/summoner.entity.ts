@@ -58,7 +58,7 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp1: string;
+  mostChamp1: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -70,7 +70,7 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp2: string;
+  mostChamp2: ChampEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -82,7 +82,7 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
       referencedColumnName: 'id',
     },
   ])
-  mostChamp3: string;
+  mostChamp3: ChampEntity;
 
   @OneToMany(
     () => SubscriptionEntity,
