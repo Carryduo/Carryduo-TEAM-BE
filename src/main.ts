@@ -11,6 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe()); // class-validator 등록
   app.useGlobalFilters(new HttpExceptionFilter()); // httpException filter 등록
+  app.disable('x-powered-by');
   app.use(
     ['/docs', 'docs-json'],
     expressBasicAuth({
