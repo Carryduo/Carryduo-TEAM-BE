@@ -7,6 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HttpCacheInterceptor } from 'src/common/cache-interceptor/cache.interceptor';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { SummonerAllDataDTO } from './dto/summoner/summoner.data.dto';
 import { SummonerService } from './summoner.service';
@@ -43,7 +44,7 @@ export class SummonerController {
     required: true,
     description: '소환사 이름',
   })
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(HttpCacheInterceptor)
   @Get('/:summonerName')
   async summonerInfo(@Param('summonerName') summonerName: string) {
     return await this.summonerService.getSummoner(summonerName);
