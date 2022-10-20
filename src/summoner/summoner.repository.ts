@@ -28,8 +28,7 @@ export class SummonerRepository {
     summonerName: string,
     data: SummonerAllDataDTO | SummonerDataDTO,
   ) {
-    const encodeUrl = encodeURIComponent(summonerName);
-    await this.cacheManager.set(`/summoner/${encodeUrl}`, data);
+    await this.cacheManager.set(`/summoner/${summonerName}`, data);
   }
 
   async findSummoner(summonerName: string) {
