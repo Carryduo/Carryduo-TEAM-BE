@@ -11,6 +11,9 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { jwtStrategy } from './jwt/jwt.strategy';
 import { AdminRepository } from './admin.repository';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { ChampRepository } from 'src/champ/champ.repository';
+import { ChampModule } from 'src/champ/champ.module';
+import { UserRepository } from 'src/user/user.repository';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, CommentEntity]),
@@ -20,6 +23,7 @@ import { CommentEntity } from 'src/comments/entities/comments.entity';
       secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: process.env.JWT_EXPRIED_TIME },
     }),
+    ChampModule,
   ],
   controllers: [AdminController],
   providers: [
@@ -27,6 +31,7 @@ import { CommentEntity } from 'src/comments/entities/comments.entity';
     KakaoStrategy,
     jwtStrategy,
     AdminRepository,
+    UserRepository,
     CommentRepository,
   ],
   exports: [AdminRepository],
