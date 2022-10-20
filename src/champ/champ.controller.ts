@@ -8,6 +8,7 @@ import {
 import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
+import { TypeOrmFilter } from 'src/common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
 import { ChampDetailResponseDTO } from './dto/champ-skill/champ.detail.dto';
 import { ChampBasicInfoDTO } from './dto/champ/champ.dto';
@@ -15,7 +16,7 @@ import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
 @Controller('champ')
 @ApiTags('champ')
-@UseFilters(HttpExceptionFilter)
+@UseFilters(HttpExceptionFilter, TypeOrmFilter)
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
