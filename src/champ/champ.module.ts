@@ -1,5 +1,4 @@
-import { HttpModule } from '@nestjs/axios';
-import { CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampController } from './champ.controller';
@@ -17,7 +16,6 @@ import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
       ChampSpellEntity,
       UserEntity,
     ]),
-    HttpModule,
   ],
   controllers: [ChampController],
   providers: [ChampService, ChampRepository],
