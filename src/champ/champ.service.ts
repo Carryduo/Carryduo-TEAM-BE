@@ -1,13 +1,10 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChampRepository } from './champ.repository';
+import axios from 'axios';
 
 @Injectable()
 export class ChampService {
-  constructor(
-    private readonly champRepository: ChampRepository,
-    private readonly axios: HttpService,
-  ) {}
+  constructor(private readonly champRepository: ChampRepository) {}
   async getChampList() {
     return await this.champRepository.getChmapList();
   }
@@ -179,21 +176,17 @@ export class ChampService {
   }
 
   async riotChampData() {
-    const champRequest = await this.axios
-      .get(
-        `https://ddragon.leagueoflegends.com/cdn/12.17.1/data/ko_KR/champion.json`,
-      )
-      .toPromise();
+    const champRequest = await axios.get(
+      `https://ddragon.leagueoflegends.com/cdn/12.17.1/data/ko_KR/champion.json`,
+    );
     const champList = champRequest.data.data;
 
     const champName = Object.keys(champList);
     for (const key in champName) {
       const value = champName[key];
-      const targetChampionResult = await this.axios
-        .get(
-          `https://ddragon.leagueoflegends.com/cdn/12.17.1/data/ko_KR/champion/${value}.json`,
-        )
-        .toPromise();
+      const targetChampionResult = await axios.get(
+        `https://ddragon.leagueoflegends.com/cdn/12.17.1/data/ko_KR/champion/${value}.json`,
+      );
       const targetChampionInfo = targetChampionResult.data.data;
 
       const championId: string = targetChampionInfo[value].key;

@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
@@ -10,12 +9,12 @@ import {
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { SummonerDBResponseDTO } from './dto/summoner/summoner.response.dto';
 import { SummonerRepository } from './summoner.repository';
+import axios from 'axios';
 
 @Injectable()
 export class SummonerService {
   constructor(
     private readonly summonerRepository: SummonerRepository,
-    private readonly axios: HttpService,
     private readonly summonerResponse: summonerResponseCleansing,
     private readonly summonerHistory: SummonerHistoryDataCleansing,
   ) {}
@@ -69,13 +68,11 @@ export class SummonerService {
   async summonerRiotRequest(summonerName: string) {
     try {
       //SUMMONER
-      const response = await this.axios
-        .get(
-          `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/ + ${encodeURIComponent(
-            summonerName,
-          )} + ?api_key=${process.env.RIOT_API_KEY}`,
-        )
-        .toPromise();
+      const response = await axios.get(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/ + ${encodeURIComponent(
+          summonerName,
+        )} + ?api_key=${process.env.RIOT_API_KEY}`,
+      );
 
       const { data } = response;
       const summonerId = data.id;
@@ -85,19 +82,15 @@ export class SummonerService {
       const summonerIcon = `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${data.profileIconId}.png`;
 
       //SUMMONER LEAGUE INFO
-      const detailResponse = await this.axios
-        .get(
-          `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${data.id}?api_key=${process.env.RIOT_API_KEY}`,
-        )
-        .toPromise();
+      const detailResponse = await axios.get(
+        `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${data.id}?api_key=${process.env.RIOT_API_KEY}`,
+      );
 
       //SUMMONER CHAMP MASTERY
-      const mostChampResponse = await this.axios
-        .get(
-          `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}
+      const mostChampResponse = await axios.get(
+        `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}
         `,
-        )
-        .toPromise();
+      );
       const mostChamp = mostChampResponse.data;
 
       const detailData = detailResponse.data;
@@ -194,12 +187,10 @@ export class SummonerService {
         mostChamp3: mostChamp[2].championId,
       };
       //SUMMONER MATCH ID
-      const matchIdResponse = await this.axios
-        .get(
-          `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}
+      const matchIdResponse = await axios.get(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}
       `,
-        )
-        .toPromise();
+      );
 
       //유저 최근 전적 요청 부분
       const getSummonerHistory =
@@ -211,11 +202,9 @@ export class SummonerService {
 
       for (let m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
-        const matchDataResponse = await this.axios
-          .get(
-            `https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${process.env.RIOT_API_KEY}`,
-          )
-          .toPromise();
+        const matchDataResponse = await axios.get(
+          `https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${process.env.RIOT_API_KEY}`,
+        );
 
         const matchData = matchDataResponse.data.info;
 
@@ -263,9 +252,6 @@ export class SummonerService {
       return summonerData;
     } catch (err) {
       console.log(err);
-      if (!err.status) {
-        throw new HttpException(err, 500);
-      }
       if (err.response.status === 429) {
         throw new HttpException(
           '라이엇API 요청 과도화',

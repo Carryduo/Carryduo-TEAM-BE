@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
@@ -17,7 +16,6 @@ import { SummonerService } from './summoner.service';
       SummonerEntity,
       ChampEntity,
     ]),
-    HttpModule,
   ],
   controllers: [SummonerController],
   providers: [
