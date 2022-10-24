@@ -12,6 +12,7 @@ export class ChampService {
     const skill = [];
 
     const champInfo = await this.champRepository.getTargetChampion(champId);
+    console.log(champInfo);
     if (!champInfo) {
       throw new HttpException(
         '해당하는 챔피언 정보가 없습니다.',
@@ -30,16 +31,16 @@ export class ChampService {
     const SummonerSmite = 11;
     const SummonerTeleport = 12;
 
-    const chmapSpellData = await this.champRepository.getChampSpell(champId);
+    const champSpellData = await this.champRepository.getChampSpell(champId);
 
     let spell1Img: string;
     let spell2Img: string;
 
     const spellInfo = [];
 
-    for (const csd in chmapSpellData) {
+    for (const csd in champSpellData) {
       const key = csd;
-      switch (chmapSpellData[key].spell_spell1) {
+      switch (champSpellData[key].spell_spell1) {
         case SummonerBarrier:
           spell1Img =
             ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
@@ -80,7 +81,7 @@ export class ChampService {
             ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
           break;
       }
-      switch (chmapSpellData[key].spell_spell2) {
+      switch (champSpellData[key].spell_spell2) {
         case SummonerBarrier:
           spell2Img =
             ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
@@ -124,13 +125,13 @@ export class ChampService {
       }
       //상위 2개의 스펠데이터에서 픽률을 다시 구한다.
       const sampleNum =
-        chmapSpellData[0].spell_sample_num + chmapSpellData[1].spell_sample_num;
+        champSpellData[0].spell_sample_num + champSpellData[1].spell_sample_num;
 
-      let pickRate = (chmapSpellData[key].spell_sample_num / sampleNum) * 100;
+      let pickRate = (champSpellData[key].spell_sample_num / sampleNum) * 100;
       pickRate = Number(pickRate.toFixed(2));
 
       spellInfo.push({
-        total: chmapSpellData[key].spell_sample_num,
+        total: champSpellData[key].spell_sample_num,
         pickRate,
         spell1Img,
         spell2Img,

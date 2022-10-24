@@ -62,7 +62,7 @@ export class ChampRepository {
       .getOne();
   }
 
-  async getChampSpell(champId) {
+  async getChampSpell(champId: string) {
     return await this.champSpellRepository
       .createQueryBuilder('spell')
       .where('spell.champId = :champId', { champId })
