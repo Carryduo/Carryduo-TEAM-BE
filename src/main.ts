@@ -28,7 +28,6 @@ async function bootstrap() {
       origin: [
         `${process.env.FRONT_URL_PROD}`,
         `${process.env.FRONT_URL2_PROD}`,
-        `${process.env.FRONT_URL_LOCAL}`,
       ],
       credentials: true,
     };
