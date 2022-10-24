@@ -1,5 +1,4 @@
 import {
-  CacheInterceptor,
   Controller,
   Get,
   Param,
@@ -7,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { HttpCacheInterceptor } from 'src/common/cache-interceptor/cache.interceptor';
+import { HttpCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { TypeOrmFilter } from 'src/common/exception/typeorm-exception.filter';
 import { SummonerAllDataDTO } from './dto/summoner/summoner.data.dto';
