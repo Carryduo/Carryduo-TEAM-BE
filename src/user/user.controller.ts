@@ -5,7 +5,6 @@ import {
   UseGuards,
   UseFilters,
   Param,
-  Req,
   Body,
   ParseUUIDPipe,
 } from '@nestjs/common';
@@ -24,6 +23,7 @@ import {
 } from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
+import { User } from 'src/common/decorators/user.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -45,8 +45,8 @@ export class UserController {
   })
   @Get()
   @UseGuards(jwtGuard)
-  async getLoginUserInfo(@Req() req): Promise<UserBasicInfoResponseDTO> {
-    return this.userService.getUserInfo('login', req.user.userId);
+  async getLoginUserInfo(@User() user): Promise<UserBasicInfoResponseDTO> {
+    return this.userService.getUserInfo('login', user.userId);
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 조회' })
@@ -59,10 +59,10 @@ export class UserController {
   @Get('/option')
   @UseGuards(jwtGuard)
   async getLoginUserOptionInfo(
-    @Req() req,
+    @User() user,
   ): Promise<UserSpecificInfoResponseDTO> {
     console.log('no cache here');
-    return this.userService.getUserInfo('option', req.user.userId);
+    return this.userService.getUserInfo('option', user.userId);
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 업데이트' })
@@ -75,10 +75,10 @@ export class UserController {
   @Post('/option')
   @UseGuards(jwtGuard)
   async updateUserOptionInfo(
-    @Req() req,
+    @User() user,
     @Body() body: OptionRequestDTO,
   ): Promise<CommonResponseDTO> {
-    return this.userService.updateUserOptionInfo(req.user.userId, body);
+    return this.userService.updateUserOptionInfo(user.userId, body);
   }
 
   @ApiOperation({ summary: '특정 유저 정보 조회' })
