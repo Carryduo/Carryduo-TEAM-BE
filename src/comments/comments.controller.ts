@@ -22,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
+import { User } from 'src/common/decorators/user.decorator';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { CommentsService } from './comments.service';
@@ -95,7 +96,7 @@ export class CommentsController {
   postComment(
     @Param('category', CommentCategoryPipe) category: string,
     @Param('target') target: string,
-    @Req() req,
+    @User() user,
     @Body() body: PostCommentDTO,
   ) {
     if (isNaN(Number(target))) {
@@ -105,7 +106,7 @@ export class CommentsController {
     } else if (category === 'summoner') {
       throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
     }
-    return this.commentService.postComment(category, target, req.user, body);
+    return this.commentService.postComment(category, target, user, body);
   }
 
   // TODO: id validator 필요
@@ -144,10 +145,10 @@ export class CommentsController {
   @UseGuards(jwtGuard)
   updateContent(
     @Param('id', ParseUUIDPipe) id,
-    @Req() req,
+    @User() user,
     @Body() body: PostCommentDTO,
   ) {
-    const userId = req.user.userId;
+    const userId = user.userId;
     return this.commentService.updateContent(id, userId, body.content);
   }
 
@@ -165,8 +166,8 @@ export class CommentsController {
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)
-  deleteComment(@Param('id', ParseUUIDPipe) id, @Req() req) {
-    const userId = req.user.userId;
+  deleteComment(@Param('id', ParseUUIDPipe) id, @User() user) {
+    const userId = user.userId;
     return this.commentService.deleteComment(id, userId);
   }
 }

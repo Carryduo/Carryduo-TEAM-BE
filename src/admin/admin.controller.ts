@@ -12,6 +12,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
+import { User } from 'src/common/decorators/user.decorator';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
@@ -33,8 +34,8 @@ export class AdminController {
   })
   @Delete()
   @UseGuards(jwtGuard)
-  async deleteUser(@Req() req) {
-    return this.adminService.deleteUser(req.user.userId);
+  async deleteUser(@User() user) {
+    return this.adminService.deleteUser(user.userId);
   }
 
   // 로컬용 로그인
@@ -54,7 +55,7 @@ export class AdminController {
   @ApiResponse({ status: 400, description: 'fail' })
   @Get('/kakao/callback')
   @UseGuards(AuthGuard('kakao'))
-  async kakaoCallback(@Req() req) {
-    return this.adminService.kakaoLogin(req.user);
+  async kakaoCallback(@User() user) {
+    return this.adminService.kakaoLogin(user);
   }
 }
