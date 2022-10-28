@@ -18,6 +18,9 @@ export class ChampSpellEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   sampleNum: number;
 
+  @Column({ type: 'varchar', nullable: false, default: 'old' })
+  version: string;
+
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -28,5 +31,5 @@ export class ChampSpellEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: number;
+  champId: ChampEntity;
 }

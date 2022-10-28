@@ -1,6 +1,6 @@
 import { CombinationStatEntity } from './../../combination-stat/entities/combination-stat.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -9,6 +9,7 @@ import { OmitType } from '@nestjs/swagger';
 import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ.spell';
 import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
+import { ChampInfoEntity } from './champ.info.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -52,6 +53,18 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
 
   @Column('decimal', { precision: 5, scale: 2, nullable: false })
   supportRate: number;
+
+  @Column({ type: 'varchar', nullable: false, default: 'old' })
+  version: string;
+
+  @OneToOne(
+    () => ChampInfoEntity,
+    (champInfo: ChampInfoEntity) => champInfo.champId,
+    {
+      cascade: true,
+    },
+  )
+  champInfo: ChampInfoEntity;
 
   @OneToMany(
     () => ChampSpellEntity,
