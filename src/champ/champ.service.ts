@@ -11,8 +11,8 @@ export class ChampService {
   async getTargetChampion(champId: string) {
     const skill = [];
 
-    const champInfo = await this.champRepository.getTargetChampion(champId);
-    console.log(champInfo);
+    const { champInfo } = await this.champRepository.getTargetChampion(champId);
+
     if (!champInfo) {
       throw new HttpException(
         '해당하는 챔피언 정보가 없습니다.',
@@ -150,18 +150,19 @@ export class ChampService {
 
     const data = {
       id: champInfo.id,
-      winRate: champInfo.winRate,
-      banRate: champInfo.banRate,
-      pickRate: champInfo.pickRate,
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
       champImg: champInfo.champMainImg,
+      winRate: champInfo.champRate.winRate,
+      banRate: champInfo.champRate.banRate,
+      pickRate: champInfo.champRate.pickRate,
+      version: champInfo.champRate.version,
       rate: {
-        top: champInfo.topRate,
-        jungle: champInfo.jungleRate,
-        mid: champInfo.midRate,
-        ad: champInfo.adRate,
-        support: champInfo.supportRate,
+        top: champInfo.champRate.topRate,
+        jungle: champInfo.champRate.jungleRate,
+        mid: champInfo.champRate.midRate,
+        ad: champInfo.champRate.adRate,
+        support: champInfo.champRate.supportRate,
       },
       skill,
       spellInfo,
