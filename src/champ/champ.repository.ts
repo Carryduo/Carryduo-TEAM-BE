@@ -103,6 +103,7 @@ export class ChampRepository {
     return await this.champSpellRepository
       .createQueryBuilder('spell')
       .where('spell.champId = :champId', { champId })
+      .andWhere('spell.version = :version', { version: 'old' })
       .orderBy('spell.pickRate', 'DESC')
       .limit(2)
       .execute();
