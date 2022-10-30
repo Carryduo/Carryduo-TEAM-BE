@@ -6,11 +6,14 @@ import { ChampEntity } from './entities/champ.entity';
 import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 import { Cache } from 'cache-manager';
+import { ChampRateEntity } from './entities/champ.rate.entity';
 
 export class ChampRepository {
   constructor(
     @InjectRepository(ChampEntity)
     private readonly champRepository: Repository<ChampEntity>,
+    @InjectRepository(ChampRateEntity)
+    private readonly champRateRepository: Repository<ChampRateEntity>,
     @InjectRepository(ChampSkillInfoEntity)
     private readonly skillRepository: Repository<ChampSkillInfoEntity>,
 
@@ -48,24 +51,59 @@ export class ChampRepository {
   }
 
   async getChmapList() {
-    return await this.champRepository.find({
-      order: { champNameKo: 'ASC' },
-    });
+    return await this.champRepository
+      .createQueryBuilder()
+      .select([
+        'champId AS id',
+        'champ_name_ko AS champNameKo ',
+        'champ_name_en AS champNameEn',
+        'champ_main_img AS champMainImg',
+        'champ_img AS champImg',
+      ])
+      .orderBy('champ_name_ko', 'ASC')
+      .getRawMany();
   }
 
   async getTargetChampion(champId: string) {
-    return await this.champRepository
-      .createQueryBuilder('champ')
-      .leftJoinAndSelect('champ.champSkillInfo', 'skillInfo')
-      .where('champ.champId=:chmapId', { chmapId: champId })
-      .orderBy('skillInfo.createdAt', 'ASC')
-      .getOne();
+    try {
+      const champInfo = await this.champRepository
+        .createQueryBuilder('champ')
+        .leftJoinAndSelect('champ.champSkillInfo', 'skill')
+        .leftJoinAndSelect('champ.champRate', 'rate')
+        .select([
+          'champ.id',
+          'champ.champNameKo',
+          'champ.champNameEn',
+          'champ.champMainImg',
+          'skill.skillId',
+          'skill.skillName',
+          'skill.skillDesc',
+          'skill.skillToolTip',
+          'skill.skillImg',
+          'rate.winRate',
+          'rate.banRate',
+          'rate.pickRate',
+          'rate.topRate',
+          'rate.jungleRate',
+          'rate.midRate',
+          'rate.adRate',
+          'rate.supportRate',
+          'rate.version',
+        ])
+        .where('champ.id = :champId', { champId })
+        .andWhere('rate.version = :version', { version: 'old' })
+        .getOne();
+      return { champInfo };
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  async getChampSpell(champId) {
+  async getChampSpell(champId: string) {
     return await this.champSpellRepository
       .createQueryBuilder('spell')
       .where('spell.champId = :champId', { champId })
+      .andWhere('spell.version = :version', { version: 'old' })
       .orderBy('spell.pickRate', 'DESC')
       .limit(2)
       .execute();

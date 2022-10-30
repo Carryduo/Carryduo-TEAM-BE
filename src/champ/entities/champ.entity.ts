@@ -1,14 +1,14 @@
 import { CombinationStatEntity } from './../../combination-stat/entities/combination-stat.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { OmitType } from '@nestjs/swagger';
-import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 import { ChampSpellEntity } from './champ.spell';
 import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
+import { ChampRateEntity } from './champ.rate.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -52,6 +52,18 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
 
   @Column('decimal', { precision: 5, scale: 2, nullable: false })
   supportRate: number;
+
+  @Column({ type: 'varchar', nullable: false, default: 'old' })
+  version: string;
+
+  @OneToOne(
+    () => ChampRateEntity,
+    (champRate: ChampRateEntity) => champRate.champId,
+    {
+      cascade: true,
+    },
+  )
+  champRate: ChampRateEntity;
 
   @OneToMany(
     () => ChampSpellEntity,

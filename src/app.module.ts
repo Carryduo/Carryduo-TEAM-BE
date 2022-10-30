@@ -23,6 +23,7 @@ import { ChampSpellEntity } from './champ/entities/champ.spell';
 import { SimulationModule } from './simulation/simulation.module';
 import { SimulationEntity } from './simulation/entities/simulation.entity';
 import * as redisStore from 'cache-manager-redis-store';
+import { ChampRateEntity } from './champ/entities/champ.rate.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -38,6 +39,7 @@ const typeOrmModuleOptions = {
     entities: [
       UserEntity,
       ChampEntity,
+      ChampRateEntity,
       ChampSkillInfoEntity,
       ChampSpellEntity,
       SummonerEntity,
