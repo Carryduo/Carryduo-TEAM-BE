@@ -38,7 +38,7 @@ export class CombinationStatRepository {
       .andWhere('COMBINATION_STAT.rankInCategory != :rankInCategory', {
         rankInCategory: 0,
       })
-      .andWhere('COMBINATION_STAT.version = :version', { version: '12.20' })
+      .andWhere('COMBINATION_STAT.version = :version', { version: 'old' })
       .orderBy({ 'COMBINATION_STAT.rank_in_category': 'ASC' })
       .limit(30)
       .getMany();
