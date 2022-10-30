@@ -28,6 +28,7 @@ export class SimulationService {
       qb.where('SIMULATION.category = :category', {
         category,
       })
+        .andWhere('SIMULATION.version = :version', { version: 'old' })
         .andWhere('SIMULATION.champ1Id = :champ1Id', {
           champ1Id,
         })
@@ -46,6 +47,7 @@ export class SimulationService {
       qb.where('SIMULATION.category = :category', {
         category,
       })
+        .andWhere('SIMULATION.version = :version', { version: 'old' })
         .andWhere('SIMULATION.champ1Id = :champ3Id', {
           champ3Id,
         })
