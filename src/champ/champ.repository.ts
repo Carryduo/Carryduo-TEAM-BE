@@ -92,6 +92,7 @@ export class ChampRepository {
         ])
         .where('champ.id = :champId', { champId })
         .andWhere('rate.version = :version', { version: 'old' })
+        .orderBy('skill.createdAt', 'ASC')
         .getOne();
       return { champInfo };
     } catch (err) {
