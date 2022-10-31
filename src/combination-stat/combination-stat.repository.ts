@@ -24,6 +24,7 @@ export class CombinationStatRepository {
         'COMBINATION_STAT.tier',
         'COMBINATION_STAT.winrate',
         'COMBINATION_STAT.sampleNum',
+        'COMBINATION_STAT.version',
         'champ1.id',
         'champ1.champNameKo',
         'champ1.champNameEn',
@@ -37,15 +38,13 @@ export class CombinationStatRepository {
       .andWhere('COMBINATION_STAT.rankInCategory != :rankInCategory', {
         rankInCategory: 0,
       })
+      .andWhere('COMBINATION_STAT.version = :version', { version: 'old' })
       .orderBy({ 'COMBINATION_STAT.rank_in_category': 'ASC' })
       .limit(30)
       .getMany();
     return data;
   }
 
-  //   챔피언 상세페이지 TOP 5 데이터
-  //   TODO: 멀티 포지션에 대한 분기
-  //   TODO: 표본 수에 대한 예외처리
   async getIndividualChampData(option) {
     // 탑, 미드, 원딜
     return await this.combinationStatRepository
@@ -59,6 +58,7 @@ export class CombinationStatRepository {
         'COMBINATION_STAT.category',
         'COMBINATION_STAT.winrate',
         'COMBINATION_STAT.sampleNum',
+        'COMBINATION_STAT.version',
         'champ1.id',
         'champ1.champNameKo',
         'champ1.champNameEn',
@@ -70,6 +70,7 @@ export class CombinationStatRepository {
       ])
       .where(option.category)
       .andWhere(option.champ)
+      .andWhere('COMBINATION_STAT.version = :version', { version: 'old' })
       .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', {
         sampleNum: 5,
       })

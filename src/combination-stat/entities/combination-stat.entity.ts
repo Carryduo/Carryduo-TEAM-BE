@@ -21,6 +21,9 @@ export class CombinationStatEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   sampleNum: number;
 
+  @Column({ type: 'varchar', nullable: false, default: 'old' })
+  version: string;
+
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
