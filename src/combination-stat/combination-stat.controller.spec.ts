@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CombinationStatController } from './combination-stat.controller';
 
-describe('CombinationStatController', () => {
+describe('CombinationStatService', () => {
   let controller: CombinationStatController;
 
   beforeEach(async () => {
@@ -9,7 +9,9 @@ describe('CombinationStatController', () => {
       controllers: [CombinationStatController],
     }).compile();
 
-    controller = module.get<CombinationStatController>(CombinationStatController);
+    controller = module.get<CombinationStatController>(
+      CombinationStatController,
+    );
   });
 
   it('should be defined', () => {

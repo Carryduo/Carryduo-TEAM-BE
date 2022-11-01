@@ -79,7 +79,7 @@ export class CombinationStatCommonDto {
     description: '기준 챔피언 정보',
     required: false,
   })
-  mainChampId: ChampBasicInfoDTO;
+  mainChampId: string | ChampBasicInfoDTO;
 
   @ApiProperty({
     example: {
@@ -91,5 +91,5 @@ export class CombinationStatCommonDto {
     description: '조합 챔피언 정보',
     required: false,
   })
-  subChampId: ChampBasicInfoDTO;
+  subChampId: string | ChampBasicInfoDTO;
 }
