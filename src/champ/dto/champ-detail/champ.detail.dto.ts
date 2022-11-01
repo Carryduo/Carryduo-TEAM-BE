@@ -92,3 +92,25 @@ export class ChampDetailResponseDTO extends PickType(ChampWinRateDTO, [
   })
   spellInfo: spellData;
 }
+
+export class ChampDetailDBResponseDTO extends PickType(ChampWinRateDTO, [
+  'id',
+  'champNameEn',
+  'champNameKo',
+  'champImg',
+  'winRate',
+  'banRate',
+  'pickRate',
+]) {
+  @ApiProperty({
+    description: '챔피언 스킬 정보',
+    isArray: true,
+  })
+  skill: skillData;
+
+  @ApiProperty({
+    description: '챔피언 스펠 정보',
+    isArray: true,
+  })
+  spellInfo: spellData;
+}
