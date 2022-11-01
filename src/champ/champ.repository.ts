@@ -7,6 +7,7 @@ import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 import { Cache } from 'cache-manager';
 import { ChampRateEntity } from './entities/champ.rate.entity';
+import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
 export class ChampRepository {
   constructor(
@@ -25,7 +26,7 @@ export class ChampRepository {
     private cacheManager: Cache,
   ) {}
 
-  async findPreferChampUsers(champId: string) {
+  async findPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {
     return this.userRepository
       .createQueryBuilder('user')
       .where(
@@ -66,7 +67,7 @@ export class ChampRepository {
 
   async getTargetChampion(champId: string) {
     try {
-      const champInfo = await this.champRepository
+      return await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champSkillInfo', 'skill')
         .leftJoinAndSelect('champ.champRate', 'rate')
@@ -94,7 +95,6 @@ export class ChampRepository {
         .andWhere('rate.version = :version', { version: 'old' })
         .orderBy('skill.createdAt', 'ASC')
         .getOne();
-      return { champInfo };
     } catch (err) {
       console.log(err);
     }

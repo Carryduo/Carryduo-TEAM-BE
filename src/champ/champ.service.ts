@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChampRepository } from './champ.repository';
+import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
 @Injectable()
 export class ChampService {
@@ -11,8 +12,7 @@ export class ChampService {
   async getTargetChampion(champId: string) {
     const skill = [];
 
-    const { champInfo } = await this.champRepository.getTargetChampion(champId);
-
+    const champInfo = await this.champRepository.getTargetChampion(champId);
     if (!champInfo) {
       throw new HttpException(
         '해당하는 챔피언 정보가 없습니다.',
@@ -170,7 +170,7 @@ export class ChampService {
     return data;
   }
 
-  async getPreferChampUsers(champId: string) {
+  async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {
     const targetUser = await this.champRepository.findPreferChampUsers(champId);
 
     return targetUser;
