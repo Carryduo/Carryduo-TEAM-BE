@@ -50,7 +50,7 @@ export class ChampRepository {
     await this.cacheManager.del(`/champ/${key}/users`);
   }
 
-  async getChmapList() {
+  async getChampList() {
     return await this.champRepository
       .createQueryBuilder()
       .select([

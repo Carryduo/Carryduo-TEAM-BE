@@ -5,7 +5,7 @@ import { ChampRepository } from './champ.repository';
 export class ChampService {
   constructor(private readonly champRepository: ChampRepository) {}
   async getChampList() {
-    return await this.champRepository.getChmapList();
+    return await this.champRepository.getChampList();
   }
 
   async getTargetChampion(champId: string) {
