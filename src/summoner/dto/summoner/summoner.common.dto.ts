@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { CommonEntity } from 'src/common/entities/common.entity';
 
 export class SummonerCommonDTO extends CommonEntity {
@@ -99,19 +99,19 @@ export class SummonerCommonDTO extends CommonEntity {
     description: '모스트 챔피언1',
     required: true,
   })
-  mostChamp1: ChampBasicInfoDTO;
+  mostChamp1: ChampCommonDTO;
 
   @ApiProperty({
     example: '412',
     description: '모스트 챔피언2',
     required: true,
   })
-  mostChamp2: ChampBasicInfoDTO;
+  mostChamp2: ChampCommonDTO;
 
   @ApiProperty({
     example: '222',
     description: '모스트 챔피언3',
     required: true,
   })
-  mostChamp3: ChampBasicInfoDTO;
+  mostChamp3: ChampCommonDTO;
 }

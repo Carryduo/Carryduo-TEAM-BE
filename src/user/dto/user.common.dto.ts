@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 
 export class UserCommonDto {
   @ApiProperty({
@@ -101,19 +101,19 @@ export class UserCommonDto {
     description: '선호챔피언1',
     required: false,
   })
-  preferChamp1: ChampBasicInfoDTO | null;
+  preferChamp1: ChampCommonDTO | null;
 
   @ApiProperty({
     example: 56,
     description: '선호챔피언2',
     required: false,
   })
-  preferChamp2: ChampBasicInfoDTO | null;
+  preferChamp2: ChampCommonDTO | null;
 
   @ApiProperty({
     example: 56,
     description: '선호챔피언3',
     required: false,
   })
-  preferChamp3: ChampBasicInfoDTO | null;
+  preferChamp3: ChampCommonDTO | null;
 }

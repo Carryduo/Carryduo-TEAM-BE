@@ -1,6 +1,6 @@
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 
 export class simulationResponseDto {
   @ApiProperty({
@@ -61,7 +61,7 @@ export class simulationResponseDto {
     description: '팀A champ1 정보',
     required: false,
   })
-  champ1Id: ChampBasicInfoDTO;
+  champ1Id: ChampCommonDTO;
 
   @ApiProperty({
     example: {
@@ -73,7 +73,7 @@ export class simulationResponseDto {
     description: '팀A champ2 정보',
     required: false,
   })
-  champ2Id: ChampBasicInfoDTO;
+  champ2Id: ChampCommonDTO;
 
   @ApiProperty({
     example: {
@@ -85,7 +85,7 @@ export class simulationResponseDto {
     description: '팀B champ1 정보',
     required: false,
   })
-  champ3Id: ChampBasicInfoDTO;
+  champ3Id: ChampCommonDTO;
 
   @ApiProperty({
     example: {
@@ -97,5 +97,5 @@ export class simulationResponseDto {
     description: '팀B champ2 정보',
     required: false,
   })
-  champ4Id: ChampBasicInfoDTO;
+  champ4Id: ChampCommonDTO;
 }
