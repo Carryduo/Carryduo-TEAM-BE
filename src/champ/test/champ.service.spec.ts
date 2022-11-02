@@ -11,7 +11,8 @@ import { ChampSkillInfoEntity } from '../entities/champSkillInfo.entity';
 import * as champList from './data/champ.list.json';
 import * as preferChampUserList from './data/prefer.champ.user.list.json';
 import * as champSpell from './data/champ.spell.json';
-import * as detailChampInfo from './data/champ.detail.json';
+import * as champResponse from './data/champ.target.response.json';
+import * as testData from './data/champ.info';
 
 class MockRepository {}
 
@@ -44,14 +45,11 @@ class MockChampRepository {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      return detailChampInfo;
+      return testData.champInfo;
     }
   }
 
   getChampSpell(champId) {
-    return champSpell;
-  }
-  map(champSpell) {
     return champSpell;
   }
 }
@@ -113,7 +111,7 @@ describe('ChampService', () => {
   });
 
   it('getTargetChampion은 detailChampInfo를 리턴?', async () => {
-    expect(await service.getTargetChampion('1')).toStrictEqual(detailChampInfo);
+    expect(await service.getTargetChampion('1')).toStrictEqual(champResponse);
   });
 
   it('getTargetChampion은 champion Id 가 없을 경우 error return?', async () => {
