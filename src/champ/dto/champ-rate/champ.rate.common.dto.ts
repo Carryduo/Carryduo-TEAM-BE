@@ -36,7 +36,7 @@ export class ChampRateCommonDTO {
   })
   @IsDecimal()
   @IsNotEmpty()
-  topRate: number;
+  top: number;
 
   @ApiProperty({
     example: '50.0',
@@ -45,7 +45,7 @@ export class ChampRateCommonDTO {
   })
   @IsDecimal()
   @IsNotEmpty()
-  jungleRate: number;
+  jungle: number;
 
   @ApiProperty({
     example: '50.0',
@@ -54,7 +54,7 @@ export class ChampRateCommonDTO {
   })
   @IsDecimal()
   @IsNotEmpty()
-  midRate: number;
+  mid: number;
 
   @ApiProperty({
     example: '50.0',
@@ -63,7 +63,7 @@ export class ChampRateCommonDTO {
   })
   @IsDecimal()
   @IsNotEmpty()
-  adRate: number;
+  ad: number;
 
   @ApiProperty({
     example: '50.0',
@@ -72,7 +72,7 @@ export class ChampRateCommonDTO {
   })
   @IsDecimal()
   @IsNotEmpty()
-  supportRate: number;
+  support: number;
 
   @ApiProperty({
     example: '12.20',

@@ -6,13 +6,13 @@
   "winRate": "50.38",
   "banRate": "0.04",
   "pickRate": "0.79",
-  "version": "old",
   "rate": {
     "top": "0.76",
     "jungle": "0.00",
     "mid": "79.47",
     "ad": "0.76",
-    "support": "19.01"
+    "support": "19.01",
+    "version": "old"
   },
   "skill": [
     {
@@ -56,13 +56,15 @@
       "total": 238,
       "pickRate": 94.82,
       "spell1Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
-      "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png"
+      "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png",
+      "version": "old"
     },
     {
       "total": 13,
       "pickRate": 5.18,
       "spell1Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
-      "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png"
+      "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png",
+      "version": "old"
     }
   ]
 }
