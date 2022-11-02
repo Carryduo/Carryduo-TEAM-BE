@@ -40,7 +40,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  rankInCategory: number;
+  rankInCategory?: number;
 
   @ApiProperty({
     example: '1',
@@ -49,7 +49,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  tier: number;
+  tier?: number;
 
   @ApiProperty({
     example: '59.1',

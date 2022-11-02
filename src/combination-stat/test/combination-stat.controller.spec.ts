@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CombinationStatController } from './combination-stat.controller';
+import { CombinationStatController } from '../combination-stat.controller';
 
 describe('CombinationStatService', () => {
   let controller: CombinationStatController;
