@@ -10,7 +10,7 @@ export class ChampDetailCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  skillId: string;
+  id: string;
 
   @ApiProperty({
     example: '결정타',
@@ -20,7 +20,7 @@ export class ChampDetailCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  skillName: string;
+  name: string;
 
   @ApiProperty({
     example: '가렌의 이동 속도가 큰 폭으로 증가하고.....',
@@ -30,7 +30,7 @@ export class ChampDetailCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  skillDesc: string;
+  desc: string;
 
   @ApiProperty({
     example: '가렌에게 적용된 모든 둔화 효과가 제거되고.....',
@@ -40,7 +40,7 @@ export class ChampDetailCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  skillToolTip: string;
+  toolTip: string;
 
   @ApiProperty({
     example: 'example.png',
@@ -50,5 +50,5 @@ export class ChampDetailCommonDTO {
   })
   @IsString()
   @IsNotEmpty()
-  skillImg: string;
+  image: string;
 }
