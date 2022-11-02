@@ -1,7 +1,7 @@
-import { ChampBasicInfoDTO } from './../../champ/dto/champ/champ.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserBasicInfoResponseDTO } from 'src/user/dto/user.response.dto';
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 
 export class CommentCommonDto {
   @ApiProperty({
@@ -70,7 +70,7 @@ export class CommentCommonDto {
     description: '챔피언 ID',
     required: false,
   })
-  champId: ChampBasicInfoDTO | string;
+  champId: ChampCommonDTO | string;
 
   @ApiProperty({
     example: 'xzczcaQWWWE23',

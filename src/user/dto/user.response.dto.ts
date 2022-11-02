@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { UserCommonDto } from './user.common.dto';
 
 export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
@@ -30,19 +30,19 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
       champImg: '이미지url',
     },
   })
-  preferChamp1: ChampBasicInfoDTO | null;
+  preferChamp1: ChampCommonDTO | null;
 
   @ApiProperty({
     description: '선호챔피언2 정보',
     example: null,
   })
-  preferChamp2: ChampBasicInfoDTO | null;
+  preferChamp2: ChampCommonDTO | null;
 
   @ApiProperty({
     description: '선호챔피언3 정보',
     example: null,
   })
-  preferChamp3: ChampBasicInfoDTO | null;
+  preferChamp3: ChampCommonDTO | null;
 }
 
 export class UserBasicInfoResponseDTO extends PickType(UserCommonDto, [

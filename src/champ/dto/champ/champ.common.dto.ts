@@ -30,34 +30,19 @@ export class ChampCommonDTO {
 
   @ApiProperty({
     example: 'example.png',
+    description: '챔피언 메인 이미지 url',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  champMainImg: string;
+
+  @ApiProperty({
+    example: 'example.png',
     description: '챔피언 이미지 url',
     required: true,
   })
   @IsString()
   @IsNotEmpty()
   champImg: string;
-
-  @ApiProperty({
-    example: '50',
-    description: '챔피언 승률',
-    required: true,
-  })
-  @IsNumber()
-  winRate: number;
-
-  @ApiProperty({
-    example: '50',
-    description: '챔피언 밴률',
-    required: true,
-  })
-  @IsNumber()
-  banRate: number;
-
-  @ApiProperty({
-    example: '50',
-    description: '챔피언 픽률',
-    required: true,
-  })
-  @IsNumber()
-  pickRate: number;
 }
