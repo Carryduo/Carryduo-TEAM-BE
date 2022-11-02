@@ -46,4 +46,13 @@ export class ChampSpellCommonDTO {
   @IsString()
   @IsNotEmpty()
   version: string;
+
+  @ApiProperty({
+    example: '1',
+    description: '챔피언 Id',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  champId: string;
 }
