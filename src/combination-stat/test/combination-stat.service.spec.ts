@@ -7,6 +7,10 @@ import * as testData from './data/combination-stat.test.data';
 const mockRepository = () => {
   createQueryBuilder: jest.fn();
 };
+
+const cloneData_individualChampData = JSON.parse(
+  JSON.stringify(testData.result_individualChamp),
+);
 describe('CombinationStatController', () => {
   let service: CombinationStatService;
   let repository: CombinationStatRepository;
@@ -64,5 +68,50 @@ describe('CombinationStatController', () => {
       result: testData.result_individualChamp_noResponse,
       message: '유효한 데이터(표본 5 이상)가 없습니다',
     });
+  });
+
+  it('individualChamp 테스트: 포지션이 정글/서폿이 아닌 경우, mainChampId <-> subChampId 변경X', async () => {
+    jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
+      (option) =>
+        new Promise((resolve) => {
+          resolve(testData.result_individualChamp);
+        }),
+    );
+    const value_ad = await service.getIndiviualChampData('875', 'ad');
+    const value_mid = await service.getIndiviualChampData('875', 'top');
+    const value_top = await service.getIndiviualChampData('875', 'mid');
+
+    const mainChampId_ad = value_ad[0].mainChampId.id;
+    const mainChampId_mid = value_mid[0].mainChampId.id;
+    const mainChampId_top = value_top[0].mainChampId.id;
+    expect(mainChampId_ad).toEqual('22');
+    expect(mainChampId_mid).toEqual('22');
+    expect(mainChampId_top).toEqual('22');
+  });
+
+  it('individualChamp 테스트: 포지션이 서폿인 경우, mainChampId <-> subChampId 변경', async () => {
+    jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
+      (option) =>
+        new Promise((resolve) => {
+          resolve(testData.result_individualChamp);
+        }),
+    );
+    const value_support = await service.getIndiviualChampData('875', 'support');
+
+    const mainChampId_support = value_support[0].mainChampId.id;
+    expect(mainChampId_support).toEqual('875');
+  });
+
+  it('individualChamp 테스트: 포지션이 정글인 경우, mainChampId <-> subChampId 변경', async () => {
+    jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
+      (option) =>
+        new Promise((resolve) => {
+          resolve(cloneData_individualChampData);
+        }),
+    );
+    const value_jungle = await service.getIndiviualChampData('875', 'jungle');
+
+    const mainChampId_jungle = value_jungle[0].mainChampId.id;
+    expect(mainChampId_jungle).toEqual('875');
   });
 });

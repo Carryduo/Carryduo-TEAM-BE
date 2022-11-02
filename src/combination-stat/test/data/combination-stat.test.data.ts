@@ -79,7 +79,7 @@ export const result2_tierList = [
   },
 ];
 
-export const result_individualChamp_support = [
+export const result_individualChamp = [
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
     createdAt: new Date('2022-10-06T06:43:34.056Z'),
