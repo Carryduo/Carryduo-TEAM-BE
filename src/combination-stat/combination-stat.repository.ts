@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CombinationStatCommonDto } from './dtos/combination-stat.common.dto';
 import { CombinationStatEntity } from './entities/combination-stat.entity';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class CombinationStatRepository {
   ) {}
 
   //   mainPage 티어리스트
-  async getTierList(category) {
+  async getTierList(category): Promise<CombinationStatCommonDto[]> {
     const data = await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
@@ -45,7 +46,9 @@ export class CombinationStatRepository {
     return data;
   }
 
-  async getIndividualChampData(option) {
+  async getIndividualChampData(
+    option,
+  ): Promise<CombinationStatCommonDto[] | any[]> {
     // 탑, 미드, 원딜
     return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')

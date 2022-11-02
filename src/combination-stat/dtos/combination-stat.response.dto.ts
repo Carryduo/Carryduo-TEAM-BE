@@ -5,5 +5,5 @@ export class TierListResponseDto extends CombinationStatCommonDto {}
 
 export class IndiviudalChampResponseDto extends OmitType(
   CombinationStatCommonDto,
-  ['tier', 'rankInCategory', 'mainChampId'],
+  ['tier', 'rankInCategory'],
 ) {}
