@@ -2,15 +2,16 @@ import { CACHE_MANAGER, HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { ChampRepository } from './champ.repository';
-import { ChampService } from './champ.service';
-import { ChampEntity } from './entities/champ.entity';
-import { ChampRateEntity } from './entities/champ.rate.entity';
-import { ChampSpellEntity } from './entities/champ.spell';
-import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
-import * as champList from '../../test/champ.service.test/champ.list.json';
-import * as preferChampUserList from '../../test/champ.service.test/prefer.champ.user.list.json';
-import * as detailChampInfo from '../../test/champ.service.test/champ.detail.json';
+import { ChampRepository } from '../champ.repository';
+import { ChampService } from '../champ.service';
+import { ChampEntity } from '../entities/champ.entity';
+import { ChampRateEntity } from '../entities/champ.rate.entity';
+import { ChampSpellEntity } from '../entities/champ.spell';
+import { ChampSkillInfoEntity } from '../entities/champSkillInfo.entity';
+import * as champList from './data/champ.list.json';
+import * as preferChampUserList from './data/prefer.champ.user.list.json';
+import * as champSpell from './data/champ.spell.json';
+import * as detailChampInfo from './data/champ.detail.json';
 
 class MockRepository {}
 
@@ -36,18 +37,25 @@ class MockChampRepository {
     }
   }
 
-  // getTargetChampion(champId) {
-  // if (!this.champIds.includes(champId)) {
-  //   console.log(champId);
-  //   throw new HttpException(
-  //     '해당하는 챔피언 정보가 없습니다.',
-  //     HttpStatus.BAD_REQUEST,
-  //   );
-  // } else {
-  // return detailChampInfo;
-  // }
-  // }
+  getTargetChampion(champId) {
+    if (!this.champIds.includes(champId)) {
+      throw new HttpException(
+        '해당하는 챔피언 정보가 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    } else {
+      return detailChampInfo;
+    }
+  }
+
+  getChampSpell(champId) {
+    return champSpell;
+  }
+  map(champSpell) {
+    return champSpell;
+  }
 }
+
 class MockChache {}
 
 describe('ChampService', () => {
@@ -104,7 +112,16 @@ describe('ChampService', () => {
     expect(await service.getPreferChampUsers(champId)).toStrictEqual([]);
   });
 
-  it.todo('getTargetChampion은 champion의 정보를 return?', async () => {
+  it('getTargetChampion은 detailChampInfo를 리턴?', async () => {
     expect(await service.getTargetChampion('1')).toStrictEqual(detailChampInfo);
+  });
+
+  it('getTargetChampion은 champion Id 가 없을 경우 error return?', async () => {
+    const exception = '해당하는 챔피언 정보가 없습니다.';
+    try {
+      await service.getTargetChampion('100');
+    } catch (err) {
+      expect(err.message).toStrictEqual(exception);
+    }
   });
 });
