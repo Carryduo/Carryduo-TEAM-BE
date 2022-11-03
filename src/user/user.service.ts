@@ -2,6 +2,10 @@ import { UserRepository } from './user.repository';
 import { HttpException, Injectable } from '@nestjs/common';
 import { OptionRequestDTO } from './dto/user.request.dto';
 import { ChampRepository } from 'src/champ/champ.repository';
+import {
+  UserBasicInfoResponseDTO,
+  UserSpecificInfoResponseDTO,
+} from './dto/user.response.dto';
 
 @Injectable()
 export class UserService {
