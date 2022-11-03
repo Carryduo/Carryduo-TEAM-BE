@@ -74,7 +74,7 @@ export class AdminRepository {
     return;
   }
 
-  async findCommentList(userId: string) {
+  async findCommentList(userId: string): Promise<{ id: string }[]> {
     return await this.commentRepository
       .createQueryBuilder('comment')
       .select(['comment.id'])
@@ -82,7 +82,12 @@ export class AdminRepository {
       .getMany();
   }
 
-  async findCommentOptions(id: string) {
+  async findCommentOptions(id: string): Promise<{
+    category: string;
+    id: string;
+    summonerName: { summonerName: string };
+    champId: { id: string };
+  }> {
     return await this.commentRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.champId', 'champ')

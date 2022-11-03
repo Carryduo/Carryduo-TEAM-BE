@@ -79,7 +79,9 @@ export class AdminService {
       ];
 
       for (const pcl of preferChampList) {
-        await this.champRepository.delPreferChampCache(pcl);
+        if (pcl !== null) {
+          await this.champRepository.delPreferChampCache(pcl);
+        }
       }
 
       // 유저 삭제
