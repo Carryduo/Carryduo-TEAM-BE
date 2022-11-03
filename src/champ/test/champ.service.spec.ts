@@ -29,7 +29,7 @@ class MockChampRepository {
     return champList;
   }
   findPreferChampUsers(champId) {
-    for (let p of this.preferChamp) {
+    for (const p of this.preferChamp) {
       if (p.preferChamp === champId) {
         return preferChampUserList;
       } else {

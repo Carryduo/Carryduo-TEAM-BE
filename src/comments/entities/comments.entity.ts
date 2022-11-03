@@ -1,3 +1,5 @@
+import { SummonerCommonDTO } from './../../summoner/dto/summoner/summoner.common.dto';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';

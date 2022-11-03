@@ -33,7 +33,6 @@ describe('CombinationStatController', () => {
   });
 
   it('request로 받은 category에 대응해 TierList를 response 하는가?', async () => {
-    repository.getIndividualChampData = jest.fn();
     jest.spyOn(repository, 'getTierList').mockImplementation(
       (category) =>
         new Promise((resolve) => {
