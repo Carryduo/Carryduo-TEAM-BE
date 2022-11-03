@@ -18,7 +18,13 @@ export class AdminService {
 
   async kakaoLogin(data: kakaoPayload) {
     // 유저 검증 및 생성
-    const user = await this.adminRepository.checkAndSignUser(data);
+    let user = await this.adminRepository.checkUser(data);
+    console.log('checkuser', user);
+    if (user === null) {
+      user = await this.adminRepository.createUser(data);
+      console.log('createuser', user);
+    }
+
     return {
       id: user.userId,
       nickname: user.nickname,

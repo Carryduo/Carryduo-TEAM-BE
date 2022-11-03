@@ -9,7 +9,7 @@ import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { ChampSpellEntity } from 'src/champ/entities/champ.spell';
 import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
 import { ChampRateEntity } from 'src/champ/entities/champ.rate.entity';
-import { CACHE_MANAGER, HttpException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('UserService', () => {
   let service: UserService;

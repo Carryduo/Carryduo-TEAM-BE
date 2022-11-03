@@ -37,7 +37,7 @@ describe('CombinationStatController', () => {
       (category) =>
         new Promise((resolve) => {
           if (category === 0) {
-            resolve(category);
+            resolve(testData.result0_tierList);
           } else if (category === 1) {
             resolve(testData.result1_tierList);
           } else if (category === 2) {

@@ -15,39 +15,45 @@ export class AdminRepository {
     private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
-  async checkAndSignUser(data: kakaoPayload) {
+  async checkUser(
+    data: kakaoPayload,
+  ): Promise<{ userId: string; nickname: string }> {
     const { socialId, social } = data;
     const user = await this.usersRepository
       .createQueryBuilder()
-      .select('USER')
+      .select(['USER.userId', 'USER.nickname'])
       .from(UserEntity, 'USER')
       .where('USER.socialId = :socialId', { socialId })
       .andWhere('USER.social = :social', { social })
       .getOne();
-    if (user === null) {
-      let newUser;
-      await this.usersRepository.manager.transaction(
-        async (transactionalEntityManager) => {
-          await this.usersRepository
-            .createQueryBuilder()
-            .insert()
-            .into(UserEntity)
-            .values({
-              ...data,
-            })
-            .execute();
-          newUser = await transactionalEntityManager
-            .createQueryBuilder()
-            .select('USER')
-            .from(UserEntity, 'USER')
-            .where('USER.socialId = :socialId', { socialId })
-            .andWhere('USER.social = :social', { social })
-            .getOne();
-        },
-      );
-      return newUser;
-    }
     return user;
+  }
+
+  async createUser(
+    data: kakaoPayload,
+  ): Promise<{ userId: string; nickname: string }> {
+    const { socialId, social } = data;
+    let newUser;
+    await this.usersRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        await this.usersRepository
+          .createQueryBuilder()
+          .insert()
+          .into(UserEntity)
+          .values({
+            ...data,
+          })
+          .execute();
+        newUser = await transactionalEntityManager
+          .createQueryBuilder()
+          .select(['USER.userId', 'USER.nickname'])
+          .from(UserEntity, 'USER')
+          .where('USER.socialId = :socialId', { socialId })
+          .andWhere('USER.social = :social', { social })
+          .getOne();
+      },
+    );
+    return newUser;
   }
 
   async findById(userId: string) {
