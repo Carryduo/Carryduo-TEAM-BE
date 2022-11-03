@@ -1,18 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChampRepository } from './champ.repository';
+import { ChampDetailCommonDTO } from './dto/champ-detail/champ.detail.common.dto';
+import {
+  ChampDetailResponseDTO,
+  spellData,
+} from './dto/champ-detail/champ.detail.dto';
+import { ChampPosition } from './dto/champ-rate/champ.rate.dto';
+import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
 @Injectable()
 export class ChampService {
   constructor(private readonly champRepository: ChampRepository) {}
   async getChampList() {
-    return await this.champRepository.getChmapList();
+    return await this.champRepository.getChampList();
   }
 
-  async getTargetChampion(champId: string) {
-    const skill = [];
+  async getTargetChampion(champId: string): Promise<ChampDetailResponseDTO> {
+    const skill: ChampDetailCommonDTO[] = [];
 
-    const { champInfo } = await this.champRepository.getTargetChampion(champId);
-
+    const champInfo = await this.champRepository.getTargetChampion(champId);
     if (!champInfo) {
       throw new HttpException(
         '해당하는 챔피언 정보가 없습니다.',
@@ -36,7 +42,7 @@ export class ChampService {
     let spell1Img: string;
     let spell2Img: string;
 
-    const spellInfo = [];
+    const spellInfo: spellData[] = [];
 
     for (const csd in champSpellData) {
       const key = csd;
@@ -130,11 +136,14 @@ export class ChampService {
       let pickRate = (champSpellData[key].spell_sample_num / sampleNum) * 100;
       pickRate = Number(pickRate.toFixed(2));
 
+      const version = champSpellData[key].spell_version;
+
       spellInfo.push({
         total: champSpellData[key].spell_sample_num,
         pickRate,
         spell1Img,
         spell2Img,
+        version,
       });
     }
 
@@ -148,6 +157,15 @@ export class ChampService {
       });
     });
 
+    const rate: ChampPosition = {
+      top: champInfo.champRate.topRate,
+      jungle: champInfo.champRate.jungleRate,
+      mid: champInfo.champRate.midRate,
+      ad: champInfo.champRate.adRate,
+      support: champInfo.champRate.supportRate,
+      version: champInfo.champRate.version,
+    };
+
     const data = {
       id: champInfo.id,
       champNameKo: champInfo.champNameKo,
@@ -156,21 +174,14 @@ export class ChampService {
       winRate: champInfo.champRate.winRate,
       banRate: champInfo.champRate.banRate,
       pickRate: champInfo.champRate.pickRate,
-      version: champInfo.champRate.version,
-      rate: {
-        top: champInfo.champRate.topRate,
-        jungle: champInfo.champRate.jungleRate,
-        mid: champInfo.champRate.midRate,
-        ad: champInfo.champRate.adRate,
-        support: champInfo.champRate.supportRate,
-      },
+      rate,
       skill,
       spellInfo,
     };
     return data;
   }
 
-  async getPreferChampUsers(champId: string) {
+  async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {
     const targetUser = await this.champRepository.findPreferChampUsers(champId);
 
     return targetUser;

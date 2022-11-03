@@ -7,6 +7,8 @@ import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 import { Cache } from 'cache-manager';
 import { ChampRateEntity } from './entities/champ.rate.entity';
+import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
+import { ChampSpellCommonDTO } from './dto/champ-spell/champ.spell.common.dto';
 
 export class ChampRepository {
   constructor(
@@ -25,7 +27,9 @@ export class ChampRepository {
     private cacheManager: Cache,
   ) {}
 
-  async findPreferChampUsers(champId: string) {
+  async findPreferChampUsers(
+    champId: string,
+  ): Promise<preferChampUsersDTO[] | []> {
     return this.userRepository
       .createQueryBuilder('user')
       .where(
@@ -50,7 +54,7 @@ export class ChampRepository {
     await this.cacheManager.del(`/champ/${key}/users`);
   }
 
-  async getChmapList() {
+  async getChampList() {
     return await this.champRepository
       .createQueryBuilder()
       .select([
@@ -66,7 +70,7 @@ export class ChampRepository {
 
   async getTargetChampion(champId: string) {
     try {
-      const champInfo = await this.champRepository
+      return await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champSkillInfo', 'skill')
         .leftJoinAndSelect('champ.champRate', 'rate')
@@ -94,17 +98,24 @@ export class ChampRepository {
         .andWhere('rate.version = :version', { version: 'old' })
         .orderBy('skill.createdAt', 'ASC')
         .getOne();
-      return { champInfo };
     } catch (err) {
       console.log(err);
     }
   }
 
-  async getChampSpell(champId: string) {
+  async getChampSpell(champId: string): Promise<ChampSpellCommonDTO | []> {
     return await this.champSpellRepository
       .createQueryBuilder('spell')
       .where('spell.champId = :champId', { champId })
       .andWhere('spell.version = :version', { version: 'old' })
+      .select([
+        'spell.spell1',
+        'spell.spell2',
+        'spell.pickRate',
+        'spell.sampleNum',
+        'spell.version',
+        'spell.champId',
+      ])
       .orderBy('spell.pickRate', 'DESC')
       .limit(2)
       .execute();

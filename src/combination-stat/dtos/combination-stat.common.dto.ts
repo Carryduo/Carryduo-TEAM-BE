@@ -1,4 +1,3 @@
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
 
@@ -40,7 +39,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  rankInCategory: number;
+  rankInCategory?: number;
 
   @ApiProperty({
     example: '1',
@@ -49,7 +48,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  tier: number;
+  tier?: number;
 
   @ApiProperty({
     example: '59.1',
@@ -71,7 +70,7 @@ export class CombinationStatCommonDto {
 
   @ApiProperty({
     example: {
-      champId: 875,
+      id: '875',
       champNameKo: '세트',
       champNameEn: 'Sett',
       champImg: '이미지 url',
@@ -79,11 +78,18 @@ export class CombinationStatCommonDto {
     description: '기준 챔피언 정보',
     required: false,
   })
-  mainChampId: ChampBasicInfoDTO;
+  mainChampId:
+    | string
+    | {
+        id: string;
+        champNameKo: string;
+        champNameEn: string;
+        champImg: string;
+      };
 
   @ApiProperty({
     example: {
-      champId: 203,
+      id: '203',
       champNameKo: '킨드레드',
       champNameEn: 'Kindred',
       champImg: '이미지 url',
@@ -91,5 +97,12 @@ export class CombinationStatCommonDto {
     description: '조합 챔피언 정보',
     required: false,
   })
-  subChampId: ChampBasicInfoDTO;
+  subChampId:
+    | string
+    | {
+        id: string;
+        champNameKo: string;
+        champNameEn: string;
+        champImg: string;
+      };
 }

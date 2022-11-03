@@ -10,8 +10,8 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { TypeOrmFilter } from 'src/common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
-import { ChampDetailResponseDTO } from './dto/champ-skill/champ.detail.dto';
-import { ChampBasicInfoDTO } from './dto/champ/champ.dto';
+import { ChampDetailResponseDTO } from './dto/champ-detail/champ.detail.dto';
+import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
 @Controller('champ')
@@ -25,7 +25,7 @@ export class ChampController {
   @ApiResponse({
     status: 200,
     description: '챔피언 리스트 조회 예시',
-    type: ChampBasicInfoDTO,
+    type: ChampCommonDTO,
   })
   async getChampionList() {
     return await this.champService.getChampList();

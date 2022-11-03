@@ -1,6 +1,7 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import { IndiviudalChampResponseDto } from './dtos/combination-stat.response.dto';
 
 @Injectable()
 export class CombinationStatService {
@@ -28,7 +29,12 @@ export class CombinationStatService {
     return data;
   }
 
-  async getIndiviualChampData(champId: string, position: string) {
+  async getIndiviualChampData(
+    champId: string,
+    position: string,
+  ): Promise<
+    IndiviudalChampResponseDto[] | { result: any[]; message: string }
+  > {
     let option;
     switch (position) {
       case 'top':
@@ -110,13 +116,13 @@ export class CombinationStatService {
     if (dataList.length !== 0) {
       for (const data of dataList) {
         if (position === 'jungle' || position === 'support') {
+          const cloneData = data.subChampId;
           data.subChampId = data.mainChampId;
+          data.mainChampId = cloneData;
           data.winrate = Number((data.winrate * 100).toFixed(2));
-          delete data.mainChampId;
           result.push(data);
         } else {
           data.winrate = Number((data.winrate * 100).toFixed(2));
-          delete data.mainChampId;
           result.push(data);
         }
       }

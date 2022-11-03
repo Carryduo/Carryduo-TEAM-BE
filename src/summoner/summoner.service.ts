@@ -69,11 +69,10 @@ export class SummonerService {
     try {
       //SUMMONER
       const response = await axios.get(
-        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/ + ${encodeURIComponent(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
           summonerName,
-        )} + ?api_key=${process.env.RIOT_API_KEY}`,
+        )}?api_key=${process.env.RIOT_API_KEY}`,
       );
-
       const { data } = response;
       const summonerId = data.id;
       const puuId = data.puuid;

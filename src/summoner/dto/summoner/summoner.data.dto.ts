@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampBasicInfoDTO } from 'src/champ/dto/champ/champ.dto';
+import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { SummonerHistoryResponseDTO } from '../history/history.dto';
 import { SummonerCommonDTO } from './summoner.common.dto';
 
@@ -17,9 +17,9 @@ export class SummonerAllDataDTO extends PickType(SummonerCommonDTO, [
   @ApiProperty({
     description: '모스트챔피언 정보',
     isArray: true,
-    type: ChampBasicInfoDTO,
+    type: ChampCommonDTO,
   })
-  mostChamps: ChampBasicInfoDTO[];
+  mostChamps: ChampCommonDTO[];
   @ApiProperty({
     description: '소환사 최근 전적 정보',
   })
@@ -37,5 +37,5 @@ export class SummonerDataDTO extends PickType(SummonerCommonDTO, [
   'lose',
   'winRate',
 ]) {
-  mostChamps: ChampBasicInfoDTO[];
+  mostChamps: ChampCommonDTO[];
 }

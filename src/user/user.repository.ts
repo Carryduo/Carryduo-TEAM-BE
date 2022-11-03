@@ -34,7 +34,7 @@ export class UserRepository {
       tier,
     } = body;
 
-    return await this.usersRepository
+    await this.usersRepository
       .createQueryBuilder()
       .update(UserEntity)
       .set({
@@ -50,6 +50,7 @@ export class UserRepository {
       })
       .where('userId = :userId', { userId })
       .execute();
+    return;
   }
 
   async findPreferchamps(userId) {
