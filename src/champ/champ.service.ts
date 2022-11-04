@@ -158,11 +158,11 @@ export class ChampService {
     });
 
     const rate: ChampPosition = {
-      top: champInfo.champRate.topRate,
-      jungle: champInfo.champRate.jungleRate,
-      mid: champInfo.champRate.midRate,
-      ad: champInfo.champRate.adRate,
-      support: champInfo.champRate.supportRate,
+      top: Number(champInfo.champRate.topRate),
+      jungle: Number(champInfo.champRate.jungleRate),
+      mid: Number(champInfo.champRate.midRate),
+      ad: Number(champInfo.champRate.adRate),
+      support: Number(champInfo.champRate.supportRate),
       version: champInfo.champRate.version,
     };
 
@@ -171,9 +171,9 @@ export class ChampService {
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
       champImg: champInfo.champMainImg,
-      winRate: champInfo.champRate.winRate,
-      banRate: champInfo.champRate.banRate,
-      pickRate: champInfo.champRate.pickRate,
+      winRate: Number(champInfo.champRate.winRate),
+      banRate: Number(champInfo.champRate.banRate),
+      pickRate: Number(champInfo.champRate.pickRate),
       rate,
       skill,
       spellInfo,
