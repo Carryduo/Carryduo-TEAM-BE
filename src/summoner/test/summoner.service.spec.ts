@@ -15,52 +15,75 @@ import * as mostChampData from './data/most.champ.response';
 import * as matchIdData from './data/match.id.response.data';
 import * as matchData from './data/match.data.response';
 import * as riotResponse from './data/riot.response.data';
+import { resolve } from 'path';
 
 class MockRepository {}
 class CacheMockRepository {}
+
 class MockSummonerRepository {
-  // getSummonerHistory(key) {
-  //   if (key) {
-  //     return true;
-  //   } else if (!key) {
-  //     return false;
-  //   }
-  // }
-  // deleteSummonerHistory(key) {
-  //   if (this.getSummonerHistory(key)) {
-  //     return true;
-  //   } else if (!this.getSummonerHistory(key)) {
-  //     return false;
-  //   }
-  // }
-  // createSummonerHistory() {
-  //   return true;
-  // }
-  // findSummoner(summonerName) {
-  //   if (summonerName) {
-  //     return true;
-  //   } else if (!summonerName) {
-  //     return false;
-  //   }
-  // }
-  // sumWin(summonerName) {
-  //   return { totalCnt: 0, winCnt: 0 };
-  // }
-  // recentChamp(summonerName) {
-  //   return [1, 2, 3];
-  // }
-  // recentChampInfo(summonerName) {
-  //   return { champNameKo: '가렌', champImg: 'example.png' };
-  // }
-  // recentChampRate(summonerName, champName) {
-  //   return { win: 0, lose: 0 };
-  // }
-  // position(summonerName, id) {
-  //   return { id: 1, cnt: 2 };
-  // }
-  // kdaAverage(summonerName) {
-  //   return { killSum: 5, deathSum: 5, assistSum: 5 };
-  // }
+  getSummonerHistory(key) {
+    if (key) {
+      return summonerData.summonerHistory;
+    } else if (!key) {
+      return false;
+    }
+  }
+  deleteSummonerHistory(key) {
+    if (this.getSummonerHistory(key)) {
+      return true;
+    } else if (!this.getSummonerHistory(key)) {
+      return false;
+    }
+  }
+  createSummonerHistory() {
+    return true;
+  }
+  findSummoner(summonerName) {
+    if (summonerName) {
+      return summonerData.findSummoner;
+    } else if (!summonerName) {
+      return null;
+    }
+  }
+  sumWin(summonerName) {
+    return { totalCnt: 10, winCnt: 8 };
+  }
+  recentChamp(summonerName) {
+    return [
+      { history_champ_id: 360, champCnt: 4 },
+      { history_champ_id: 145, champCnt: 1 },
+      { history_champ_id: 42, champCnt: 1 },
+    ];
+  }
+  recentChampInfo(summonerName) {
+    const recentChampInfo = {
+      champ_champ_name_ko: '사미라',
+      champ_champ_img:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Samira.png',
+    };
+
+    return recentChampInfo;
+  }
+  recentChampRate(summonerName, champName) {
+    const recentChampRateInfo = {
+      win: { history_champ_id: 360, winCnt: 4 },
+      lose: { history_champ_id: null, loseCnt: 0 },
+    };
+    return recentChampRateInfo;
+  }
+  position(summonerName, id) {
+    const position = { history_position: 3, positionCnt: 2 };
+    return position;
+  }
+  kdaAverage(summonerName) {
+    return { killSum: 75, deathSum: 53, assistSum: 96 };
+  }
+  cacheSummoner() {
+    return true;
+  }
+  updateSummoner(summoner) {
+    return;
+  }
 }
 
 describe('SummonerService', () => {
@@ -72,22 +95,22 @@ describe('SummonerService', () => {
         SummonerService,
         summonerResponseCleansing,
         SummonerHistoryDataCleansing,
-        SummonerRepository,
+        { provide: SummonerRepository, useClass: MockSummonerRepository },
         {
           provide: axios,
           useValue: { get: jest.fn() },
         },
         {
           provide: getRepositoryToken(ChampEntity),
-          useValue: { createQueryBuilder: jest.fn() },
+          useClass: MockRepository,
         },
         {
           provide: getRepositoryToken(SummonerEntity),
-          useValue: { createQueryBuilder: jest.fn() },
+          useClass: MockRepository,
         },
         {
           provide: getRepositoryToken(SummonerHistoryEntity),
-          useValue: { createQueryBuilder: jest.fn() },
+          useClass: MockRepository,
         },
         {
           provide: CACHE_MANAGER,
@@ -110,7 +133,9 @@ describe('SummonerService', () => {
     const puuId = summonerData.data.puuid;
     jest.spyOn(axios, 'get').mockImplementation(async (url) => {
       switch (url) {
-        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`:
+        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+          summonerName,
+        )}?api_key=${process.env.RIOT_API_KEY}`:
           console.log('summoner');
           return summonerData;
         case `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerData.data.id}?api_key=${process.env.RIOT_API_KEY}`:
@@ -153,9 +178,13 @@ describe('SummonerService', () => {
           console.log('matchData');
           return matchData;
       }
-      jest.spyOn(repository, 'getSummonerHistory').mockImplementation(async (value) => value);
+      jest
+        .spyOn(repository, 'getSummonerHistory')
+        .mockImplementation(async (value) => value);
     });
-    expect(await service.summonerRiotRequest('할배탈')).toEqual(riotResponse.summonerData);
+    expect(await service.summonerRiotRequest('할배탈')).toEqual(
+      riotResponse.summonerData,
+    );
   });
 
   it('detail data가 없으면 error return?', () => {
@@ -164,7 +193,9 @@ describe('SummonerService', () => {
       const summonerName = '할배탈';
       jest.spyOn(axios, 'get').mockImplementation(async (url) => {
         switch (url) {
-          case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`:
+          case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+            summonerName,
+          )}?api_key=${process.env.RIOT_API_KEY}`:
             console.log('summoner');
             return summonerData;
           case `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerData.data.id}?api_key=${process.env.RIOT_API_KEY}`:
@@ -183,7 +214,9 @@ describe('SummonerService', () => {
       const summonerName = '할배탈';
       jest.spyOn(axios, 'get').mockImplementation(async (url) => {
         switch (url) {
-          case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`:
+          case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+            summonerName,
+          )}?api_key=${process.env.RIOT_API_KEY}`:
             console.log('summoner');
             throw new HttpException('too many', 429);
           case `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerData.data.id}?api_key=${process.env.RIOT_API_KEY}`:
@@ -203,7 +236,9 @@ describe('SummonerService', () => {
     const puuId = summonerData.data.puuid;
     jest.spyOn(axios, 'get').mockImplementation(async (url) => {
       switch (url) {
-        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`:
+        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+          summonerName,
+        )}?api_key=${process.env.RIOT_API_KEY}`:
           console.log('summoner');
           return summonerData;
         case `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerData.data.id}?api_key=${process.env.RIOT_API_KEY}`:
@@ -223,9 +258,58 @@ describe('SummonerService', () => {
     expect(await repository.deleteSummonerHistory(false)).toBeFalsy();
   });
 
+  it('getSummoner 의 return 값이 잘 나오는가?', async () => {
+    const summonerName = '할배탈';
+
+    await repository.findSummoner(summonerName);
+
+    expect(await service.getSummoner(summonerName)).toEqual(
+      summonerData.summonerData,
+    );
+  });
+
   it('getSummoner summoner가 있으면 DataCleansing으로 없으면 saveSummoner가 실행되는가?', async () => {
     const summonerName = '할배탈';
-    const summoner = await repository.findSummoner(summonerName);
-    expect(await service.cleansingData(summonerName, summoner)).toBeCalledTimes(1);
+
+    const cleansingData = jest
+      .spyOn(service, 'cleansingData')
+      .mockResolvedValue(summonerData.saveSummoner);
+
+    await repository.findSummoner(summonerName);
+    await service.getSummoner(summonerName);
+
+    expect(cleansingData).toHaveBeenCalled();
+
+    jest.spyOn(repository, 'findSummoner').mockResolvedValue(null);
+    const saveSummoner = jest
+      .spyOn(service, 'saveSummoner')
+      .mockResolvedValue(summonerData.saveSummoner);
+
+    await service.getSummoner(summonerName);
+
+    expect(saveSummoner).toHaveBeenCalled();
+  });
+
+  it('refreshSummonerData의 전적갱신할 summoner 가 있으면 data를 return? 없으면 error return?', async () => {
+    const summonerName = '할배탈';
+    await repository.findSummoner(summonerName);
+    jest
+      .spyOn(service, 'summonerRiotRequest')
+      .mockResolvedValue(riotResponse.summonerData);
+
+    jest.spyOn(repository, 'updateSummoner').mockResolvedValue();
+
+    await service.refreshSummonerData(summonerName);
+    expect(await service.refreshSummonerData(summonerName)).toEqual(
+      summonerData.summonerData,
+    );
+    try {
+      jest.spyOn(repository, 'findSummoner').mockResolvedValue(null);
+      await service.refreshSummonerData(summonerName);
+    } catch (err) {
+      expect(err.message).toBe(
+        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
+      );
+    }
   });
 });

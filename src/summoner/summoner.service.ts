@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
-import { SummonerAllDataDTO, SummonerDataDTO } from './dto/summoner/summoner.data.dto';
+import {
+  SummonerAllDataDTO,
+  SummonerDataDTO,
+} from './dto/summoner/summoner.data.dto';
 
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { SummonerDBResponseDTO } from './dto/summoner/summoner.response.dto';
@@ -10,15 +13,26 @@ import axios from 'axios';
 
 @Injectable()
 export class SummonerService {
-  constructor(private readonly summonerRepository: SummonerRepository, private readonly summonerResponse: summonerResponseCleansing, private readonly summonerHistory: SummonerHistoryDataCleansing) {}
+  constructor(
+    private readonly summonerRepository: SummonerRepository,
+    private readonly summonerResponse: summonerResponseCleansing,
+    private readonly summonerHistory: SummonerHistoryDataCleansing,
+  ) {}
 
   async cleansingData(summonerName: string, summoner: SummonerDBResponseDTO) {
-    const history = await this.summonerHistory.historyDataCleansing(summonerName);
-    const summonerData = await this.summonerResponse.responseCleansing(summoner, history);
+    const history = await this.summonerHistory.historyDataCleansing(
+      summonerName,
+    );
+    const summonerData = await this.summonerResponse.responseCleansing(
+      summoner,
+      history,
+    );
     return summonerData;
   }
 
-  async getSummoner(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
+  async getSummoner(
+    summonerName: string,
+  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
     const summoner = await this.summonerRepository.findSummoner(summonerName);
     if (!summoner) {
       return await this.saveSummoner(summonerName);
@@ -26,16 +40,24 @@ export class SummonerService {
     return await this.cleansingData(summonerName, summoner);
   }
 
-  async saveSummoner(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
+  async saveSummoner(
+    summonerName: string,
+  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
     const newSummoner = await this.summonerRiotRequest(summonerName);
     await this.summonerRepository.insertSummoner(newSummoner);
     const summoner = await this.summonerRepository.findSummoner(summonerName);
     return await this.cleansingData(summonerName, summoner);
   }
 
-  async refreshSummonerData(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
+  async refreshSummonerData(
+    summonerName: string,
+  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
     const summoner = await this.summonerRepository.findSummoner(summonerName);
-    if (!summoner) throw new HttpException('갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)', HttpStatus.BAD_REQUEST);
+    if (!summoner)
+      throw new HttpException(
+        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
+        HttpStatus.BAD_REQUEST,
+      );
     const refreshSummoner = await this.summonerRiotRequest(summonerName);
     await this.summonerRepository.updateSummoner(refreshSummoner);
 
@@ -46,7 +68,11 @@ export class SummonerService {
   async summonerRiotRequest(summonerName: string) {
     try {
       //SUMMONER
-      const response = await axios.get(`https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`);
+      const response = await axios.get(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+          summonerName,
+        )}?api_key=${process.env.RIOT_API_KEY}`,
+      );
       const { data } = response;
       const summonerId = data.id;
       const puuId = data.puuid;
@@ -55,18 +81,31 @@ export class SummonerService {
       const summonerIcon = `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${data.profileIconId}.png`;
 
       //SUMMONER LEAGUE INFO
-      const detailResponse = await axios.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${data.id}?api_key=${process.env.RIOT_API_KEY}`);
+      const detailResponse = await axios.get(
+        `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${data.id}?api_key=${process.env.RIOT_API_KEY}`,
+      );
 
       //SUMMONER CHAMP MASTERY
-      const mostChampResponse = await axios.get(`https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}`);
+      const mostChampResponse = await axios.get(
+        `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}`,
+      );
       const mostChamp = mostChampResponse.data;
 
       const detailData = detailResponse.data;
 
-      let win: number, lose: number, winRate: number, tier: string, rank: string, lp: number;
+      let win: number,
+        lose: number,
+        winRate: number,
+        tier: string,
+        rank: string,
+        lp: number;
 
-      const soloRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_SOLO_5x5');
-      const flexRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_FLEX_SR');
+      const soloRankInfo = detailData.find(
+        (ele) => ele.queueType === 'RANKED_SOLO_5x5',
+      );
+      const flexRankInfo = detailData.find(
+        (ele) => ele.queueType === 'RANKED_FLEX_SR',
+      );
 
       if (soloRankInfo) {
         win = soloRankInfo.wins;
@@ -91,7 +130,11 @@ export class SummonerService {
         lp = 0;
       }
 
-      if (!detailData) throw new HttpException('언랭크 소환사 입니다.', HttpStatus.BAD_REQUEST);
+      if (!detailData)
+        throw new HttpException(
+          '언랭크 소환사 입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
 
       let tierImg: string;
       switch (tier) {
@@ -126,7 +169,7 @@ export class SummonerService {
           tierImg = '';
           break;
       }
-      const summonerData: SummonerRequestDTO = {
+      const summonerData = {
         summonerName,
         summonerId,
         summonerIcon,
@@ -143,10 +186,13 @@ export class SummonerService {
       };
       //SUMMONER MATCH ID
 
-      const matchIdResponse = await axios.get(`https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}`);
+      const matchIdResponse = await axios.get(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}`,
+      );
 
       //유저 최근 전적 요청 부분
-      const getSummonerHistory = await this.summonerRepository.getSummonerHistory(summonerName);
+      const getSummonerHistory =
+        await this.summonerRepository.getSummonerHistory(summonerName);
 
       if (getSummonerHistory) {
         await this.summonerRepository.deleteSummonerHistory(summonerName);
@@ -154,7 +200,9 @@ export class SummonerService {
 
       for (let m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
-        const matchDataResponse = await axios.get(`https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${process.env.RIOT_API_KEY}`);
+        const matchDataResponse = await axios.get(
+          `https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${process.env.RIOT_API_KEY}`,
+        );
 
         const matchData = matchDataResponse.data.info;
 
@@ -203,7 +251,10 @@ export class SummonerService {
     } catch (err) {
       console.log(err);
       if (err.response.status === 429) {
-        throw new HttpException('라이엇API 요청 과도화', HttpStatus.TOO_MANY_REQUESTS);
+        throw new HttpException(
+          '라이엇API 요청 과도화',
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
       } else if (err.response.status === 403) {
         throw new HttpException('라이엇API 키 만료', HttpStatus.FORBIDDEN);
       } else if (err.status === 400) {
