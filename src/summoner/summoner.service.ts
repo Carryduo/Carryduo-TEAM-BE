@@ -87,8 +87,7 @@ export class SummonerService {
 
       //SUMMONER CHAMP MASTERY
       const mostChampResponse = await axios.get(
-        `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}
-        `,
+        `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${data.id}/top?count=3&api_key=${process.env.RIOT_API_KEY}`,
       );
       const mostChamp = mostChampResponse.data;
 
@@ -170,7 +169,7 @@ export class SummonerService {
           tierImg = '';
           break;
       }
-      const summonerData: SummonerRequestDTO = {
+      const summonerData = {
         summonerName,
         summonerId,
         summonerIcon,
@@ -186,9 +185,9 @@ export class SummonerService {
         mostChamp3: mostChamp[2].championId,
       };
       //SUMMONER MATCH ID
+
       const matchIdResponse = await axios.get(
-        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}
-      `,
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuId}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}`,
       );
 
       //유저 최근 전적 요청 부분

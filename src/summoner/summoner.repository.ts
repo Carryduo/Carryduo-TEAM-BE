@@ -67,7 +67,7 @@ export class SummonerRepository {
   }
 
   async insertSummoner(summonerInfo: SummonerRequestDTO) {
-    return await this.summonerRepository
+    await this.summonerRepository
       .createQueryBuilder()
       .insert()
       .into(SummonerEntity)
@@ -76,7 +76,7 @@ export class SummonerRepository {
   }
 
   async updateSummoner(summonerInfo: SummonerRequestDTO) {
-    return await this.summonerRepository
+    await this.summonerRepository
       .createQueryBuilder()
       .update(SummonerEntity)
       .set(summonerInfo)

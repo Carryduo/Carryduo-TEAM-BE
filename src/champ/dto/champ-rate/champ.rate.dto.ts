@@ -7,5 +7,4 @@ export class ChampPosition extends PickType(ChampRateCommonDTO, [
   'mid',
   'ad',
   'support',
-  'version',
 ] as const) {}
