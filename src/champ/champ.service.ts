@@ -143,7 +143,7 @@ export class ChampService {
         pickRate,
         spell1Img,
         spell2Img,
-        version,
+        spellVersion: version,
       });
     }
 
@@ -163,7 +163,6 @@ export class ChampService {
       mid: Number(champInfo.champRate.midRate),
       ad: Number(champInfo.champRate.adRate),
       support: Number(champInfo.champRate.supportRate),
-      version: champInfo.champRate.version,
     };
 
     const data = {
@@ -174,7 +173,10 @@ export class ChampService {
       winRate: Number(champInfo.champRate.winRate),
       banRate: Number(champInfo.champRate.banRate),
       pickRate: Number(champInfo.champRate.pickRate),
-      rate,
+      rateInfo: {
+        rateVersion: champInfo.champRate.version,
+        rate,
+      },
       skill,
       spellInfo,
     };

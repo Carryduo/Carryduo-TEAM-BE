@@ -38,7 +38,7 @@ export class spellData {
     description: '스펠 버전',
     required: true,
   })
-  version: string;
+  spellVersion: string;
 }
 
 export class ChampDetailResponseDTO extends IntersectionType(
@@ -56,7 +56,10 @@ export class ChampDetailResponseDTO extends IntersectionType(
     description: '챔피언 포지션 정보',
     type: ChampPosition,
   })
-  rate: ChampPosition;
+  rateInfo: {
+    rateVersion: string;
+    rate: ChampPosition;
+  };
 
   @ApiProperty({
     description: '챔피언 스킬 정보',
