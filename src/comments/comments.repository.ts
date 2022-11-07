@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
+import { CommentGetResponseDTO } from './dto/comment.response.dto';
 import { CommentEntity } from './entities/comments.entity';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class CommentRepository {
   //   TODO: 코드 사용성 개선 (쿼리가 불필요하게 많음)
 
   // : Promise<UserBasicInfoResponseDTO[]>
-  async getComments(option) {
+  async getComments(option): Promise<CommentGetResponseDTO[]> {
     return await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')
