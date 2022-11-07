@@ -61,6 +61,7 @@ jobs:
          echo KAKAO_CALLBACK_URL:${{secrets.KAKAO_CALLBACK_URL}} >> .env
          echo KAKAO_CLIENT_SECRET_KEY:${{secrets.KAKAO_CLIENT_SECRET_KEY}} >> .env
          echo RIOT_API_KEY:${{secrets.RIOT_API_KEY}} >> .env
+         cat .env
       - run: npm test
         if: ${{ always() }}
       - run: npm run build --if-present
