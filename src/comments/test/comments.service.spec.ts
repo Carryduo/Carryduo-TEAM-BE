@@ -74,4 +74,63 @@ describe('CommentsService', () => {
       message: '평판 업로드 완료했습니다',
     });
   });
+
+  it('updateComment가 잘 실행되나?', async () => {
+    const id = '69b1852f-ba0d-438d-a568-127dc01de86f';
+    const userId = 'kim';
+    const content = '~~~~!';
+
+    jest
+      .spyOn(repository, 'updateContent')
+      .mockImplementation(async () => comments.commentsData);
+
+    jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
+    expect(await service.updateContent(id, userId, content)).toEqual({
+      success: true,
+      message: '평판 수정 완료되었습니다',
+    });
+    try {
+      await service.updateContent(null, null, 'asd');
+    } catch (err) {
+      expect(err.message).toBe('평판 수정 실패하였습니다');
+    }
+  });
+
+  it('deleteComment가 잘 실행되나?', async () => {
+    const id = '69b1852f-ba0d-438d-a568-127dc01de86f';
+    const userId = 'kim';
+    jest
+      .spyOn(repository, 'deleteComment')
+      .mockResolvedValue(comments.commentsData);
+
+    jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
+    expect(await service.deleteComment(id, userId)).toEqual({
+      success: true,
+      message: '평판 삭제 완료되었습니다',
+    });
+    try {
+      await service.deleteComment(null, null);
+    } catch (err) {
+      expect(err.message).toBe('평판 삭제 실패하였습니다');
+    }
+  });
+
+  it('updateReportNum이 잘 실행되나?', async () => {
+    const id = '69b1852f-ba0d-438d-a568-127dc01de86f';
+    jest
+      .spyOn(repository, 'updateReportNum')
+      .mockResolvedValue(comments.commentsData);
+
+    jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
+
+    expect(await service.updateReportNum(id)).toEqual({
+      message: '평판 신고 완료되었습니다',
+      success: true,
+    });
+    try {
+      await service.updateReportNum(null);
+    } catch (err) {
+      expect(err.message).toBe('평판 신고 실패하였습니다');
+    }
+  });
 });

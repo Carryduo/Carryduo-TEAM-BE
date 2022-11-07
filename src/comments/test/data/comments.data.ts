@@ -36,10 +36,10 @@ export const summoner = [
   },
 ];
 
-export const updateContent = {
+export const commentsData = {
   id: '69b1852f-ba0d-438d-a568-127dc01de86f',
-  createdAt: '2022-11-07T04:14:16.049Z',
-  updatedAt: '2022-11-07T04:30:10.000Z',
+  createdAt: new Date('2022-11-07T04:14:16.049Z'),
+  updatedAt: new Date('2022-11-07T04:30:10.000Z'),
   deletedAt: null,
   category: 'summoner',
   content: 'tatata',
