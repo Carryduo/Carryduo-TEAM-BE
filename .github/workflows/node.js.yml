@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-    name: Carryduo-TEAM-BE
     runs-on: ubuntu-18.04
     env:
     strategy:
