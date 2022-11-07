@@ -8,8 +8,8 @@ on:
     branches: [dev, local]
 
 jobs:
-  name: Carryduo-TEAM-BE
   build:
+    name: Carryduo-TEAM-BE
     runs-on: ubuntu-18.04
     env:
     strategy:
