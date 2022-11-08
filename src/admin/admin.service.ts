@@ -8,21 +8,28 @@ import { ChampRepository } from 'src/champ/champ.repository';
 import { UserRepository } from 'src/user/user.repository';
 @Injectable()
 export class AdminService {
-  constructor(private readonly adminRepository: AdminRepository, private jwtService: JwtService, private readonly commentRepository: CommentRepository, private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
+  constructor(
+    private readonly adminRepository: AdminRepository,
+    private jwtService: JwtService,
+    private readonly commentRepository: CommentRepository,
+    private readonly userRepository: UserRepository,
+    private readonly champRepository: ChampRepository,
+  ) {}
 
   async kakaoLogin(data: kakaoPayload) {
     // 유저 검증 및 생성
     let user = await this.adminRepository.checkUser(data);
-    console.log('checkuser', user);
     if (user === null) {
       user = await this.adminRepository.createUser(data);
-      console.log('createuser', user);
     }
 
     return {
       id: user.userId,
       nickname: user.nickname,
-      token: await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }),
+      token: await this.jwtService.signAsync(
+        { sub: user.userId },
+        { secret: process.env.JWT_SECRET_KEY },
+      ),
     };
   }
 
@@ -41,14 +48,20 @@ export class AdminService {
         if (!value.summonerName) {
           target = value.champId.id;
           option = new Brackets((qb) => {
-            qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: value.champId.id });
+            qb.where('comment.category = :category', { category }).andWhere(
+              'comment.champId = :champId',
+              { champId: value.champId.id },
+            );
           });
         } else {
           target = encodeURI(String(value.summonerName.summonerName));
           option = new Brackets((qb) => {
-            qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-              summonerName: value.summonerName.summonerName,
-            });
+            qb.where('comment.category = :category', { category }).andWhere(
+              'comment.summonerName = :summonerName',
+              {
+                summonerName: value.summonerName.summonerName,
+              },
+            );
           });
         }
         const cacheOptions = { category, target, option };
@@ -57,7 +70,11 @@ export class AdminService {
 
       const preferchamp = await this.userRepository.findPreferchamps(userId);
 
-      const preferChampList = [preferchamp.preferChamp1, preferchamp.preferChamp2, preferchamp.preferChamp3];
+      const preferChampList = [
+        preferchamp.preferChamp1,
+        preferchamp.preferChamp2,
+        preferchamp.preferChamp3,
+      ];
 
       for (const pcl of preferChampList) {
         if (pcl !== null) {
@@ -70,7 +87,11 @@ export class AdminService {
 
       // 평판 목록 redis에 갱신하기
       for (const cacheOption of cacheOptionList) {
-        await this.commentRepository.setCommentCache(cacheOption.category, cacheOption.target, cacheOption.option);
+        await this.commentRepository.setCommentCache(
+          cacheOption.category,
+          cacheOption.target,
+          cacheOption.option,
+        );
       }
       return { success: true, message: '회원 탈퇴 완료되었습니다' };
     } catch (error) {
