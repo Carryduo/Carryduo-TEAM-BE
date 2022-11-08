@@ -1,13 +1,5 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
@@ -84,21 +76,13 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
   ])
   mostChamp3: ChampEntity;
 
-  @OneToMany(
-    () => SubscriptionEntity,
-    (subscription: SubscriptionEntity) => subscription.summonerName,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => SubscriptionEntity, (subscription: SubscriptionEntity) => subscription.summonerName, {
+    cascade: true,
+  })
   subscription: SubscriptionEntity;
 
-  @OneToMany(
-    () => CommentEntity,
-    (comment: CommentEntity) => comment.summonerName,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {
+    cascade: true,
+  })
   comment: CommentEntity;
 }

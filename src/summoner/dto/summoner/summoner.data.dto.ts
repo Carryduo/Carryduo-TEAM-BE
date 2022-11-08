@@ -3,17 +3,7 @@ import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { SummonerHistoryResponseDTO } from '../history/history.dto';
 import { SummonerCommonDTO } from './summoner.common.dto';
 
-export class SummonerAllDataDTO extends PickType(SummonerCommonDTO, [
-  'summonerName',
-  'summonerIcon',
-  'summonerLevel',
-  'tier',
-  'tierImg',
-  'lp',
-  'win',
-  'lose',
-  'winRate',
-]) {
+export class SummonerAllDataDTO extends PickType(SummonerCommonDTO, ['summonerName', 'summonerIcon', 'summonerLevel', 'tier', 'tierImg', 'lp', 'win', 'lose', 'winRate']) {
   @ApiProperty({
     description: '모스트챔피언 정보',
     isArray: true,
@@ -26,16 +16,6 @@ export class SummonerAllDataDTO extends PickType(SummonerCommonDTO, [
   history: SummonerHistoryResponseDTO;
 }
 
-export class SummonerDataDTO extends PickType(SummonerCommonDTO, [
-  'summonerName',
-  'summonerIcon',
-  'summonerLevel',
-  'tier',
-  'tierImg',
-  'lp',
-  'win',
-  'lose',
-  'winRate',
-]) {
+export class SummonerDataDTO extends PickType(SummonerCommonDTO, ['summonerName', 'summonerIcon', 'summonerLevel', 'tier', 'tierImg', 'lp', 'win', 'lose', 'winRate']) {
   mostChamps: ChampCommonDTO[];
 }

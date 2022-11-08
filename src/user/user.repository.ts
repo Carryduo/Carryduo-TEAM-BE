@@ -11,28 +11,11 @@ export class UserRepository {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
   async getUserInfo(option, userId: string) {
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.preferChamp1', 'preferChamp1')
-      .leftJoinAndSelect('user.preferChamp2', 'preferChamp2')
-      .leftJoinAndSelect('user.preferChamp3', 'preferChamp3')
-      .select(option)
-      .where('user.userId = :userId', { userId })
-      .getOne();
+    return await this.usersRepository.createQueryBuilder('user').leftJoinAndSelect('user.preferChamp1', 'preferChamp1').leftJoinAndSelect('user.preferChamp2', 'preferChamp2').leftJoinAndSelect('user.preferChamp3', 'preferChamp3').select(option).where('user.userId = :userId', { userId }).getOne();
   }
 
   async updateUserOptionInfo(userId: string, body: OptionRequestDTO) {
-    const {
-      nickname,
-      profileImg,
-      bio,
-      preferPosition,
-      enableChat,
-      preferChamp1,
-      preferChamp2,
-      preferChamp3,
-      tier,
-    } = body;
+    const { nickname, profileImg, bio, preferPosition, enableChat, preferChamp1, preferChamp2, preferChamp3, tier } = body;
 
     await this.usersRepository
       .createQueryBuilder()
@@ -54,10 +37,6 @@ export class UserRepository {
   }
 
   async findPreferchamps(userId) {
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .select(['user.preferChamp1', 'user.preferChamp2', 'user.preferChamp3'])
-      .where('user.userId = :userId', { userId })
-      .getRawOne();
+    return await this.usersRepository.createQueryBuilder('user').select(['user.preferChamp1', 'user.preferChamp2', 'user.preferChamp3']).where('user.userId = :userId', { userId }).getRawOne();
   }
 }

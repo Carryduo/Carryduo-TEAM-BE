@@ -5,9 +5,7 @@ import { IndiviudalChampResponseDto } from './dtos/combination-stat.response.dto
 
 @Injectable()
 export class CombinationStatService {
-  constructor(
-    private readonly combinationStatRepository: CombinationStatRepository,
-  ) {}
+  constructor(private readonly combinationStatRepository: CombinationStatRepository) {}
 
   async getCombinationData(category: string | number) {
     switch (category) {
@@ -29,12 +27,7 @@ export class CombinationStatService {
     return data;
   }
 
-  async getIndiviualChampData(
-    champId: string,
-    position: string,
-  ): Promise<
-    IndiviudalChampResponseDto[] | { result: any[]; message: string }
-  > {
+  async getIndiviualChampData(champId: string, position: string): Promise<IndiviudalChampResponseDto[] | { result: any[]; message: string }> {
     let option;
     switch (position) {
       case 'top':
@@ -110,8 +103,7 @@ export class CombinationStatService {
         };
         break;
     }
-    const dataList =
-      await this.combinationStatRepository.getIndividualChampData(option);
+    const dataList = await this.combinationStatRepository.getIndividualChampData(option);
     const result = [];
     if (dataList.length !== 0) {
       for (const data of dataList) {
