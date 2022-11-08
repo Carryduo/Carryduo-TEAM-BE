@@ -16,7 +16,9 @@ import * as matchIdData from './data/match.id.response.data';
 import * as matchData from './data/match.data.response';
 import * as riotResponse from './data/riot.response.data';
 
+class MockRepository {}
 class CacheMockRepository {}
+class MockSummonerRepository {}
 
 describe('SummonerService', () => {
   let service: SummonerService;
