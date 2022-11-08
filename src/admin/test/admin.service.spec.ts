@@ -26,7 +26,6 @@ describe('AdminService', () => {
   let jwtService: JwtService;
   let commentRepository: CommentRepository;
   let userRepository: UserRepository;
-  let configService: ConfigService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -85,7 +84,6 @@ describe('AdminService', () => {
     adminRepository = module.get<AdminRepository>(AdminRepository);
     commentRepository = module.get<CommentRepository>(CommentRepository);
     jwtService = module.get<JwtService>(JwtService);
-    configService = module.get<ConfigService>(ConfigService);
   });
 
   const loginData = {

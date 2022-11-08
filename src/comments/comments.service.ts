@@ -106,7 +106,6 @@ export class CommentsService {
         success: true,
       };
     } catch (error) {
-      console.log(error);
       throw new HttpException('평판 신고 실패하였습니다', 400);
     }
   }
@@ -145,7 +144,6 @@ export class CommentsService {
         message: '평판 삭제 완료되었습니다',
       };
     } catch (error) {
-      console.log(error);
       throw new HttpException('평판 삭제 실패하였습니다', 400);
     }
   }

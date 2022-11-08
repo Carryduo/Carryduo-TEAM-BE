@@ -68,7 +68,6 @@ export class CommentsController {
       throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
     }
 
-    console.log(`no comment cache in /comments/${category}/${target}`);
     return this.commentService.getComments(category, target);
   }
 

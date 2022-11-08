@@ -1,10 +1,26 @@
 import { UserService } from './user.service';
 import { Controller, Post } from '@nestjs/common';
-import { Get, UseGuards, UseFilters, Param, Body, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Get,
+  UseGuards,
+  UseFilters,
+  Param,
+  Body,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
-import { UserBasicInfoResponseDTO, UserSpecificInfoResponseDTO } from './dto/user.response.dto';
+import {
+  UserBasicInfoResponseDTO,
+  UserSpecificInfoResponseDTO,
+} from './dto/user.response.dto';
 import { OptionRequestDTO } from './dto/user.request.dto';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
 import { User } from 'src/common/decorators/user.decorator';
@@ -42,8 +58,9 @@ export class UserController {
   })
   @Get('/option')
   @UseGuards(jwtGuard)
-  async getLoginUserOptionInfo(@User() user): Promise<UserSpecificInfoResponseDTO> {
-    console.log('no cache here');
+  async getLoginUserOptionInfo(
+    @User() user,
+  ): Promise<UserSpecificInfoResponseDTO> {
     return this.userService.getUserInfo('option', user.userId);
   }
 
@@ -56,7 +73,10 @@ export class UserController {
   })
   @Post('/option')
   @UseGuards(jwtGuard)
-  async updateUserOptionInfo(@User() user, @Body() body: OptionRequestDTO): Promise<CommonResponseDTO> {
+  async updateUserOptionInfo(
+    @User() user,
+    @Body() body: OptionRequestDTO,
+  ): Promise<CommonResponseDTO> {
     return this.userService.updateUserOptionInfo(user.userId, body);
   }
 
@@ -72,7 +92,9 @@ export class UserController {
     type: UserSpecificInfoResponseDTO,
   })
   @Get('/:id')
-  async getIndividualUserInfo(@Param('id', ParseUUIDPipe) param: string): Promise<UserSpecificInfoResponseDTO> {
+  async getIndividualUserInfo(
+    @Param('id', ParseUUIDPipe) param: string,
+  ): Promise<UserSpecificInfoResponseDTO> {
     return this.userService.getUserInfo('individual', param);
   }
 }
