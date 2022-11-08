@@ -23,7 +23,6 @@ describe('AdminService', () => {
   let service: AdminService;
   let adminRepository: AdminRepository;
   let champRepository: ChampRepository;
-  let jwtService: JwtService;
   let commentRepository: CommentRepository;
   let userRepository: UserRepository;
   beforeEach(async () => {
@@ -83,7 +82,6 @@ describe('AdminService', () => {
     champRepository = module.get<ChampRepository>(ChampRepository);
     adminRepository = module.get<AdminRepository>(AdminRepository);
     commentRepository = module.get<CommentRepository>(CommentRepository);
-    jwtService = module.get<JwtService>(JwtService);
   });
 
   const loginData = {
