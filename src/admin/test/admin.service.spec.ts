@@ -115,7 +115,6 @@ describe('AdminService', () => {
   });
 
   it('kakaoLogin test: 카카오 로그인 시, 신규 유저일 경우, 유저를 생성한 뒤 id, nickname, token을 return 하는가?', async () => {
-    console.log(configService.get('key'));
     jest.spyOn(adminRepository, 'checkUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {

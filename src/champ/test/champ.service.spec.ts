@@ -100,18 +100,18 @@ describe('ChampService', () => {
 
   it('getPreferChampUsers는 champId를 찾으면 preferChampUserList return?', async () => {
     const champId = '1';
-    expect(await service.getPreferChampUsers(champId)).toStrictEqual(
+    expect(await service.getPreferChampUsers(champId)).toEqual(
       preferChampUserList,
     );
   });
 
   it('getPreferChampUsers는 champId를 못찾으면 빈 배열을 return?', async () => {
     const champId = '100';
-    expect(await service.getPreferChampUsers(champId)).toStrictEqual([]);
+    expect(await service.getPreferChampUsers(champId)).toEqual([]);
   });
 
   it('getTargetChampion은 detailChampInfo를 리턴?', async () => {
-    expect(await service.getTargetChampion('1')).toStrictEqual(champResponse);
+    expect(await service.getTargetChampion('1')).toEqual(champResponse);
   });
 
   it('getTargetChampion은 champion Id 가 없을 경우 error return?', async () => {

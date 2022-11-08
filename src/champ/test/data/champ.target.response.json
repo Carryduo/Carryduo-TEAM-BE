@@ -3,16 +3,18 @@
   "champNameKo": "애니",
   "champNameEn": "Annie",
   "champImg": "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Annie_0.jpg",
-  "winRate": "50.38",
-  "banRate": "0.04",
-  "pickRate": "0.79",
-  "rate": {
-    "top": "0.76",
-    "jungle": "0.00",
-    "mid": "79.47",
-    "ad": "0.76",
-    "support": "19.01",
-    "version": "old"
+  "winRate": 50.38,
+  "banRate": 0.04,
+  "pickRate": 0.79,
+  "rateInfo": {
+    "rateVersion": "old",
+    "rate": {
+      "top": 0.76,
+      "jungle": 0,
+      "mid": 79.47,
+      "ad": 0.76,
+      "support": 19.01
+    }
   },
   "skill": [
     {
@@ -57,14 +59,14 @@
       "pickRate": 94.82,
       "spell1Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
       "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png",
-      "version": "old"
+      "spellVersion": "old"
     },
     {
       "total": 13,
       "pickRate": 5.18,
       "spell1Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
       "spell2Img": " https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png",
-      "version": "old"
+      "spellVersion": "old"
     }
   ]
 }

@@ -48,11 +48,4 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
 export class UserBasicInfoResponseDTO extends PickType(UserCommonDto, [
   'nickname',
   'profileImg',
-]) {
-  @ApiProperty({
-    example: 'wqeqwQWE244',
-    description: '유저ID',
-    required: false,
-  })
-  userId: string;
-}
+]) {}

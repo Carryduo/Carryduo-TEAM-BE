@@ -185,7 +185,8 @@ export class CommentsService {
         success: true,
         message: '평판 수정 완료되었습니다',
       };
-    } catch {
+    } catch (err) {
+      console.error(err);
       throw new HttpException('평판 수정 실패하였습니다', 400);
     }
   }

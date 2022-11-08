@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
+import { CommentGetResponseDTO, ContentDTO } from './dto/comment.response.dto';
 import { CommentEntity } from './entities/comments.entity';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class CommentRepository {
   //   TODO: 코드 사용성 개선 (쿼리가 불필요하게 많음)
 
   // : Promise<UserBasicInfoResponseDTO[]>
-  async getComments(option) {
+  async getComments(option): Promise<CommentGetResponseDTO[]> {
     return await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')
@@ -90,7 +91,7 @@ export class CommentRepository {
   }
 
   // TODO: UPDATE 수정하기
-  async updateReportNum(id) {
+  async updateReportNum(id): Promise<ContentDTO> {
     await this.commentsRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const data = await transactionalEntityManager
@@ -119,7 +120,7 @@ export class CommentRepository {
     return data;
   }
   // TODO: 없는 COMMENT의 경우에는 없는 평판이라고 메시지 줘야함.
-  async deleteComment(id: string, userId: string) {
+  async deleteComment(id: string, userId: string): Promise<ContentDTO> {
     const value = await this.commentsRepository
       .createQueryBuilder('comment')
       .select()
@@ -150,7 +151,11 @@ export class CommentRepository {
     return value;
   }
 
-  async updateContent(id: string, userId: string, content: string) {
+  async updateContent(
+    id: string,
+    userId: string,
+    content: string,
+  ): Promise<ContentDTO> {
     await this.commentsRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const data = await transactionalEntityManager
@@ -184,7 +189,6 @@ export class CommentRepository {
   //   return;
   // }
   async setCommentCache(category: string, target: string | number, option) {
-    console.log(category, target);
     const result = await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')

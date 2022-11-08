@@ -2,17 +2,11 @@ import { UserRepository } from './user.repository';
 import { HttpException, Injectable } from '@nestjs/common';
 import { OptionRequestDTO } from './dto/user.request.dto';
 import { ChampRepository } from 'src/champ/champ.repository';
-import {
-  UserBasicInfoResponseDTO,
-  UserSpecificInfoResponseDTO,
-} from './dto/user.response.dto';
+import { UserBasicInfoResponseDTO, UserSpecificInfoResponseDTO } from './dto/user.response.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly champRepository: ChampRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
 
   async getUserInfo(category: string, userId: string) {
     try {
@@ -20,29 +14,7 @@ export class UserService {
       if (category === 'login') {
         option = ['user.userId', 'user.nickname', 'user.profileImg'];
       } else if (category === 'option' || category === 'individual') {
-        option = [
-          'user.userId',
-          'user.nickname',
-          'user.tier',
-          'user.bio',
-          'user.profileImg',
-          'user.preferPosition',
-          'user.preferChamp1',
-          'preferChamp1.id',
-          'preferChamp1.champNameKo',
-          'preferChamp1.champNameEn',
-          'preferChamp1.champImg',
-          'user.preferChamp2',
-          'preferChamp2.id',
-          'preferChamp2.champNameKo',
-          'preferChamp2.champNameEn',
-          'preferChamp2.champImg',
-          'user.preferChamp3',
-          'preferChamp3.id',
-          'preferChamp3.champNameKo',
-          'preferChamp3.champNameEn',
-          'preferChamp3.champImg',
-        ];
+        option = ['user.userId', 'user.nickname', 'user.tier', 'user.bio', 'user.profileImg', 'user.preferPosition', 'user.preferChamp1', 'preferChamp1.id', 'preferChamp1.champNameKo', 'preferChamp1.champNameEn', 'preferChamp1.champImg', 'user.preferChamp2', 'preferChamp2.id', 'preferChamp2.champNameKo', 'preferChamp2.champNameEn', 'preferChamp2.champImg', 'user.preferChamp3', 'preferChamp3.id', 'preferChamp3.champNameKo', 'preferChamp3.champNameEn', 'preferChamp3.champImg'];
       }
       const result = await this.userRepository.getUserInfo(option, userId);
       return result;
@@ -54,11 +26,7 @@ export class UserService {
   async updateUserOptionInfo(userId: string, body: OptionRequestDTO) {
     try {
       const preferchamp = await this.userRepository.findPreferchamps(userId);
-      const preferChampList = [
-        preferchamp.preferChamp1,
-        preferchamp.preferChamp2,
-        preferchamp.preferChamp3,
-      ];
+      const preferChampList = [preferchamp.preferChamp1, preferchamp.preferChamp2, preferchamp.preferChamp3];
       for (const pcl of preferChampList) {
         await this.champRepository.delPreferChampCache(pcl);
       }
