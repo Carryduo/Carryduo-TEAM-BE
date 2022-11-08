@@ -67,9 +67,7 @@ describe('SummonerService', () => {
     const puuId = summonerData.data.puuid;
     jest.spyOn(axios, 'get').mockImplementation(async (url) => {
       switch (url) {
-        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
-          summonerName,
-        )}?api_key=${process.env.RIOT_API_KEY}`:
+        case `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${process.env.RIOT_API_KEY}`:
           console.log('summoner');
           return summonerData;
         case `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerData.data.id}?api_key=${process.env.RIOT_API_KEY}`:
@@ -113,15 +111,9 @@ describe('SummonerService', () => {
           return matchData;
       }
     });
-    jest
-      .spyOn(repository, 'getSummonerHistory')
-      .mockImplementation(async (value) => value);
-    jest
-      .spyOn(repository, 'deleteSummonerHistory')
-      .mockImplementation(async (value) => value);
-    expect(await service.summonerRiotRequest('할배탈')).toEqual(
-      riotResponse.summonerData,
-    );
+    jest.spyOn(repository, 'getSummonerHistory').mockImplementation(async (value) => value);
+    jest.spyOn(repository, 'deleteSummonerHistory').mockImplementation(async (value) => value);
+    expect(await service.summonerRiotRequest('할배탈')).toEqual(riotResponse.summonerData);
   });
 
   // it('detail data가 없으면 error return?', () => {
@@ -189,11 +181,9 @@ describe('SummonerService', () => {
   //   expect(await repository.deleteSummonerHistory(false)).toBeFalsy();
   // });
 
-  it('getSummoner summoner가 있으면 DataCleansing으로 없으면 saveSummoner가 실행되는가?', async () => {
-    const summonerName = '할배탈';
-    const summoner = await repository.findSummoner(summonerName);
-    expect(await service.cleansingData(summonerName, summoner)).toBeCalledTimes(
-      1,
-    );
-  });
+  // it('getSummoner summoner가 있으면 DataCleansing으로 없으면 saveSummoner가 실행되는가?', async () => {
+  //   const summonerName = '할배탈';
+  //   const summoner = await repository.findSummoner(summonerName);
+  //   expect(await service.cleansingData(summonerName, summoner)).toBeCalledTimes(1);
+  // });
 });

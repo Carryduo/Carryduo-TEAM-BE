@@ -1,26 +1,5 @@
-import {
-  Controller,
-  UseFilters,
-  Get,
-  Post,
-  Param,
-  Req,
-  Body,
-  UseGuards,
-  Delete,
-  Patch,
-  ParseUUIDPipe,
-  HttpException,
-  UseInterceptors,
-  CacheInterceptor,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete, Patch, ParseUUIDPipe, HttpException, UseInterceptors, CacheInterceptor } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { jwtGuard } from 'src/admin/jwt/jwt.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
@@ -56,10 +35,7 @@ export class CommentsController {
   })
   @UseInterceptors(CacheInterceptor)
   @Get('/:category/:target')
-  getComments(
-    @Param('category', CommentCategoryPipe) category: string,
-    @Param('target') target: string,
-  ) {
+  getComments(@Param('category', CommentCategoryPipe) category: string, @Param('target') target: string) {
     if (isNaN(Number(target))) {
       if (category === 'champ') {
         throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
@@ -92,12 +68,7 @@ export class CommentsController {
   })
   @Post('/:category/:target')
   @UseGuards(jwtGuard)
-  postComment(
-    @Param('category', CommentCategoryPipe) category: string,
-    @Param('target') target: string,
-    @User() user,
-    @Body() body: PostCommentDTO,
-  ) {
+  postComment(@Param('category', CommentCategoryPipe) category: string, @Param('target') target: string, @User() user, @Body() body: PostCommentDTO) {
     if (isNaN(Number(target))) {
       if (category === 'champ') {
         throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
@@ -142,11 +113,7 @@ export class CommentsController {
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
-  updateContent(
-    @Param('id', ParseUUIDPipe) id,
-    @User() user,
-    @Body() body: PostCommentDTO,
-  ) {
+  updateContent(@Param('id', ParseUUIDPipe) id, @User() user, @Body() body: PostCommentDTO) {
     const userId = user.userId;
     return this.commentService.updateContent(id, userId, body.content);
   }

@@ -9,38 +9,24 @@ import { Brackets } from 'typeorm';
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  async getComments(
-    category: string,
-    target: string,
-  ): Promise<CommentGetResponseDTO[]> {
+  async getComments(category: string, target: string): Promise<CommentGetResponseDTO[]> {
     let option;
     if (category === 'champ') {
       option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere(
-          'comment.champId = :champId',
-          { champId: target },
-        );
+        qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
       });
     } else {
       option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere(
-          'comment.summonerName = :summonerName',
-          {
-            summonerName: target,
-          },
-        );
+        qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
+          summonerName: target,
+        });
       });
     }
     const data = await this.commentRepository.getComments(option);
     return data;
   }
 
-  postComment(
-    category: string,
-    target: string,
-    user: AdminResponseDTO,
-    data: PostCommentDTO,
-  ) {
+  postComment(category: string, target: string, user: AdminResponseDTO, data: PostCommentDTO) {
     let value, option;
     if (category === 'champ') {
       value = {
@@ -50,10 +36,7 @@ export class CommentsService {
         content: data.content,
       };
       option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere(
-          'comment.champId = :champId',
-          { champId: target },
-        );
+        qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
       });
     } else {
       value = {
@@ -63,12 +46,9 @@ export class CommentsService {
         content: data.content,
       };
       option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere(
-          'comment.summonerName = :summonerName',
-          {
-            summonerName: target,
-          },
-        );
+        qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
+          summonerName: target,
+        });
       });
     }
     return this.commentRepository.postComment(value, option, target);
@@ -83,20 +63,14 @@ export class CommentsService {
         // interceptor를 통한 캐싱과 한글 인코딩 통일
         target = encodeURI(String(data.summonerName.summonerName));
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.summonerName = :summonerName',
-            {
-              summonerName: data.summonerName.summonerName,
-            },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
+            summonerName: data.summonerName.summonerName,
+          });
         });
       } else {
         target = data.champId.id;
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.champId = :champId',
-            { champId: target },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
         });
       }
       // 캐싱 적용
@@ -119,20 +93,14 @@ export class CommentsService {
         // interceptor를 통한 캐싱과 한글 인코딩 통일
         target = encodeURI(String(data.summonerName.summonerName));
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.summonerName = :summonerName',
-            {
-              summonerName: data.summonerName.summonerName,
-            },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
+            summonerName: data.summonerName.summonerName,
+          });
         });
       } else {
         target = data.champId.id;
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.champId = :champId',
-            { champId: target },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
         });
       }
 
@@ -150,31 +118,21 @@ export class CommentsService {
 
   async updateContent(id: string, userId: string, content: string) {
     try {
-      const data = await this.commentRepository.updateContent(
-        id,
-        userId,
-        content,
-      );
+      const data = await this.commentRepository.updateContent(id, userId, content);
       const category = data.category;
       let target, option;
       if (!data.champId) {
         // interceptor를 통한 캐싱과 한글 인코딩 통일
         target = encodeURI(String(data.summonerName.summonerName));
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.summonerName = :summonerName',
-            {
-              summonerName: data.summonerName.summonerName,
-            },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
+            summonerName: data.summonerName.summonerName,
+          });
         });
       } else {
         target = data.champId.id;
         option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere(
-            'comment.champId = :champId',
-            { champId: target },
-          );
+          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
         });
       }
       // 캐싱 적용

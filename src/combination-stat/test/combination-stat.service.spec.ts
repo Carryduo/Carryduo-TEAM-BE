@@ -8,9 +8,7 @@ const mockRepository = () => {
   createQueryBuilder: jest.fn();
 };
 
-const cloneData_individualChampData = JSON.parse(
-  JSON.stringify(testData.result_individualChamp),
-);
+const cloneData_individualChampData = JSON.parse(JSON.stringify(testData.result_individualChamp));
 describe('CombinationStatController', () => {
   let service: CombinationStatService;
   let repository: CombinationStatRepository;
@@ -27,9 +25,7 @@ describe('CombinationStatController', () => {
       ],
     }).compile();
     service = module.get<CombinationStatService>(CombinationStatService);
-    repository = module.get<CombinationStatRepository>(
-      CombinationStatRepository,
-    );
+    repository = module.get<CombinationStatRepository>(CombinationStatRepository);
   });
 
   it('request로 받은 category에 대응해 TierList를 response 하는가?', async () => {
@@ -45,15 +41,9 @@ describe('CombinationStatController', () => {
           }
         }),
     );
-    expect(await service.getCombinationData('top-jungle')).toEqual(
-      testData.result0_tierList,
-    );
-    expect(await service.getCombinationData('mid-jungle')).toEqual(
-      testData.result1_tierList,
-    );
-    expect(await service.getCombinationData('ad-support')).toEqual(
-      testData.result2_tierList,
-    );
+    expect(await service.getCombinationData('top-jungle')).toEqual(testData.result0_tierList);
+    expect(await service.getCombinationData('mid-jungle')).toEqual(testData.result1_tierList);
+    expect(await service.getCombinationData('ad-support')).toEqual(testData.result2_tierList);
   });
 
   it('individualChamp 테스트: 데이터가 없는 경우에 에러 메시지를 잘 응답하는가?', async () => {
