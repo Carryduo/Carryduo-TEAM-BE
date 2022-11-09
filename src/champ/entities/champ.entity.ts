@@ -1,6 +1,6 @@
 import { CombinationStatEntity } from './../../combination-stat/entities/combination-stat.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { ChampSkillInfoEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -29,7 +29,7 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
-  @OneToOne(
+  @OneToMany(
     () => ChampRateEntity,
     (champRate: ChampRateEntity) => champRate.champId,
     {
