@@ -1,5 +1,5 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ChampEntity } from './champ.entity';
 
 @Entity({
@@ -33,7 +33,10 @@ export class ChampRateEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false, default: 'old' })
   version: string;
 
-  @OneToOne(() => ChampEntity)
+  @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn([
     {
       name: 'champId',

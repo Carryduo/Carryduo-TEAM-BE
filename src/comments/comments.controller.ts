@@ -79,8 +79,6 @@ export class CommentsController {
     return this.commentService.postComment(category, target, user, body);
   }
 
-  // TODO: id validator 필요
-
   @ApiOperation({ summary: '평판 신고' })
   @ApiParam({
     name: 'id',
