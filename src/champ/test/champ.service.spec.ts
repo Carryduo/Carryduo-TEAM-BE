@@ -35,6 +35,9 @@ class MockChampRepository {
       }
     }
   }
+  rateLatestVesion() {
+    return 'version';
+  }
 
   getTargetChampion(champId) {
     if (!this.champIds.includes(champId)) {
@@ -42,6 +45,10 @@ class MockChampRepository {
     } else {
       return testData.champInfo;
     }
+  }
+
+  spellLatestVesion() {
+    return 'version';
   }
 
   getChampSpell(champId) {
