@@ -16,15 +16,15 @@ export class ChampRepository {
     private readonly champRepository: Repository<ChampEntity>,
     @InjectRepository(ChampSpellEntity)
     private readonly champSpellRepository: Repository<ChampSpellEntity>,
+    @InjectRepository(ChampRateEntity)
+    private readonly champRateRepository: Repository<ChampRateEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
   ) {}
 
-  async findPreferChampUsers(
-    champId: string,
-  ): Promise<preferChampUsersDTO[] | []> {
+  async findPreferChampUsers(champId: string): Promise<preferChampUsersDTO[] | []> {
     return this.userRepository
       .createQueryBuilder('user')
       .where(
@@ -50,47 +50,22 @@ export class ChampRepository {
   }
 
   async getChampList() {
-    return await this.champRepository
-      .createQueryBuilder()
-      .select([
-        'champId AS id',
-        'champ_name_ko AS champNameKo ',
-        'champ_name_en AS champNameEn',
-        'champ_main_img AS champMainImg',
-        'champ_img AS champImg',
-      ])
-      .orderBy('champ_name_ko', 'ASC')
-      .getRawMany();
+    return await this.champRepository.createQueryBuilder().select(['champId AS id', 'champ_name_ko AS champNameKo ', 'champ_name_en AS champNameEn', 'champ_main_img AS champMainImg', 'champ_img AS champImg']).orderBy('champ_name_ko', 'ASC').getRawMany();
   }
 
-  async getTargetChampion(champId: string) {
+  async rateLatestVesion() {
+    return await this.champRateRepository.createQueryBuilder('rate').select('DISTINCT rate.version').where('rate.version <> :version', { version: 'old' }).orderBy('rate.version', 'DESC').getRawMany();
+  }
+
+  async getTargetChampion(champId: string, version: string) {
     try {
       return await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champSkillInfo', 'skill')
         .leftJoinAndSelect('champ.champRate', 'rate')
-        .select([
-          'champ.id',
-          'champ.champNameKo',
-          'champ.champNameEn',
-          'champ.champMainImg',
-          'skill.skillId',
-          'skill.skillName',
-          'skill.skillDesc',
-          'skill.skillToolTip',
-          'skill.skillImg',
-          'rate.winRate',
-          'rate.banRate',
-          'rate.pickRate',
-          'rate.topRate',
-          'rate.jungleRate',
-          'rate.midRate',
-          'rate.adRate',
-          'rate.supportRate',
-          'rate.version',
-        ])
+        .select(['champ.id', 'champ.champNameKo', 'champ.champNameEn', 'champ.champMainImg', 'skill.skillId', 'skill.skillName', 'skill.skillDesc', 'skill.skillToolTip', 'skill.skillImg', 'rate.winRate', 'rate.banRate', 'rate.pickRate', 'rate.topRate', 'rate.jungleRate', 'rate.midRate', 'rate.adRate', 'rate.supportRate', 'rate.version'])
         .where('champ.id = :champId', { champId })
-        .andWhere('rate.version = :version', { version: 'old' })
+        .andWhere('rate.version = :version', { version })
         .orderBy('skill.createdAt', 'ASC')
         .getOne();
     } catch (err) {
@@ -98,21 +73,11 @@ export class ChampRepository {
     }
   }
 
-  async getChampSpell(champId: string): Promise<ChampSpellCommonDTO | []> {
-    return await this.champSpellRepository
-      .createQueryBuilder('spell')
-      .where('spell.champId = :champId', { champId })
-      .andWhere('spell.version = :version', { version: 'old' })
-      .select([
-        'spell.spell1',
-        'spell.spell2',
-        'spell.pickRate',
-        'spell.sampleNum',
-        'spell.version',
-        'spell.champId',
-      ])
-      .orderBy('spell.pickRate', 'DESC')
-      .limit(2)
-      .execute();
+  async spellLatestVesion() {
+    return await this.champSpellRepository.createQueryBuilder('spell').select('DISTINCT spell.version').where('spell.version <> :version', { version: 'old' }).orderBy('spell.version', 'DESC').getRawMany();
+  }
+
+  async getChampSpell(champId: string, version: string): Promise<ChampSpellCommonDTO | []> {
+    return await this.champSpellRepository.createQueryBuilder('spell').where('spell.champId = :champId', { champId }).andWhere('spell.version = :version', { version }).select(['spell.spell1', 'spell.spell2', 'spell.pickRate', 'spell.sampleNum', 'spell.version', 'spell.champId']).orderBy('spell.pickRate', 'DESC').limit(2).execute();
   }
 }
