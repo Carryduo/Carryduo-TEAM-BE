@@ -158,11 +158,11 @@ export class ChampService {
     });
 
     const rate: ChampPosition = {
-      top: Number(champInfo.champRate.topRate),
-      jungle: Number(champInfo.champRate.jungleRate),
-      mid: Number(champInfo.champRate.midRate),
-      ad: Number(champInfo.champRate.adRate),
-      support: Number(champInfo.champRate.supportRate),
+      top: Number(champInfo.champRate[0].topRate),
+      jungle: Number(champInfo.champRate[0].jungleRate),
+      mid: Number(champInfo.champRate[0].midRate),
+      ad: Number(champInfo.champRate[0].adRate),
+      support: Number(champInfo.champRate[0].supportRate),
     };
 
     const data = {
@@ -170,11 +170,11 @@ export class ChampService {
       champNameKo: champInfo.champNameKo,
       champNameEn: champInfo.champNameEn,
       champImg: champInfo.champMainImg,
-      winRate: Number(champInfo.champRate.winRate),
-      banRate: Number(champInfo.champRate.banRate),
-      pickRate: Number(champInfo.champRate.pickRate),
+      winRate: Number(champInfo.champRate[0].winRate),
+      banRate: Number(champInfo.champRate[0].banRate),
+      pickRate: Number(champInfo.champRate[0].pickRate),
       rateInfo: {
-        rateVersion: champInfo.champRate.version,
+        rateVersion: champInfo.champRate[0].version,
         rate,
       },
       skill,
