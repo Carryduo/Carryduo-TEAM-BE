@@ -67,14 +67,6 @@ describe('ChampService', () => {
         { provide: ChampRepository, useClass: MockChampRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         {
-          provide: getRepositoryToken(ChampRateEntity),
-          useClass: MockRepository,
-        },
-        {
-          provide: getRepositoryToken(ChampSkillInfoEntity),
-          useClass: MockRepository,
-        },
-        {
           provide: getRepositoryToken(ChampSpellEntity),
           useClass: MockRepository,
         },

@@ -14,11 +14,6 @@ export class ChampRepository {
   constructor(
     @InjectRepository(ChampEntity)
     private readonly champRepository: Repository<ChampEntity>,
-    @InjectRepository(ChampRateEntity)
-    private readonly champRateRepository: Repository<ChampRateEntity>,
-    @InjectRepository(ChampSkillInfoEntity)
-    private readonly skillRepository: Repository<ChampSkillInfoEntity>,
-
     @InjectRepository(ChampSpellEntity)
     private readonly champSpellRepository: Repository<ChampSpellEntity>,
     @InjectRepository(UserEntity)
