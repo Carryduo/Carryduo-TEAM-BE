@@ -8,6 +8,8 @@ export class CombinationStatService {
   constructor(private readonly combinationStatRepository: CombinationStatRepository) {}
 
   async getCombinationData(category: string | number) {
+    const versions = await this.combinationStatRepository.getLatestVersion();
+    const latestVersion = versions[0].version;
     switch (category) {
       case 'top-jungle':
         category = 0;
@@ -19,7 +21,7 @@ export class CombinationStatService {
         category = 2;
         break;
     }
-    const data = await this.combinationStatRepository.getTierList(category);
+    const data = await this.combinationStatRepository.getTierList(category, latestVersion);
     data.map((value) => {
       value.winrate = Number((value.winrate * 100).toFixed(2));
       return value;
@@ -28,6 +30,8 @@ export class CombinationStatService {
   }
 
   async getIndiviualChampData(champId: string, position: string): Promise<IndiviudalChampResponseDto[] | { result: any[]; message: string }> {
+    const versions = await this.combinationStatRepository.getLatestVersion();
+    const latestVersion = versions[0].version;
     let option;
     switch (position) {
       case 'top':
@@ -103,7 +107,7 @@ export class CombinationStatService {
         };
         break;
     }
-    const dataList = await this.combinationStatRepository.getIndividualChampData(option);
+    const dataList = await this.combinationStatRepository.getIndividualChampData(option, latestVersion);
     const result = [];
     if (dataList.length !== 0) {
       for (const data of dataList) {
