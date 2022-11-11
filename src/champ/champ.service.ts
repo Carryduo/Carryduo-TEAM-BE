@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChampRepository } from './champ.repository';
 import { ChampDetailCommonDTO } from './dto/champ-detail/champ.detail.common.dto';
-import {
-  ChampDetailResponseDTO,
-  spellData,
-} from './dto/champ-detail/champ.detail.dto';
+import { ChampDetailResponseDTO, spellData } from './dto/champ-detail/champ.detail.dto';
 import { ChampPosition } from './dto/champ-rate/champ.rate.dto';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
@@ -17,13 +14,10 @@ export class ChampService {
 
   async getTargetChampion(champId: string): Promise<ChampDetailResponseDTO> {
     const skill: ChampDetailCommonDTO[] = [];
-
-    const champInfo = await this.champRepository.getTargetChampion(champId);
+    const rateVersionList = await this.champRepository.rateLatestVesion();
+    const champInfo = await this.champRepository.getTargetChampion(champId, rateVersionList[0].version);
     if (!champInfo) {
-      throw new HttpException(
-        '해당하는 챔피언 정보가 없습니다.',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
     }
 
     const SummonerBarrier = 21;
@@ -37,8 +31,8 @@ export class ChampService {
     const SummonerSmite = 11;
     const SummonerTeleport = 12;
 
-    const champSpellData = await this.champRepository.getChampSpell(champId);
-
+    const spellVersionList = await this.champRepository.spellLatestVesion();
+    const champSpellData = await this.champRepository.getChampSpell(champId, spellVersionList[0].version);
     let spell1Img: string;
     let spell2Img: string;
 
@@ -48,90 +42,69 @@ export class ChampService {
       const key = csd;
       switch (champSpellData[key].spell_spell1) {
         case SummonerBarrier:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
           break;
         case SummonerBoost:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
           break;
         case SummonerDot:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
           break;
         case SummonerExhaust:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
           break;
         case SummonerFlash:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
           break;
         case SummonerHaste:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
           break;
         case SummonerHeal:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
         case SummonerMana:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
           break;
         case SummonerSmite:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
           break;
         case SummonerTeleport:
-          spell1Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
+          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
           break;
       }
       switch (champSpellData[key].spell_spell2) {
         case SummonerBarrier:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
           break;
         case SummonerBoost:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
           break;
         case SummonerDot:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
           break;
         case SummonerExhaust:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
           break;
         case SummonerFlash:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
           break;
         case SummonerHaste:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
           break;
         case SummonerHeal:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
           break;
         case SummonerMana:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
           break;
         case SummonerSmite:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
           break;
         case SummonerTeleport:
-          spell2Img =
-            ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
+          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
           break;
       }
       //상위 2개의 스펠데이터에서 픽률을 다시 구한다.
-      const sampleNum =
-        champSpellData[0].spell_sample_num + champSpellData[1].spell_sample_num;
+      const sampleNum = champSpellData[0].spell_sample_num + champSpellData[1].spell_sample_num;
 
       let pickRate = (champSpellData[key].spell_sample_num / sampleNum) * 100;
       pickRate = Number(pickRate.toFixed(2));

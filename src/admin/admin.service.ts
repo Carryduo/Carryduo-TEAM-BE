@@ -24,7 +24,6 @@ export class AdminService {
     };
   }
 
-  // TODO: 엄밀하게는 트랜젝션 걸어야함.
   async deleteUser(userId: string) {
     try {
       // 작성한 평판 목록 조회

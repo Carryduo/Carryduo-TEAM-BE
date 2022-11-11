@@ -29,8 +29,14 @@ describe('CombinationStatController', () => {
   });
 
   it('request로 받은 category에 대응해 TierList를 response 하는가?', async () => {
+    jest.spyOn(repository, 'getLatestVersion').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: 'example' }]);
+        }),
+    );
     jest.spyOn(repository, 'getTierList').mockImplementation(
-      (category) =>
+      (category, version) =>
         new Promise((resolve) => {
           if (category === 0) {
             resolve(testData.result0_tierList);
@@ -47,8 +53,15 @@ describe('CombinationStatController', () => {
   });
 
   it('individualChamp 테스트: 데이터가 없는 경우에 에러 메시지를 잘 응답하는가?', async () => {
+    jest.spyOn(repository, 'getLatestVersion').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: 'example' }]);
+        }),
+    );
+
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option) =>
+      (option, version) =>
         new Promise((resolve) => {
           resolve(testData.result_individualChamp_noResponse);
         }),
@@ -60,8 +73,15 @@ describe('CombinationStatController', () => {
   });
 
   it('individualChamp 테스트: 포지션이 정글/서폿이 아닌 경우, mainChampId <-> subChampId 변경X', async () => {
+    jest.spyOn(repository, 'getLatestVersion').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: 'example' }]);
+        }),
+    );
+
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option) =>
+      (option, version) =>
         new Promise((resolve) => {
           resolve(testData.result_individualChamp);
         }),
@@ -79,8 +99,15 @@ describe('CombinationStatController', () => {
   });
 
   it('individualChamp 테스트: 포지션이 서폿인 경우, mainChampId <-> subChampId 변경', async () => {
+    jest.spyOn(repository, 'getLatestVersion').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: 'example' }]);
+        }),
+    );
+
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option) =>
+      (option, version) =>
         new Promise((resolve) => {
           resolve(testData.result_individualChamp);
         }),
@@ -92,8 +119,15 @@ describe('CombinationStatController', () => {
   });
 
   it('individualChamp 테스트: 포지션이 정글인 경우, mainChampId <-> subChampId 변경', async () => {
+    jest.spyOn(repository, 'getLatestVersion').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: 'example' }]);
+        }),
+    );
+
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option) =>
+      (option, version) =>
         new Promise((resolve) => {
           resolve(cloneData_individualChampData);
         }),

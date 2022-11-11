@@ -29,57 +29,29 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
-  @OneToMany(
-    () => ChampRateEntity,
-    (champRate: ChampRateEntity) => champRate.champId,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => ChampRateEntity, (champRate: ChampRateEntity) => champRate.champId, {
+    cascade: true,
+  })
   champRate: ChampRateEntity;
 
-  @OneToMany(
-    () => ChampSpellEntity,
-    (champSpell: ChampSpellEntity) => champSpell.champId,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => ChampSpellEntity, (champSpell: ChampSpellEntity) => champSpell.champId, {
+    cascade: true,
+  })
   champSpell: ChampSpellEntity;
 
-  @OneToMany(
-    () => ChampSkillInfoEntity,
-    (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => ChampSkillInfoEntity, (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId, {
+    cascade: true,
+  })
   champSkillInfo: ChampSkillInfoEntity;
 
-  @OneToMany(
-    () => SummonerEntity,
-    (summoner: SummonerEntity) => [
-      summoner.mostChamp1,
-      summoner.mostChamp2,
-      summoner.mostChamp3,
-    ],
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => SummonerEntity, (summoner: SummonerEntity) => [summoner.mostChamp1, summoner.mostChamp2, summoner.mostChamp3], {
+    cascade: true,
+  })
   summoner: SummonerEntity;
 
-  @OneToMany(
-    () => UserEntity,
-    (user: UserEntity) => [
-      user.preferChamp1,
-      user.preferChamp2,
-      user.preferChamp3,
-    ],
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => UserEntity, (user: UserEntity) => [user.preferChamp1, user.preferChamp2, user.preferChamp3], {
+    cascade: true,
+  })
   user: UserEntity;
 
   @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.champId, {
@@ -87,29 +59,13 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   })
   comment: CommentEntity;
 
-  @OneToMany(
-    () => CombinationStatEntity,
-    (combinationStat: CombinationStatEntity) => [
-      combinationStat.mainChampId,
-      combinationStat.subChampId,
-    ],
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => CombinationStatEntity, (combinationStat: CombinationStatEntity) => [combinationStat.mainChampId, combinationStat.subChampId], {
+    cascade: true,
+  })
   combinationStat: CombinationStatEntity;
 
-  @OneToMany(
-    () => SimulationEntity,
-    (simulation: SimulationEntity) => [
-      simulation.champ1Id,
-      simulation.champ2Id,
-      simulation.champ3Id,
-      simulation.champ4Id,
-    ],
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => SimulationEntity, (simulation: SimulationEntity) => [simulation.champ1Id, simulation.champ2Id, simulation.champ3Id, simulation.champ4Id], {
+    cascade: true,
+  })
   simulation: SimulationEntity;
 }
