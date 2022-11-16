@@ -8,16 +8,67 @@ import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 @Injectable()
 export class ChampService {
   constructor(private readonly champRepository: ChampRepository) {}
+
+  async getVersion(versions) {
+    let data = [];
+    for (const value of versions) {
+      data.push(value.version);
+    }
+
+    data = data.filter((version) => {
+      if (version[version.length - 1] === '.') {
+        version = version.slice(0, -1);
+      }
+      if (!isNaN(Number(version))) {
+        return version;
+      }
+    });
+    data = data.sort((a, b) => {
+      return b.split('.')[0] - a.split('.')[0];
+    });
+    let versionList_DESC = [];
+    let outdatedVersionList = [];
+    // recentVersion = 13.10 에서 13을 의미
+    const recentVersion = Number(String(data[0]).split('.')[0]);
+    for (let i = 0; i < data.length; i++) {
+      const version = data[i];
+      if (Number(version.split('.')[0]) < recentVersion) {
+        outdatedVersionList.push(version);
+      } else {
+        versionList_DESC.push(version);
+      }
+    }
+    // 최근버전 모음 (ex 13.1, 13.10)
+    versionList_DESC = versionList_DESC.sort((a, b) => {
+      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
+    });
+    // 이전버전 모음  (ex. 12.1, 12.10)
+    outdatedVersionList = outdatedVersionList.sort((a, b) => {
+      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
+    });
+    // 최신버전 모음 뒤에 이전버전 합치기
+    versionList_DESC.push(...outdatedVersionList);
+    return versionList_DESC;
+  }
+
   async getChampList() {
     return await this.champRepository.getChampList();
   }
 
   async getTargetChampion(champId: string): Promise<ChampDetailResponseDTO> {
-    const skill: ChampDetailCommonDTO[] = [];
-    const rateVersionList = await this.champRepository.rateLatestVesion();
-    const champInfo = await this.champRepository.getTargetChampion(champId, rateVersionList[0].version);
-    if (!champInfo) {
+    const existChamp = await this.champRepository.existChamp(champId);
+
+    if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
+    }
+    const skill: ChampDetailCommonDTO[] = [];
+
+    const rateVersionList = await this.champRepository.rateVersion();
+    const rateLatestVersions = await this.getVersion(rateVersionList);
+
+    let champInfo = await this.champRepository.getTargetChampion(champId, rateLatestVersions[0]);
+    if (!champInfo) {
+      champInfo = await this.champRepository.getTargetChampion(champId, rateLatestVersions[1]);
     }
 
     const SummonerBarrier = 21;
@@ -31,8 +82,14 @@ export class ChampService {
     const SummonerSmite = 11;
     const SummonerTeleport = 12;
 
-    const spellVersionList = await this.champRepository.spellLatestVesion();
-    const champSpellData = await this.champRepository.getChampSpell(champId, spellVersionList[0].version);
+    const spellVersionList = await this.champRepository.spellVersion();
+    const spellLatestVersions = await this.getVersion(spellVersionList);
+    let champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[0]);
+
+    if (champSpellData.length === 0) {
+      champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[1]);
+    }
+
     let spell1Img: string;
     let spell2Img: string;
 
