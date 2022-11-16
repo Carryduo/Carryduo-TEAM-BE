@@ -24,6 +24,10 @@ export class ChampRepository {
     private cacheManager: Cache,
   ) {}
 
+  async existChamp(champId) {
+    return await this.champRepository.createQueryBuilder().where('champId = :champId', { champId }).getOne();
+  }
+
   async findPreferChampUsers(champId: string): Promise<preferChampUsersDTO[] | []> {
     return this.userRepository
       .createQueryBuilder('user')
@@ -53,8 +57,8 @@ export class ChampRepository {
     return await this.champRepository.createQueryBuilder().select(['champId AS id', 'champ_name_ko AS champNameKo ', 'champ_name_en AS champNameEn', 'champ_main_img AS champMainImg', 'champ_img AS champImg']).orderBy('champ_name_ko', 'ASC').getRawMany();
   }
 
-  async rateLatestVesion() {
-    return await this.champRateRepository.createQueryBuilder('rate').select('DISTINCT rate.version').where('rate.version <> :version', { version: 'old' }).orderBy('rate.version', 'DESC').getRawMany();
+  async rateVersion() {
+    return await this.champRateRepository.createQueryBuilder('rate').select('DISTINCT rate.version').where('rate.version <> :version', { version: 'old' }).getRawMany();
   }
 
   async getTargetChampion(champId: string, version: string) {
@@ -73,11 +77,11 @@ export class ChampRepository {
     }
   }
 
-  async spellLatestVesion() {
-    return await this.champSpellRepository.createQueryBuilder('spell').select('DISTINCT spell.version').where('spell.version <> :version', { version: 'old' }).orderBy('spell.version', 'DESC').getRawMany();
+  async spellVersion() {
+    return await this.champSpellRepository.createQueryBuilder('spell').select('DISTINCT spell.version').where('spell.version <> :version', { version: 'old' }).getRawMany();
   }
 
-  async getChampSpell(champId: string, version: string): Promise<ChampSpellCommonDTO | []> {
+  async getChampSpell(champId: string, version: string) {
     return await this.champSpellRepository.createQueryBuilder('spell').where('spell.champId = :champId', { champId }).andWhere('spell.version = :version', { version }).select(['spell.spell1', 'spell.spell2', 'spell.pickRate', 'spell.sampleNum', 'spell.version', 'spell.champId']).orderBy('spell.pickRate', 'DESC').limit(2).execute();
   }
 }
