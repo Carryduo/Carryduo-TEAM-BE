@@ -11,8 +11,8 @@ export class CombinationStatRepository {
     private readonly combinationStatRepository: Repository<CombinationStatEntity>,
   ) {}
 
-  async getLatestVersion(): Promise<{ version: string }[]> {
-    return await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select('DISTINCT COMBINATION_STAT.version').where('COMBINATION_STAT.version != :version', { version: 'old' }).orderBy('COMBINATION_STAT.version', 'DESC').getRawMany();
+  async getVersions(): Promise<{ version: string }[]> {
+    return await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select(['DISTINCT COMBINATION_STAT.version']).getRawMany();
   }
   //   mainPage 티어리스트
   async getTierList(category, version): Promise<CombinationStatCommonDto[]> {
