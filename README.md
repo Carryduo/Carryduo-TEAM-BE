@@ -1,24 +1,23 @@
-롤 듀오 서칭 플랫폼
-
 # [Carryduo][Carryduo-link]
 
 [Carryduo-link]: https://www.carryduo.site
 
-#### 리그 오브 레전드 게임데이터 및 듀오데이터 제공 사이트 
+#### 리그 오브 레전드 게임 데이터 및 듀오 데이터 제공 사이트 
 
 ---
 
 ## 프로젝트 소개
 
-### Architecture
-
-![Carryduo 서비스 ERD](https://user-images.githubusercontent.com/91710667/202378401-9a983754-d8f1-4f41-8d8b-d79e62d2b283.png)
-
-### ERD
+### 🛠 Architecture
 
 ![Carryduo 서비스 아키텍처](https://user-images.githubusercontent.com/91710667/202378441-9b647519-012a-4adf-b820-3b1bd91c2e82.png)
 
-### 기능
+### 📈 ERD
+
+![Carryduo 서비스 ERD](https://user-images.githubusercontent.com/91710667/202378401-9a983754-d8f1-4f41-8d8b-d79e62d2b283.png)
+
+
+### 🚀 기능
 
 #### 카카오 소셜 로그인 제공
 
@@ -60,19 +59,18 @@
 
 
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![Amazon EC2](https://img.shields.io/badge/Amazon EC2-FF9900.svg?style=for-the-badge&logo=Amazon EC2&logoColor=white)
+![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900.svg?style=for-the-badge&logo=Amazon%20EC2&logoColor=white)
 
 #### DataBase
 
-
-![Amazon RDS](https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white)
+![RDS](https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 
 #### Dev tools
 
 
-<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/github-181717.svg?style=for-the-badge&logo=github&logoColor=white">
 
 <hr>
 
