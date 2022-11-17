@@ -72,6 +72,22 @@
 
 <img src="https://img.shields.io/badge/github-181717.svg?style=for-the-badge&logo=github&logoColor=white">
 
+#### Library
+| Name                | Appliance               | Version  |
+| :-----------------: | :---------------------: | :------: |
+| cache-manager</br>cache-manager-redis-store   | 캐시 관리</br>캐시 저장소 레디스 사용  |4.1.0</br>2.0.0|
+| class-transformer   | 객체 변환              |0.5.1|
+| class-validator     | 유효성 검사            |0.13.2|
+| mysql2              | mysql 드라이버         |2.3.3|
+| @nestjs/typeorm</br>typeorm  | mySQL ORM             |9.0.1</br>0.3.9|
+| @nestjs/swagger     | API 문서화            |6.1.2|
+| express-basic-auth  | swagger 보안 설정      |1.2.1|
+| axios               |  API 통신(RIOT API)     |0.27.2|
+| @nestjs/passport</br>passport-kakao      | 카카오 소셜 로그인      |9.0.0</br>1.0.1|
+| passport-jwt        | JWT토큰 발급            |4.0.0|
+| eslint</br>prettier | 소스코드 규격            |8.0.1</br>2.3.2|
+| @nestjs/testing</br>jest          |  테스트코드             |9.0.0</br>28.1.3|
+
 <hr>
 
 ## 🔥이슈 및 트러블슈팅
@@ -86,7 +102,7 @@
 </details>
 
 <details>
-<summary><b>➡️ useSWR</b></summary>
+<summary><b>➡️ </b></summary>
   
 > **문제** : 
 >
