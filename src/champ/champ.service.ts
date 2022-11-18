@@ -86,7 +86,7 @@ export class ChampService {
     const spellLatestVersions = await this.getVersion(spellVersionList);
     let champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[0]);
 
-    if (champSpellData.length === 0) {
+    if (champSpellData.length < 2) {
       champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[1]);
     }
 
