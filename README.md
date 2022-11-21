@@ -98,20 +98,23 @@
 
 <details>
 <summary><b>➡️ 리그오브레전드 패치버전 업데이트에 대응한 데이터 관리 </b></summary>
->  
+<br/>
+  
 > **문제1** : 리그오브레전드에 새로운 패치버전이 업데이트 되면, 이전 패치버전의 챔피언 데이터는 사용자에게 무용한 데이터가 됩니다. 기존 데이터 분석 프로젝트에서는 패치버전을 고려하지 않아, outdated한 표본이 데이터에 지속적으로 쌓여, 데이터의 유의미성이 저하되는 문제가 있었습니다.
 >
-> **해결1** : 패치버전에 따라 데이터를 구분해서 수집/분석하도록 데이터 분석 로직을 수정하고, 사용자에게 무용한  패치버전 데이터는 주기적으로 폐기처분하도록 하여, 데이터 최신화와 DB 용량 관리를 동시에 실현했습니다.
-> [코드스니펫][CodeSnipet1]
+> **해결1** : 패치버전에 따라 데이터를 구분해서 수집/분석하도록 데이터 분석 로직을 수정하고, 사용자에게 무용한  패치버전 데이터는 주기적으로 폐기처분하도록 하여, 데이터 최신화와 DB 용량 관리를 동시에 실현했습니다. <br/> <br/>
+> **코드스니펫** <br/>
+  > [1) Outdated한 데이터 폐기 로직 코드스니펫][CodeSnipet1]
 
 [CodeSnipet1]: https://github.com/Carryduo/Carryduo-DataAnalysis/blob/40bbbeb2dc79e78fd9ab4fa068c1e597a68bc693/analyze/data-retirement/data.retirement.controller.js#L21-L112
 
->
+
 > **문제2** : 리그오브레전드에 새로운 패치버전이 업데이트 되었을 시에 패치 초반에는 분석된 데이터의 양이 현저히 적어, 분석이 되지 않은 챔피언의 경우, 분석 데이터 값이 null로 응답되는 문제가 발생했습니다. 데이터 분석용 DB에서 유저에게 데이터를 제공하는 서비스용 DB로 데이터를 이관하는 스케줄이 1시간 30분으로 설정되어있기 때문이었습니다.
 >
-> **해결2** : 1) 최신 패치버전에 대응한 챔피언 데이터가 없는 경우, 이전 패치버전을 response하도록 로직을 개선했습니다. 2)transferStatus라는 데이터 이관 주기 상태값을 데이터 분석 스케줄러에 적용하여, 데이터 이관 주기를 기존 1시간 30분에서 12시간으로 변경하여, 새로운 패치 초반 단계에서 특정 챔피언에 대한 response 값이 null로 뜨는 현상을 방지하였습니다. 
-> [데이터가 없는 경우, 이전 패치버전 response 적용 코드스니펫]: [CodeSnipet2]
-> [스케줄러에 transferStatus 적용 코드스니펫]: [CodeSnipet3]
+> **해결2** : 1) 최신 패치버전에 대응한 챔피언 데이터가 없는 경우, 이전 패치버전을 response하도록 로직을 개선했습니다. 2)transferStatus라는 데이터 이관 주기 상태값을 데이터 분석 스케줄러에 적용하여, 데이터 이관 주기를 기존 1시간 30분에서 12시간으로 변경하여, 새로운 패치 초반 단계에서 특정 챔피언에 대한 response 값이 null로 뜨는 현상을 방지하였습니다. <br/> <br/>
+> **코드스니펫**<br/>
+> [1) 데이터가 없는 경우, 이전 패치버전 response 적용 코드스니펫][CodeSnipet2] <br/>
+> [2) 스케줄러에 transferStatus 적용 코드스니펫][CodeSnipet3]
 
 [CodeSnipet2]: https://github.com/Carryduo/Carryduo-TEAM-BE/blob/cf32a5f4440151a273421f314a7e206d77669d26/src/combination-stat/combination-stat.service.ts#L62-L75
 [CodeSnipet3]: https://github.com/Carryduo/Carryduo-DataAnalysis/blob/40bbbeb2dc79e78fd9ab4fa068c1e597a68bc693/task/task.js#L37-L77
@@ -119,40 +122,25 @@
 </details>
 
 <details>
-<summary><b>➡️ </b></summary>
+<summary><b>➡️ service <-> repository 계층 간 명확한 책임 분리 </b></summary>
+<br/>
   
-> **문제** : 
+> **문제** : 프로젝트는 3-Layered-Architecture 구조에 입각하여 작성되었습니다. 프로젝트의 기능 중 request 값에 따라 쿼리문의 where문을 변경해주어야 하는 로직이 있었습니다. 기존에는 이를 DB 쿼리를 관리하는 repository 계층에서 분기 처리를 해주었습니다. 이에 따라, 순수한 DB 쿼리만을 관리한다는 repositroy 계층이 비즈니스 로직을 관리하는  service 계층의 책임까지  분담하는 구조적 문제가 발생했습니다.
 >
-> **해결** :  
+> **해결** : switch-case 문을 활용하여, serivce에서 controller부터 받은 request 값에 따라 쿼리 where문을 사전에 분기처리하여 repository 계층으로 이를 넘기도록 구조를 수정하여 계층 간 책임 분리를 공고화하였습니다. <br/> <br/>
+> **코드스니펫**<br/>
+> [1)switch-case문 활용 코드스니펫][CodeSnipet4]
+  
+  [CodeSnipet4]: https://github.com/Carryduo/Carryduo-TEAM-BE/blob/cf32a5f4440151a273421f314a7e206d77669d26/src/combination-stat/combination-stat.service.ts#L119-L194
 </details>
 
 <details>
-<summary><b>➡️ </b></summary>
+<summary><b>➡️ 배포 파이프라인 안정화 </b></summary>
+  <br/>
   
-> **문제** : 
->
-> **해결방안** : 
->
-> **해결** : 
->
-> **효과** : 
   
+> **문제** : 기존 배포 파이프라인은 CI -> 런타임 환경 배포 -> 빌드 -> 프로젝트 재실행로 구성되어 있었습니다. 이에, 프로젝트 규모가 커짐에 따라서 런타임 환경에서 배포에 대한 부담이 커져, 서버 재실행 시간이 지연되는 문제가 발생했습니다.
+>
+> **해결** : AWS CodeBuilder를 도입하여, 배포 파이프라인을 CI -> 빌드 -> 런타임 환경 배포 -> 프로젝트 재실행의 순서로 수정하여, 빌드/배포 환경을 안정화하였습니다.
 </details>
 
-<details>
-<summary><b>➡️ </b></summary>
-
-> **설명** : 
->
-> **해결** : 
-  
-</details>
-
-<details>
-<summary><b>➡️ </b></summary>
-
-> **설명** : 
->
-> **해결** : 
->
-> **효과** :
