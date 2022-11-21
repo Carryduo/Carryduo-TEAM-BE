@@ -8,15 +8,6 @@
 
 ## 프로젝트 소개
 
-### 🛠 Architecture
-
-![Carryduo 서비스 아키텍처](https://user-images.githubusercontent.com/91710667/202378441-9b647519-012a-4adf-b820-3b1bd91c2e82.png)
-
-### 📈 ERD
-
-![Carryduo 서비스 ERD](https://user-images.githubusercontent.com/91710667/202378401-9a983754-d8f1-4f41-8d8b-d79e62d2b283.png)
-
-
 ### 🚀 기능
 
 #### 카카오 소셜 로그인 제공
@@ -38,7 +29,20 @@
 #### 챔피언/소환사 평판 및 신고
 
 - 챔피언/소환사에 대한 평판 게시판을 제공하고 불건전한 내용은 신고 기능으로 필터링합니다.
-<hr/>
+
+### 🛠 Architecture
+
+![Carryduo 서비스 아키텍처](https://user-images.githubusercontent.com/91710667/202378441-9b647519-012a-4adf-b820-3b1bd91c2e82.png)
+
+### 📈 ERD
+
+![Carryduo 서비스 ERD](https://user-images.githubusercontent.com/91710667/202378401-9a983754-d8f1-4f41-8d8b-d79e62d2b283.png)
+
+### 🚀 데이터분석 프로세스
+
+[상세설명 노션 링크][notionLink]
+
+[notionLink]: https://frequent-hovercraft-885.notion.site/Carryduo-7a9e5f584620444986ee950bd309b524
 
 ## 🛠 Tools
 
@@ -61,7 +65,7 @@
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900.svg?style=for-the-badge&logo=Amazon%20EC2&logoColor=white)
 
-#### DataBase
+#### Dataase
 
 ![RDS](https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white)
