@@ -23,6 +23,14 @@ class MockChampRepository {
     { preferChamp: '1', user: 'lee' },
     { preferChamp: '2', user: 'park' },
   ];
+
+  existChamp(champId) {
+    if (!this.champIds.includes(champId)) {
+      return null;
+    } else if (this.champIds.includes(champId)) {
+      return champList[0];
+    }
+  }
   getChampList() {
     return champList;
   }
@@ -35,8 +43,8 @@ class MockChampRepository {
       }
     }
   }
-  rateLatestVesion() {
-    return 'version';
+  rateVersion() {
+    return [{ version: '12.22' }, { version: '12.21' }, { version: '12.20' }];
   }
 
   getTargetChampion(champId) {
@@ -47,8 +55,8 @@ class MockChampRepository {
     }
   }
 
-  spellLatestVesion() {
-    return 'version';
+  spellVersion() {
+    return [{ version: '12.22' }, { version: '12.21' }, { version: '12.20' }];
   }
 
   getChampSpell(champId) {
