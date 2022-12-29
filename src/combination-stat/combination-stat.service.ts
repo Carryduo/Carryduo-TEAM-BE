@@ -63,15 +63,31 @@ export class CombinationStatService {
     // 최신 패치버전 조회
     answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[0]);
 
+    console.log(answer.length);
     // 최신 패치버전의 티어리스트의 길이가 30이 되지 않으면, 이전 패치버전을 response
     if (answer.length < 30) {
       answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[1]);
     }
-    answer.map((value) => {
-      value.winrate = Number((value.winrate * 100).toFixed(2));
+
+    // 승률 계산 및 티어 지정
+    answer.map((value, index) => {
+      value.winrate = Number(((value.win / value.sampleNum) * 100).toFixed(2));
+      if (index <= 2) {
+        value.tier = 1;
+      } else if (3 <= index && index <= 9) {
+        value.tier = 2;
+      } else if (10 <= index && index <= 19) {
+        value.tier = 3;
+      } else if (20 <= index && index <= 26) {
+        value.tier = 4;
+      } else {
+        value.tier = 5;
+      }
+      delete value.win;
       return value;
     });
 
+    console.log(answer);
     return answer;
   }
 
@@ -194,15 +210,30 @@ export class CombinationStatService {
     const dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[0]);
     const result = [];
     if (dataList.length !== 0) {
+      // 승률 계산 및 티어 지정
+      dataList.map((value, index) => {
+        value.winrate = Number(((value.win / value.sampleNum) * 100).toFixed(2));
+        if (index <= 2) {
+          value.tier = 1;
+        } else if (3 <= index && index <= 9) {
+          value.tier = 2;
+        } else if (10 <= index && index <= 19) {
+          value.tier = 3;
+        } else if (20 <= index && index <= 26) {
+          value.tier = 4;
+        } else {
+          value.tier = 5;
+        }
+        return value;
+      });
+
       for (const data of dataList) {
         if (position === 'jungle' || position === 'support') {
           const cloneData = data.subChampId;
           data.subChampId = data.mainChampId;
           data.mainChampId = cloneData;
-          data.winrate = Number((data.winrate * 100).toFixed(2));
           result.push(data);
         } else {
-          data.winrate = Number((data.winrate * 100).toFixed(2));
           result.push(data);
         }
       }

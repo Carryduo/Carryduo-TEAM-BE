@@ -41,17 +41,7 @@ export class spellData {
   spellVersion: string;
 }
 
-export class ChampDetailResponseDTO extends IntersectionType(
-  OmitType(ChampCommonDTO, ['champMainImg']),
-  OmitType(ChampRateCommonDTO, [
-    'top',
-    'jungle',
-    'mid',
-    'ad',
-    'support',
-    'version',
-  ]),
-) {
+export class ChampDetailResponseDTO extends IntersectionType(OmitType(ChampCommonDTO, ['champMainImg']), OmitType(ChampRateCommonDTO, ['top', 'jungle', 'mid', 'ad', 'support', 'version'])) {
   @ApiProperty({
     description: '챔피언 포지션 정보',
     type: ChampPosition,

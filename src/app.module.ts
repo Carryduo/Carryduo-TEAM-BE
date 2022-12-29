@@ -26,9 +26,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { ChampRateEntity } from './champ/entities/champ.rate.entity';
 
 const typeOrmModuleOptions = {
-  useFactory: async (
-    configService: ConfigService,
-  ): Promise<TypeOrmModuleOptions> => ({
+  useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
     namingStrategy: new SnakeNamingStrategy(),
     type: 'mysql',
     host: configService.get('DB_HOST'), // process.env.DB_HOST
@@ -36,19 +34,7 @@ const typeOrmModuleOptions = {
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
-    entities: [
-      UserEntity,
-      ChampEntity,
-      ChampRateEntity,
-      ChampSkillInfoEntity,
-      ChampSpellEntity,
-      SummonerEntity,
-      CombinationStatEntity,
-      CommentEntity,
-      SubscriptionEntity,
-      SummonerHistoryEntity,
-      SimulationEntity,
-    ],
+    entities: [UserEntity, ChampEntity, ChampRateEntity, ChampSkillInfoEntity, ChampSpellEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: false,
     autoLoadEntities: true,
     logging: false,

@@ -20,13 +20,11 @@ export class CombinationStatRepository {
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
       .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
-      .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.tier', 'COMBINATION_STAT.winrate', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
+      .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.tier', 'COMBINATION_STAT.win', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
       .where('COMBINATION_STAT.category = :category', { category })
-      .andWhere('COMBINATION_STAT.rankInCategory != :rankInCategory', {
-        rankInCategory: 0,
-      })
       .andWhere('COMBINATION_STAT.version = :version', { version })
-      .orderBy({ 'COMBINATION_STAT.rank_in_category': 'ASC' })
+      .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', { sampleNum: 10 })
+      .orderBy({ 'COMBINATION_STAT.win/COMBINATION_STAT.sample_num': 'DESC' })
       .limit(30)
       .getMany();
     return data;
@@ -38,14 +36,14 @@ export class CombinationStatRepository {
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
       .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
-      .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.winrate', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
+      .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.win', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
       .where(option.category)
       .andWhere(option.champ)
       .andWhere('COMBINATION_STAT.version = :version', { version })
       .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', {
         sampleNum: 5,
       })
-      .orderBy({ 'COMBINATION_STAT.winRate': 'DESC' })
+      .orderBy({ 'COMBINATION_STAT.win/COMBINATION_STAT.sample_num': 'DESC' })
       .limit(5)
       .getMany();
   }

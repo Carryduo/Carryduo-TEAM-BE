@@ -8,7 +8,6 @@ const mockRepository = () => {
   createQueryBuilder: jest.fn();
 };
 
-const cloneData_individualChampData = JSON.parse(JSON.stringify(testData.result_individualChamp));
 describe('CombinationStatController', () => {
   let service: CombinationStatService;
   let repository: CombinationStatRepository;
@@ -32,21 +31,22 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: 'example' }]);
+          resolve([{ version: '12.23' }, { version: '12.22' }]);
         }),
     );
     jest.spyOn(repository, 'getTierList').mockImplementation(
       (category, version) =>
         new Promise((resolve) => {
           if (category === 0) {
-            resolve(testData.result0_tierList);
+            resolve(testData.input0_tierList);
           } else if (category === 1) {
-            resolve(testData.result1_tierList);
+            resolve(testData.input1_tierList);
           } else if (category === 2) {
-            resolve(testData.result2_tierList);
+            resolve(testData.input2_tierList);
           }
         }),
     );
+
     expect(await service.getCombinationData('top-jungle')).toEqual(testData.result0_tierList);
     expect(await service.getCombinationData('mid-jungle')).toEqual(testData.result1_tierList);
     expect(await service.getCombinationData('ad-support')).toEqual(testData.result2_tierList);
@@ -83,7 +83,7 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
       (option, version) =>
         new Promise((resolve) => {
-          resolve(testData.result_individualChamp);
+          resolve(testData.input_IndividualChamp);
         }),
     );
     const value_ad = await service.getIndiviualChampData('875', 'ad');
@@ -93,9 +93,15 @@ describe('CombinationStatController', () => {
     const mainChampId_ad = value_ad[0].mainChampId.id;
     const mainChampId_mid = value_mid[0].mainChampId.id;
     const mainChampId_top = value_top[0].mainChampId.id;
+    const winrate_ad = value_ad[0].winrate;
+    const winrate_mid = value_mid[0].winrate;
+    const winrate_support = value_top[0].winrate;
     expect(mainChampId_ad).toEqual('22');
     expect(mainChampId_mid).toEqual('22');
     expect(mainChampId_top).toEqual('22');
+    expect(winrate_ad).toEqual(66.67);
+    expect(winrate_mid).toEqual(66.67);
+    expect(winrate_support).toEqual(66.67);
   });
 
   it('individualChamp 테스트: 포지션이 서폿인 경우, mainChampId <-> subChampId 변경', async () => {
@@ -109,7 +115,7 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
       (option, version) =>
         new Promise((resolve) => {
-          resolve(testData.result_individualChamp);
+          resolve(testData.input_IndividualChamp);
         }),
     );
     const value_support = await service.getIndiviualChampData('875', 'support');
@@ -129,7 +135,7 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
       (option, version) =>
         new Promise((resolve) => {
-          resolve(cloneData_individualChampData);
+          resolve(testData.input_IndividualChamp_jungle);
         }),
     );
     const value_jungle = await service.getIndiviualChampData('875', 'jungle');
