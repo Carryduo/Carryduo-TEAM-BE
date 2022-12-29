@@ -51,13 +51,22 @@ export class CombinationStatCommonDto {
   tier?: number;
 
   @ApiProperty({
-    example: '59.1',
-    description: '조합승률',
+    example: '1',
+    description: '승',
     required: false,
   })
   @IsNumber()
   @IsNotEmpty()
-  winrate: number;
+  win: number;
+
+  @ApiProperty({
+    example: '59.11',
+    description: '승률',
+    required: false,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  winrate?: number;
 
   @ApiProperty({
     example: '595',
