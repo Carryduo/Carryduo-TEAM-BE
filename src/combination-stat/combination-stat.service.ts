@@ -63,7 +63,6 @@ export class CombinationStatService {
     // 최신 패치버전 조회
     answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[0]);
 
-    console.log(answer.length);
     // 최신 패치버전의 티어리스트의 길이가 30이 되지 않으면, 이전 패치버전을 response
     if (answer.length < 30) {
       answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[1]);
@@ -87,7 +86,6 @@ export class CombinationStatService {
       return value;
     });
 
-    console.log(answer);
     return answer;
   }
 
