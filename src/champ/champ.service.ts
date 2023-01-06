@@ -99,65 +99,65 @@ export class ChampService {
       const key = csd;
       switch (champSpellData[key].spell_spell1) {
         case SummonerBarrier:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
           break;
         case SummonerBoost:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
           break;
         case SummonerDot:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
           break;
         case SummonerExhaust:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
           break;
         case SummonerFlash:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
           break;
         case SummonerHaste:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
           break;
         case SummonerHeal:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
         case SummonerMana:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
           break;
         case SummonerSmite:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
           break;
         case SummonerTeleport:
-          spell1Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
+          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
           break;
       }
       switch (champSpellData[key].spell_spell2) {
         case SummonerBarrier:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBarrier.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
           break;
         case SummonerBoost:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerBoost.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
           break;
         case SummonerDot:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
           break;
         case SummonerExhaust:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerExhaust.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
           break;
         case SummonerFlash:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
           break;
         case SummonerHaste:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHaste.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
           break;
         case SummonerHeal:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerHeal.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
           break;
         case SummonerMana:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerMana.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
           break;
         case SummonerSmite:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerSmite.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
           break;
         case SummonerTeleport:
-          spell2Img = ' https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png';
+          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
           break;
       }
       //상위 2개의 스펠데이터에서 픽률을 다시 구한다.
