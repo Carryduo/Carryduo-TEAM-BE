@@ -69,6 +69,7 @@ class MockChache {}
 describe('ChampService', () => {
   let service: ChampService;
   let repository: ChampRepository;
+  const env = process.env;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -90,6 +91,11 @@ describe('ChampService', () => {
 
     service = module.get<ChampService>(ChampService);
     repository = module.get<ChampRepository>(ChampRepository);
+    jest.resetModules();
+    process.env = { ...env, S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img` };
+  });
+  afterEach(() => {
+    process.env = env;
   });
 
   it('should be defined', () => {
