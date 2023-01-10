@@ -10,15 +10,7 @@ import { ChampSpellEntity } from './entities/champ.spell';
 import { ChampSkillInfoEntity } from './entities/champSkillInfo.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      ChampEntity,
-      ChampRateEntity,
-      ChampSkillInfoEntity,
-      ChampSpellEntity,
-      UserEntity,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([ChampEntity, ChampRateEntity, ChampSkillInfoEntity, ChampSpellEntity, UserEntity])],
   controllers: [ChampController],
   providers: [ChampService, ChampRepository],
   exports: [ChampRepository],

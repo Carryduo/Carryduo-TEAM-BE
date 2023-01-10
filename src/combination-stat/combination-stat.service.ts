@@ -82,6 +82,7 @@ export class CombinationStatService {
       } else {
         value.tier = 5;
       }
+      value.opScore = value.winrate * 0.7 + value.sampleNum * 0.3;
       delete value.win;
       return value;
     });
@@ -222,6 +223,8 @@ export class CombinationStatService {
         } else {
           value.tier = 5;
         }
+        value.opScore = value.winrate * 0.7 + value.sampleNum * 0.3;
+        delete value.win;
         return value;
       });
 

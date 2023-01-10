@@ -83,7 +83,7 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
       (option, version) =>
         new Promise((resolve) => {
-          resolve(testData.input_IndividualChamp);
+          resolve(JSON.parse(JSON.stringify(testData.input_IndividualChamp)));
         }),
     );
     const value_ad = await service.getIndiviualChampData('875', 'ad');
@@ -95,13 +95,13 @@ describe('CombinationStatController', () => {
     const mainChampId_top = value_top[0].mainChampId.id;
     const winrate_ad = value_ad[0].winrate;
     const winrate_mid = value_mid[0].winrate;
-    const winrate_support = value_top[0].winrate;
+    const winrate_top = value_top[0].winrate;
     expect(mainChampId_ad).toEqual('22');
     expect(mainChampId_mid).toEqual('22');
     expect(mainChampId_top).toEqual('22');
     expect(winrate_ad).toEqual(66.67);
     expect(winrate_mid).toEqual(66.67);
-    expect(winrate_support).toEqual(66.67);
+    expect(winrate_top).toEqual(66.67);
   });
 
   it('individualChamp 테스트: 포지션이 서폿인 경우, mainChampId <-> subChampId 변경', async () => {

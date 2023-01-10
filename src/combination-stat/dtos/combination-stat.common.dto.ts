@@ -34,15 +34,6 @@ export class CombinationStatCommonDto {
 
   @ApiProperty({
     example: '1',
-    description: '조합승률 데이터의 순위',
-    required: false,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  rankInCategory?: number;
-
-  @ApiProperty({
-    example: '1',
     description: '조합승률 데이터의 티어',
     required: false,
   })
@@ -57,7 +48,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  win: number;
+  win?: number;
 
   @ApiProperty({
     example: '59.11',
@@ -67,6 +58,15 @@ export class CombinationStatCommonDto {
   @IsNumber()
   @IsNotEmpty()
   winrate?: number;
+
+  @ApiProperty({
+    example: '59.11',
+    description: 'opScore',
+    required: false,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  opScore?: number;
 
   @ApiProperty({
     example: '595',
