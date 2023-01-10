@@ -81,6 +81,7 @@ export const result0_tierList = [
     category: 0,
     tier: 1,
     winrate: 38.46,
+    opScore: 30.822,
     sampleNum: 13,
     version: 'old',
     mainChampId: {
@@ -106,6 +107,7 @@ export const result1_tierList = [
     category: 1,
     tier: 1,
     winrate: 38.46,
+    opScore: 30.822,
     sampleNum: 13,
     version: 'old',
     mainChampId: {
@@ -131,6 +133,7 @@ export const result2_tierList = [
     category: 2,
     tier: 1,
     winrate: 38.46,
+    opScore: 30.822,
     sampleNum: 13,
     version: 'old',
     mainChampId: {

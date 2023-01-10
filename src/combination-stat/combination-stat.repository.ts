@@ -23,8 +23,7 @@ export class CombinationStatRepository {
       .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.win', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
       .where('COMBINATION_STAT.category = :category', { category })
       .andWhere('COMBINATION_STAT.version = :version', { version })
-      .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', { sampleNum: 30 })
-      .orderBy({ 'COMBINATION_STAT.win/COMBINATION_STAT.sample_num': 'DESC' })
+      .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
       .limit(30)
       .getMany();
     return data;
@@ -40,10 +39,7 @@ export class CombinationStatRepository {
       .where(option.category)
       .andWhere(option.champ)
       .andWhere('COMBINATION_STAT.version = :version', { version })
-      .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', {
-        sampleNum: 10,
-      })
-      .orderBy({ 'COMBINATION_STAT.win/COMBINATION_STAT.sample_num': 'DESC' })
+      .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
       .limit(5)
       .getMany();
   }
