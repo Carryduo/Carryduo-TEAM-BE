@@ -206,7 +206,16 @@ export class CombinationStatService {
         };
         break;
     }
-    const dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[0]);
+
+    // 메인페이지 티어리스트 충족 시 최신버전, 아닐 경우 이전버전
+    let dataList;
+    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList_DESC[0]);
+    if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
+      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[0]);
+    } else {
+      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[1]);
+    }
+
     const result = [];
     if (dataList.length !== 0) {
       // 승률 계산 및 티어 지정
