@@ -82,6 +82,6 @@ export class ChampRepository {
   }
 
   async getChampSpell(champId: string, version: string) {
-    return await this.champSpellRepository.createQueryBuilder('spell').where('spell.champId = :champId', { champId }).andWhere('spell.version = :version', { version }).select(['spell.spell1', 'spell.spell2', 'spell.pickRate', 'spell.sampleNum', 'spell.version', 'spell.champId']).orderBy('spell.pickRate', 'DESC').limit(2).execute();
+    return await this.champSpellRepository.createQueryBuilder('spell').where('spell.champId = :champId', { champId }).andWhere('spell.version = :version', { version }).select(['spell.spell1', 'spell.spell2', 'spell.pickRate', 'spell.version', 'spell.champId']).addSelect('SUM(spell.sample_num) OVER(PARTITION BY spell.champID) total').orderBy('spell.sample_num', 'DESC').limit(1).execute();
   }
 }

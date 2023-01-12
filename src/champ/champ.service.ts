@@ -84,98 +84,89 @@ export class ChampService {
 
     const spellVersionList = await this.champRepository.spellVersion();
     const spellLatestVersions = await this.getVersion(spellVersionList);
-    let champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[0]);
-
-    if (champSpellData.length < 2) {
-      champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[1]);
-    }
+    const champSpellData = await this.champRepository.getChampSpell(champId, spellLatestVersions[0]);
 
     let spell1Img: string;
     let spell2Img: string;
 
     const spellInfo: spellData[] = [];
 
-    for (const csd in champSpellData) {
-      const key = csd;
-      switch (champSpellData[key].spell_spell1) {
-        case SummonerBarrier:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
-          break;
-        case SummonerBoost:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
-          break;
-        case SummonerDot:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
-          break;
-        case SummonerExhaust:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
-          break;
-        case SummonerFlash:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
-          break;
-        case SummonerHaste:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
-          break;
-        case SummonerHeal:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
-        case SummonerMana:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
-          break;
-        case SummonerSmite:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
-          break;
-        case SummonerTeleport:
-          spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
-          break;
-      }
-      switch (champSpellData[key].spell_spell2) {
-        case SummonerBarrier:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
-          break;
-        case SummonerBoost:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
-          break;
-        case SummonerDot:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
-          break;
-        case SummonerExhaust:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
-          break;
-        case SummonerFlash:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
-          break;
-        case SummonerHaste:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
-          break;
-        case SummonerHeal:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
-          break;
-        case SummonerMana:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
-          break;
-        case SummonerSmite:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
-          break;
-        case SummonerTeleport:
-          spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
-          break;
-      }
-      //상위 2개의 스펠데이터에서 픽률을 다시 구한다.
-      const sampleNum = champSpellData[0].spell_sample_num + champSpellData[1].spell_sample_num;
-
-      let pickRate = (champSpellData[key].spell_sample_num / sampleNum) * 100;
-      pickRate = Number(pickRate.toFixed(2));
-
-      const version = champSpellData[key].spell_version;
-
-      spellInfo.push({
-        total: champSpellData[key].spell_sample_num,
-        pickRate,
-        spell1Img,
-        spell2Img,
-        spellVersion: version,
-      });
+    switch (champSpellData[0].spell_spell1) {
+      case SummonerBarrier:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
+        break;
+      case SummonerBoost:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
+        break;
+      case SummonerDot:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
+        break;
+      case SummonerExhaust:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
+        break;
+      case SummonerFlash:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
+        break;
+      case SummonerHaste:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
+        break;
+      case SummonerHeal:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
+      case SummonerMana:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
+        break;
+      case SummonerSmite:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
+        break;
+      case SummonerTeleport:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
+        break;
     }
+    switch (champSpellData[0].spell_spell2) {
+      case SummonerBarrier:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
+        break;
+      case SummonerBoost:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
+        break;
+      case SummonerDot:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
+        break;
+      case SummonerExhaust:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
+        break;
+      case SummonerFlash:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
+        break;
+      case SummonerHaste:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
+        break;
+      case SummonerHeal:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
+        break;
+      case SummonerMana:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
+        break;
+      case SummonerSmite:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
+        break;
+      case SummonerTeleport:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
+        break;
+    }
+    const total = Number(champSpellData[0].total);
+
+    const pickRate = Number(champSpellData[0].spell_pick_rate);
+
+    const version = champSpellData[0].spell_version;
+
+    spellInfo.push({
+      total,
+      pickRate,
+      spell1Img,
+      spell2Img,
+      spellVersion: version,
+    });
 
     champInfo.champSkillInfo.map((value) => {
       skill.push({

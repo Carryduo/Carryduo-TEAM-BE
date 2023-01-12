@@ -5,14 +5,7 @@
     "spell_pick_rate": 90.15,
     "spell_sample_num": 238,
     "spell_version": "old",
-    "champId": "1"
-  },
-  {
-    "spell_spell1": 4,
-    "spell_spell2": 12,
-    "spell_pick_rate": 4.92,
-    "spell_sample_num": 13,
-    "spell_version": "old",
-    "champId": "1"
+    "champId": "1",
+    "total": "30"
   }
 ]
