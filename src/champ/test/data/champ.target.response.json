@@ -55,17 +55,10 @@
   ],
   "spellInfo": [
     {
-      "total": 238,
-      "pickRate": 94.82,
+      "total": 30,
+      "pickRate": 90.15,
       "spell1Img": "https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
       "spell2Img": "https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerDot.png",
-      "spellVersion": "old"
-    },
-    {
-      "total": 13,
-      "pickRate": 5.18,
-      "spell1Img": "https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerFlash.png",
-      "spell2Img": "https://ddragon.leagueoflegends.com/cdn/12.19.1/img/spell/SummonerTeleport.png",
       "spellVersion": "old"
     }
   ]

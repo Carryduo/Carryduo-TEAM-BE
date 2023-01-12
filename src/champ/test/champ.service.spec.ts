@@ -46,6 +46,9 @@ class MockChampRepository {
   rateVersion() {
     return [{ version: '12.22' }, { version: '12.21' }, { version: '12.20' }];
   }
+  rateLatestVersions() {
+    return ['old'];
+  }
 
   getTargetChampion(champId) {
     if (!this.champIds.includes(champId)) {
