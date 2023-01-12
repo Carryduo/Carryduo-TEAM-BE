@@ -10,18 +10,6 @@ export class CombinationStatEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   category: number;
 
-  // 제거 대상
-  @Column({ type: 'int', nullable: false })
-  rankInCategory: number;
-
-  // 제거 대상
-  @Column({ type: 'int', nullable: false })
-  tier: number;
-
-  // 제거 대상
-  @Column({ type: 'decimal', precision: 7, scale: 4, nullable: false })
-  winrate: number;
-
   @Column({ type: 'int', nullable: false, default: 0 })
   win: number;
 

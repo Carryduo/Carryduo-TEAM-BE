@@ -23,6 +23,7 @@ export class CombinationStatRepository {
       .select(['COMBINATION_STAT.id', 'COMBINATION_STAT.createdAt', 'COMBINATION_STAT.updatedAt', 'COMBINATION_STAT.category', 'COMBINATION_STAT.win', 'COMBINATION_STAT.sampleNum', 'COMBINATION_STAT.version', 'champ1.id', 'champ1.champNameKo', 'champ1.champNameEn', 'champ1.champImg', 'champ2.id', 'champ2.champNameKo', 'champ2.champNameEn', 'champ2.champImg'])
       .where('COMBINATION_STAT.category = :category', { category })
       .andWhere('COMBINATION_STAT.version = :version', { version })
+      .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
       .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
       .limit(30)
       .getMany();
@@ -39,8 +40,51 @@ export class CombinationStatRepository {
       .where(option.category)
       .andWhere(option.champ)
       .andWhere('COMBINATION_STAT.version = :version', { version })
+      .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', { sampleNum: 5 })
       .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
       .limit(5)
       .getMany();
   }
+
+  getMainpageData = async (version) => {
+    try {
+      const category0 = await this.combinationStatRepository
+        .createQueryBuilder('COMBINATION_STAT')
+        .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
+        .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
+        .select()
+        .where('COMBINATION_STAT.category = :category', { category: 0 })
+        .andWhere('COMBINATION_STAT.version = :version', { version })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
+        .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
+        .limit(30)
+        .getMany();
+      const category1 = await this.combinationStatRepository
+        .createQueryBuilder('COMBINATION_STAT')
+        .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
+        .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
+        .select()
+        .where('COMBINATION_STAT.category = :category', { category: 1 })
+        .andWhere('COMBINATION_STAT.version = :version', { version })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
+        .orderBy('COMBINATION_STAT.win/COMBINATION_STAT.sample_num', 'DESC')
+        .limit(30)
+        .getMany();
+      const category2 = await this.combinationStatRepository
+        .createQueryBuilder('COMBINATION_STAT')
+        .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
+        .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
+        .select()
+        .where('COMBINATION_STAT.category = :category', { category: 2 })
+        .andWhere('COMBINATION_STAT.version = :version', { version })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
+        .orderBy({ '(COMBINATION_STAT.sample_num) * 0.3 + (COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 100 * 0.7': 'DESC' })
+        .limit(30)
+        .getMany();
+      return { category0: category0.length, category1: category1.length, category2: category2.length };
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
 }
