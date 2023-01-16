@@ -1,13 +1,14 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import { IndiviudalChampResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import { IndiviudalChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import { CombinationStatCommonDto } from './dtos/combination-stat.common.dto';
 
 @Injectable()
 export class CombinationStatService {
   constructor(private readonly combinationStatRepository: CombinationStatRepository) {}
 
-  async getCombinationData(category: string | number) {
+  async getCombinationData(category: string | number): Promise<TierListResponseDto[]> {
     const versions = await this.combinationStatRepository.getVersions();
     switch (category) {
       case 'top-jungle':
@@ -23,16 +24,41 @@ export class CombinationStatService {
     const versionList = await sortPatchVersions(versions);
     let answer;
     // 최신 패치버전 조회
-    answer = await this.combinationStatRepository.getTierList(category, versionList[0]);
+    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
 
-    // 최신 패치버전의 티어리스트의 길이가 30이 되지 않으면, 이전 패치버전을 response
-    if (answer.length < 30) {
+    if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
+      answer = await this.combinationStatRepository.getTierList(category, versionList[0]);
+    } else {
+      // 최신 패치버전의 티어리스트의 길이가 30이 되지 않으면, 이전 패치버전을 response
       answer = await this.combinationStatRepository.getTierList(category, versionList[1]);
     }
 
     // 승률 계산 및 티어 지정
-    answer.map((value, index) => {
-      value.winrate = Number(((value.win / value.sampleNum) * 100).toFixed(2));
+    answer.map((value: TierListResponseDto, index: number) => {
+      const keys = Object.keys(value);
+      type champType = {
+        id: string;
+        champImg: string;
+        champNameEn: string;
+        champNameKo: string;
+      };
+      value.mainChampId = <champType>{};
+      value.subChampId = <champType>{}; // FE 요청에 맞춰 key값 바꾸기
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        let answerKey: string;
+        if (key.includes('champ1_')) {
+          answerKey = key.split('champ1_')[1];
+          value.mainChampId[`${answerKey}`] = value[key];
+          delete value[`${key}`];
+        } else if (key.includes('champ2_')) {
+          answerKey = key.split('champ2_')[1];
+          value.subChampId[`${answerKey}`] = value[key];
+          delete value[`${key}`];
+        }
+      }
+      value.winrate = Number((value.winrate * 100).toFixed(2));
+      value.opScore = Number(Number(value.opScore).toFixed(2));
       if (index <= 2) {
         value.tier = 1;
       } else if (3 <= index && index <= 9) {
@@ -44,8 +70,6 @@ export class CombinationStatService {
       } else {
         value.tier = 5;
       }
-      value.opScore = value.winrate * 0.7 + value.sampleNum * 0.3;
-      delete value.win;
       return value;
     });
 
@@ -56,7 +80,7 @@ export class CombinationStatService {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList = await sortPatchVersions(versions);
 
-    let option;
+    let option: { category: Brackets; champ: Brackets };
     switch (position) {
       case 'top':
         option = {
@@ -133,19 +157,44 @@ export class CombinationStatService {
     }
 
     // 메인페이지 티어리스트 충족 시 최신버전, 아닐 경우 이전버전
-    let dataList;
+    let answer;
     const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
     if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
-      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList[0]);
+      answer = await this.combinationStatRepository.getIndividualChampData(option, versionList[0]);
     } else {
-      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList[1]);
+      answer = await this.combinationStatRepository.getIndividualChampData(option, versionList[1]);
     }
 
-    const result = [];
-    if (dataList.length !== 0) {
+    const result: IndiviudalChampResponseDto[] = [];
+    if (answer.length !== 0) {
       // 승률 계산 및 티어 지정
-      dataList.map((value, index) => {
-        value.winrate = Number(((value.win / value.sampleNum) * 100).toFixed(2));
+
+      answer.map((value, index) => {
+        const keys = Object.keys(value);
+        type champType = {
+          id: string;
+          champImg: string;
+          champNameEn: string;
+          champNameKo: string;
+        };
+        value.mainChampId = <champType>{};
+        value.subChampId = <champType>{};
+        // FE 요청에 맞춰 key값 바꾸기
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i];
+          let answerKey: string;
+          if (key.includes('champ1_')) {
+            answerKey = key.split('champ1_')[1];
+            value.mainChampId[`${answerKey}`] = value[key];
+            delete value[`${key}`];
+          } else if (key.includes('champ2_')) {
+            answerKey = key.split('champ2_')[1];
+            value.subChampId[`${answerKey}`] = value[key];
+            delete value[`${key}`];
+          }
+        }
+        value.winrate = Number((value.winrate * 100).toFixed(2));
+        value.opScore = Number(Number(value.opScore).toFixed(2));
         if (index <= 2) {
           value.tier = 1;
         } else if (3 <= index && index <= 9) {
@@ -157,12 +206,10 @@ export class CombinationStatService {
         } else {
           value.tier = 5;
         }
-        value.opScore = value.winrate * 0.7 + value.sampleNum * 0.3;
-        delete value.win;
         return value;
       });
 
-      for (const data of dataList) {
+      for (const data of answer) {
         if (position === 'jungle' || position === 'support') {
           const cloneData = data.subChampId;
           data.subChampId = data.mainChampId;
