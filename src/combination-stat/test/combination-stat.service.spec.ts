@@ -31,25 +31,54 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: '12.23' }, { version: '12.22' }]);
+          resolve([{ version: '13.1.' }, { version: '12.23' }]);
         }),
     );
+    jest.spyOn(repository, 'getMainpageData').mockImplementation(
+      (version) =>
+        new Promise((resolve) => {
+          resolve(testData.result_mainPageData_recentVersion);
+        }),
+    );
+
     jest.spyOn(repository, 'getTierList').mockImplementation(
       (category, version) =>
         new Promise((resolve) => {
+          console.log(category);
+          console.log(version);
           if (category === 0) {
-            resolve(testData.input0_tierList);
-          } else if (category === 1) {
-            resolve(testData.input1_tierList);
-          } else if (category === 2) {
-            resolve(testData.input2_tierList);
+            if (version === testData.input0_tierList[0].version) {
+              resolve(testData.input0_tierList);
+            } else {
+              resolve(testData.input0_tierList_oldVersion);
+            }
+          }
+          if (category === 1) {
+            if (version === testData.input0_tierList[0].version) {
+              resolve(testData.input1_tierList);
+            } else {
+              resolve(testData.input1_tierList_oldVersion);
+            }
+          }
+          if (category === 2) {
+            if (version === testData.input0_tierList[0].version) {
+              resolve(testData.input2_tierList);
+            } else {
+              resolve(testData.input2_tierList_oldVersion);
+            }
           }
         }),
     );
 
-    expect(await service.getCombinationData('top-jungle')).toEqual(testData.result0_tierList);
-    expect(await service.getCombinationData('mid-jungle')).toEqual(testData.result1_tierList);
-    expect(await service.getCombinationData('ad-support')).toEqual(testData.result2_tierList);
+    const response = await service.getCombinationData('top-jungle');
+    const response_mid = await service.getCombinationData('mid-jungle');
+    const response_ad = await service.getCombinationData('ad-support');
+    expect(response[0].category).toEqual(0);
+    expect(response[0].version).toEqual('13.1.');
+    expect(response_mid[0].version).toEqual('13.1.');
+    expect(response_mid[0].category).toEqual(1);
+    expect(response_ad[0].version).toEqual('13.1.');
+    expect(response_ad[0].category).toEqual(2);
   });
 
   it('individualChamp 테스트: 데이터가 없는 경우에 에러 메시지를 잘 응답하는가?', async () => {

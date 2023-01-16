@@ -33,22 +33,10 @@ export class CombinationStatCommonDto {
   category: number;
 
   @ApiProperty({
-    example: '1',
-    description: '조합승률 데이터의 티어',
-    required: false,
+    example: '13.1.',
+    description: '패치버전',
   })
-  @IsNumber()
-  @IsNotEmpty()
-  tier?: number;
-
-  @ApiProperty({
-    example: '1',
-    description: '승',
-    required: false,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  win?: number;
+  version: string;
 
   @ApiProperty({
     example: '59.11',
@@ -57,7 +45,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  winrate?: number;
+  winrate: number;
 
   @ApiProperty({
     example: '59.11',
@@ -66,7 +54,7 @@ export class CombinationStatCommonDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  opScore?: number;
+  opScore: number;
 
   @ApiProperty({
     example: '595',
@@ -77,41 +65,29 @@ export class CombinationStatCommonDto {
   @IsNotEmpty()
   sampleNum: number;
 
-  @ApiProperty({
-    example: {
-      id: '875',
-      champNameKo: '세트',
-      champNameEn: 'Sett',
-      champImg: '이미지 url',
-    },
-    description: '기준 챔피언 정보',
-    required: false,
-  })
-  mainChampId:
-    | string
-    | {
-        id: string;
-        champNameKo: string;
-        champNameEn: string;
-        champImg: string;
-      };
+  @IsNumber()
+  @IsNotEmpty()
+  champ1_id: string;
 
-  @ApiProperty({
-    example: {
-      id: '203',
-      champNameKo: '킨드레드',
-      champNameEn: 'Kindred',
-      champImg: '이미지 url',
-    },
-    description: '조합 챔피언 정보',
-    required: false,
-  })
-  subChampId:
-    | string
-    | {
-        id: string;
-        champNameKo: string;
-        champNameEn: string;
-        champImg: string;
-      };
+  @IsNotEmpty()
+  champ1_champNameKo: string;
+
+  @IsNotEmpty()
+  champ1_champNameEn: string;
+
+  @IsNotEmpty()
+  champ1_champImg: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  champ2_id: string;
+
+  @IsNotEmpty()
+  champ2_champNameKo: string;
+
+  @IsNotEmpty()
+  champ2_champNameEn: string;
+
+  @IsNotEmpty()
+  champ2_champImg: string;
 }
