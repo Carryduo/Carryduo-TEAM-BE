@@ -4,3 +4,7 @@ import { CombinationStatCommonDto } from './combination-stat.common.dto';
 export class TierListResponseDto extends CombinationStatCommonDto {}
 
 export class IndiviudalChampResponseDto extends OmitType(CombinationStatCommonDto, ['tier']) {}
+
+export class VersionResponseDto {
+  version: string;
+}

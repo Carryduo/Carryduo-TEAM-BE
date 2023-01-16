@@ -1,7 +1,7 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import { IndiviudalChampResponseDto } from './dtos/combination-stat.response.dto';
+import { IndiviudalChampResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
 
 @Injectable()
 export class CombinationStatService {
@@ -20,52 +20,14 @@ export class CombinationStatService {
         category = 2;
         break;
     }
-    let data = [];
-    for (const value of versions) {
-      data.push(value.version);
-    }
-
-    data = data.filter((version) => {
-      if (version[version.length - 1] === '.') {
-        version = version.slice(0, -1);
-      }
-      if (!isNaN(Number(version))) {
-        return version;
-      }
-    });
-    data = data.sort((a, b) => {
-      return b.split('.')[0] - a.split('.')[0];
-    });
-    let versionList_DESC = [];
-    let outdatedVersionList = [];
-    // recentVersion = 13.10 에서 13을 의미
-    const recentVersion = Number(String(data[0]).split('.')[0]);
-    for (let i = 0; i < data.length; i++) {
-      const version = data[i];
-      if (Number(version.split('.')[0]) < recentVersion) {
-        outdatedVersionList.push(version);
-      } else {
-        versionList_DESC.push(version);
-      }
-    }
-    // 최근버전 모음 (ex 13.1, 13.10)
-    versionList_DESC = versionList_DESC.sort((a, b) => {
-      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
-    });
-    // 이전버전 모음  (ex. 12.1, 12.10)
-    outdatedVersionList = outdatedVersionList.sort((a, b) => {
-      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
-    });
-    // 최신버전 모음 뒤에 이전버전 합치기
-    versionList_DESC.push(...outdatedVersionList);
-
+    const versionList = await sortPatchVersions(versions);
     let answer;
     // 최신 패치버전 조회
-    answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[0]);
+    answer = await this.combinationStatRepository.getTierList(category, versionList[0]);
 
     // 최신 패치버전의 티어리스트의 길이가 30이 되지 않으면, 이전 패치버전을 response
     if (answer.length < 30) {
-      answer = await this.combinationStatRepository.getTierList(category, versionList_DESC[1]);
+      answer = await this.combinationStatRepository.getTierList(category, versionList[1]);
     }
 
     // 승률 계산 및 티어 지정
@@ -92,44 +54,7 @@ export class CombinationStatService {
 
   async getIndiviualChampData(champId: string, position: string): Promise<IndiviudalChampResponseDto[] | { result: any[]; message: string }> {
     const versions = await this.combinationStatRepository.getVersions();
-    let data = [];
-    for (const value of versions) {
-      data.push(value.version);
-    }
-
-    data = data.filter((version) => {
-      if (version[version.length - 1] === '.') {
-        version = version.slice(0, -1);
-      }
-      if (!isNaN(Number(version))) {
-        return version;
-      }
-    });
-    data = data.sort((a, b) => {
-      return b.split('.')[0] - a.split('.')[0];
-    });
-    let versionList_DESC = [];
-    let outdatedVersionList = [];
-    // recentVersion = 13.10 에서 13을 의미
-    const recentVersion = Number(String(data[0]).split('.')[0]);
-    for (let i = 0; i < data.length; i++) {
-      const version = data[i];
-      if (Number(version.split('.')[0]) < recentVersion) {
-        outdatedVersionList.push(version);
-      } else {
-        versionList_DESC.push(version);
-      }
-    }
-    // 최근버전 모음 (ex 13.1, 13.10)
-    versionList_DESC = versionList_DESC.sort((a, b) => {
-      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
-    });
-    // 이전버전 모음  (ex. 12.1, 12.10)
-    outdatedVersionList = outdatedVersionList.sort((a, b) => {
-      return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
-    });
-    // 최신버전 모음 뒤에 이전버전 합치기
-    versionList_DESC.push(...outdatedVersionList);
+    const versionList = await sortPatchVersions(versions);
 
     let option;
     switch (position) {
@@ -209,11 +134,11 @@ export class CombinationStatService {
 
     // 메인페이지 티어리스트 충족 시 최신버전, 아닐 경우 이전버전
     let dataList;
-    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList_DESC[0]);
+    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
     if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
-      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[0]);
+      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList[0]);
     } else {
-      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList_DESC[1]);
+      dataList = await this.combinationStatRepository.getIndividualChampData(option, versionList[1]);
     }
 
     const result = [];
@@ -252,4 +177,60 @@ export class CombinationStatService {
     }
     return result;
   }
+
+  async getRecentVersion(): Promise<VersionResponseDto> {
+    const versions = await this.combinationStatRepository.getVersions();
+    const versionList = await sortPatchVersions(versions);
+    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
+    let version: string;
+    if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
+      version = versionList[0];
+    } else {
+      version = versionList[1];
+    }
+    return { version };
+  }
+}
+
+async function sortPatchVersions(versions) {
+  let data = [];
+  for (const value of versions) {
+    data.push(value.version);
+  }
+
+  data = data.filter((version) => {
+    if (version[version.length - 1] === '.') {
+      version = version.slice(0, -1);
+    }
+    if (!isNaN(Number(version))) {
+      return version;
+    }
+  });
+  data = data.sort((a, b) => {
+    return b.split('.')[0] - a.split('.')[0];
+  });
+  let versionList_DESC = [];
+  let outdatedVersionList = [];
+  // recentVersion = 13.10 에서 13을 의미
+  const recentVersion = Number(String(data[0]).split('.')[0]);
+  for (let i = 0; i < data.length; i++) {
+    const version = data[i];
+    if (Number(version.split('.')[0]) < recentVersion) {
+      outdatedVersionList.push(version);
+    } else {
+      versionList_DESC.push(version);
+    }
+  }
+  // 최근버전 모음 (ex 13.1, 13.10)
+  versionList_DESC = versionList_DESC.sort((a, b) => {
+    return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
+  });
+  // 이전버전 모음  (ex. 12.1, 12.10)
+  outdatedVersionList = outdatedVersionList.sort((a, b) => {
+    return Number(String(b).split('.')[1]) - Number(String(a).split('.')[1]);
+  });
+  // 최신버전 모음 뒤에 이전버전 합치기
+  versionList_DESC.push(...outdatedVersionList);
+
+  return versionList_DESC;
 }
