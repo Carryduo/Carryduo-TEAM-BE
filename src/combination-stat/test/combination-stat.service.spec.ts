@@ -225,4 +225,38 @@ describe('CombinationStatController', () => {
     const data = await service.getIndiviualChampData('875', 'jungle');
     expect(data[0].version).toEqual('13.1.');
   });
+
+  it('version 테스트: 메인페이지 티어리스트가 충족되면, 최신 패치버전을 응답하는가?', async () => {
+    jest.spyOn(repository, 'getVersions').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+        }),
+    );
+
+    jest.spyOn(repository, 'getMainpageData').mockImplementation(
+      (version) =>
+        new Promise((resolve) => {
+          resolve(testData.result_mainPageData_recentVersion);
+        }),
+    );
+    const response = await service.getRecentVersion();
+    expect(response.version).toEqual('13.1.');
+  });
+  it('version 테스트: 메인페이지 티어리스트가 충족되지 않으면, 이전 패치버전을 응답하는가?', async () => {
+    jest.spyOn(repository, 'getVersions').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+        }),
+    );
+    jest.spyOn(repository, 'getMainpageData').mockImplementation(
+      (version) =>
+        new Promise((resolve) => {
+          resolve(testData.result_mainPageData_oldVersion);
+        }),
+    );
+    const response = await service.getRecentVersion();
+    expect(response.version).toEqual('12.23');
+  });
 });

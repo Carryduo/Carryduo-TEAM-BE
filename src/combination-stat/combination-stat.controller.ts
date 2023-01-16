@@ -2,12 +2,23 @@ import { CombinationStatService } from './combination-stat.service';
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { IndividualChampDataParamPipe, TierListParamPipe } from './pipes/combination-stat.param.validator.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IndiviudalChampResponseDto, TierListResponseDto } from './dtos/combination-stat.response.dto';
+import { IndiviudalChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
 
 @ApiTags('Combination-stat')
 @Controller('combination-stat')
 export class CombinationStatController {
   constructor(private readonly combinationStatService: CombinationStatService) {}
+
+  @ApiOperation({ summary: '현재 데이터의 패치버전' })
+  @ApiResponse({
+    status: 200,
+    description: '현재 데이터의 패치버전 응답 성공',
+    type: VersionResponseDto,
+  })
+  @Get('/version')
+  async getRecentVersion(): Promise<VersionResponseDto> {
+    return await this.combinationStatService.getRecentVersion();
+  }
 
   @ApiOperation({ summary: '라인별 Top30 티어리스트 조회' })
   @ApiParam({
