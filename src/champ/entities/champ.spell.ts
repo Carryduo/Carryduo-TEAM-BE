@@ -21,6 +21,9 @@ export class ChampSpellEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false, default: 'old' })
   version: string;
 
+  @Column({ type: 'varchar', nullable: false })
+  position: string;
+
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

@@ -29,6 +29,9 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   @Column({ type: 'varchar', nullable: false })
   champImg: string;
 
+  @Column({ type: 'varchar', nullable: false })
+  position: string;
+
   @OneToMany(() => ChampRateEntity, (champRate: ChampRateEntity) => champRate.champId, {
     cascade: true,
   })
