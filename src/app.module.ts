@@ -24,6 +24,10 @@ import { SimulationModule } from './simulation/simulation.module';
 import { SimulationEntity } from './simulation/entities/simulation.entity';
 import * as redisStore from 'cache-manager-redis-store';
 import { ChampRateEntity } from './champ/entities/champ.rate.entity';
+import { Champ_Rate_Entity } from './champ/entities/champ.rate.test.entity';
+import { Champ_BAN_Entity } from './champ/entities/champ.ban.entity';
+import { Champ_SPELL_Entity } from './champ/entities/champ.spell.test.entity';
+import { GameInfoEntity } from './champ/entities/game.info.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
@@ -34,7 +38,7 @@ const typeOrmModuleOptions = {
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
-    entities: [UserEntity, ChampEntity, ChampRateEntity, ChampSkillInfoEntity, ChampSpellEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
+    entities: [GameInfoEntity, Champ_Rate_Entity, Champ_BAN_Entity, Champ_SPELL_Entity, UserEntity, ChampEntity, ChampRateEntity, ChampSkillInfoEntity, ChampSpellEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: false,
     autoLoadEntities: true,
     logging: false,
