@@ -83,3 +83,59 @@ export class ChampRateCommonDTO {
   @IsNotEmpty()
   version: string;
 }
+
+export class UpdateChampRateCommonDTO {
+  @ApiProperty({
+    example: '1',
+    description: '승 수',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  win: number;
+
+  @ApiProperty({
+    example: '1',
+    description: '패 수',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  lose: number;
+
+  @ApiProperty({
+    example: 'TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY',
+    description: '포지션',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  position: string;
+
+  @ApiProperty({
+    example: '2',
+    description: '챔피언 플레이 횟수',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  pickCount: number;
+
+  @ApiProperty({
+    example: '13.1.',
+    description: '플레이 게임 버전',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  version: string;
+
+  @ApiProperty({
+    example: '1',
+    description: '챔피언 Id',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  champId: string;
+}

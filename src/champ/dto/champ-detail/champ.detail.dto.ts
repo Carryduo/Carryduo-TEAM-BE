@@ -1,8 +1,8 @@
-import { ApiProperty, IntersectionType, OmitType } from '@nestjs/swagger';
-import { ChampRateCommonDTO } from '../champ-rate/champ.rate.common.dto';
+import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
+import { ChampRateCommonDTO, UpdateChampRateCommonDTO } from '../champ-rate/champ.rate.common.dto';
 import { ChampPosition } from '../champ-rate/champ.rate.dto';
 import { ChampCommonDTO } from '../champ/champ.common.dto';
-import { ChampDetailCommonDTO } from './champ.detail.common.dto';
+import { ChampDetailCommonDTO, ChampSkillDTO } from './champ.detail.common.dto';
 
 export class spellData {
   @ApiProperty({
@@ -64,4 +64,48 @@ export class ChampDetailResponseDTO extends IntersectionType(OmitType(ChampCommo
     type: spellData,
   })
   spellInfo: spellData[];
+}
+
+export class UpdateChampDetailResponseDTO extends IntersectionType(OmitType(ChampCommonDTO, ['champMainImg']), PickType(UpdateChampRateCommonDTO, ['position', 'version'])) {
+  @ApiProperty({
+    example: '30.77',
+    description: '챔피언 승률',
+    required: true,
+  })
+  winRate: number;
+
+  @ApiProperty({
+    example: '0.25',
+    description: '챔피언 밴률',
+    required: true,
+  })
+  banRate: number;
+
+  @ApiProperty({
+    example: '3.27',
+    description: '챔피언 픽률',
+    required: true,
+  })
+  pickRate: number;
+
+  @ApiProperty({
+    example: 'example.png',
+    description: '스펠 1 이미지',
+    required: true,
+  })
+  spell1Img: string;
+
+  @ApiProperty({
+    example: 'example.png',
+    description: '스펠 2 이미지',
+    required: true,
+  })
+  spell2Img: string;
+
+  @ApiProperty({
+    description: '챔피언 스킬 정보',
+    isArray: true,
+    type: ChampDetailCommonDTO,
+  })
+  skill: ChampSkillDTO[];
 }
