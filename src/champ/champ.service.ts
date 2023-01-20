@@ -55,6 +55,166 @@ export class ChampService {
     return await this.champRepository.getChampList();
   }
 
+  //테스트 함수
+  //TODO: 스펠 이미지 추가
+  async getTargetChampion2(champId: string, position: string) {
+    const existChamp = await this.champRepository.existChamp(champId);
+
+    if (!existChamp) {
+      throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
+    }
+
+    const rateVersionList = await this.champRepository.rateVersion();
+    const rateLatestVersions = await this.getVersion(rateVersionList);
+
+    let emptyPosition = false;
+
+    if (position === 'DEFAULT') emptyPosition = true;
+
+    const defaultPosition = emptyPosition && (await this.champRepository.getMostPosition(champId, rateLatestVersions[0]));
+
+    //position 파라미터가 없을 경우 모스트 포지션 계산 있을경우 받은 포지션
+    const champPosition = emptyPosition ? defaultPosition[0]?.position : position;
+
+    //존재하면 default로 요청
+    const champData = await this.champRepository.getChampData(champId, champPosition, rateLatestVersions[0]);
+    const banData = await this.champRepository.getBanRate(champId, rateLatestVersions[0]);
+
+    const skill = champData.skillInfo.map((v) => {
+      return {
+        id: v.id,
+        name: v.name,
+        desc: v.skillDesc,
+        toolTip: v.toolTip,
+        image: v.image,
+      };
+    });
+
+    //챔피언 기본 정보
+    const { id } = champData.champDefaultData;
+    const { champNameKo } = champData.champDefaultData;
+    const { champNameEn } = champData.champDefaultData;
+    const { champImg } = champData.champDefaultData;
+
+    //데이터 분석을 통한 챔피언 상세 정보
+    const existWinRate = champData.champInfo[0]?.winRate;
+    const existBanRate = banData ? banData.banCount : 0;
+    const existPickRate = champData.champInfo[0]?.pickRate;
+    const existVersion = champData.champInfo[0]?.version;
+
+    const winRate = existWinRate ? Number(Number(existWinRate).toFixed(2)) : 0;
+    const banRate = existBanRate ? Number(Number(existBanRate).toFixed(2)) : 0;
+    const pickRate = existPickRate ? Number(Number(existPickRate).toFixed(2)) : 0;
+    const version = existVersion ? existVersion : 'default version';
+
+    const spell1 = champData.champInfo[0]?.spell1;
+    const spell2 = champData.champInfo[0]?.spell2;
+    const spellData = await this.getSpellImage(spell1, spell2);
+    const data = {
+      id,
+      champNameKo,
+      champNameEn,
+      champImg,
+      winRate,
+      banRate,
+      pickRate,
+      //position 데이터가 DB에 없을 경우 default
+      position: champPosition ? champPosition : position,
+      spell1Img: spellData.spell1Img,
+      spell2Img: spellData.spell2Img,
+      version,
+      skill,
+    };
+
+    return data;
+  }
+
+  async getSpellImage(spell1: number, spell2: number) {
+    const SummonerBarrier = 21;
+    const SummonerBoost = 1;
+    const SummonerDot = 14;
+    const SummonerExhaust = 3;
+    const SummonerFlash = 4;
+    const SummonerHaste = 6;
+    const SummonerHeal = 7;
+    const SummonerMana = 13;
+    const SummonerSmite = 11;
+    const SummonerTeleport = 12;
+    let spell1Img: string;
+    let spell2Img: string;
+    switch (spell1) {
+      case SummonerBarrier:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
+        break;
+      case SummonerBoost:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
+        break;
+      case SummonerDot:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
+        break;
+      case SummonerExhaust:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
+        break;
+      case SummonerFlash:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
+        break;
+      case SummonerHaste:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
+        break;
+      case SummonerHeal:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
+      case SummonerMana:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
+        break;
+      case SummonerSmite:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
+        break;
+      case SummonerTeleport:
+        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
+        break;
+      default:
+        spell1Img = `default spell image`;
+        break;
+    }
+    switch (spell2) {
+      case SummonerBarrier:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
+        break;
+      case SummonerBoost:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
+        break;
+      case SummonerDot:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
+        break;
+      case SummonerExhaust:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
+        break;
+      case SummonerFlash:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
+        break;
+      case SummonerHaste:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
+        break;
+      case SummonerHeal:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
+        break;
+      case SummonerMana:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
+        break;
+      case SummonerSmite:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
+        break;
+      case SummonerTeleport:
+        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
+        break;
+      default:
+        spell2Img = `default spell image`;
+        break;
+    }
+    return { spell1Img, spell2Img };
+  }
+
+  //기존 함수
   async getTargetChampion(champId: string): Promise<ChampDetailResponseDTO> {
     const existChamp = await this.champRepository.existChamp(champId);
 
