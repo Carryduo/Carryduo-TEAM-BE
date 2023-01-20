@@ -14,6 +14,8 @@ import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
 import { ChampSpellEntity } from 'src/champ/entities/champ.spell';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { GameInfoEntity } from 'src/champ/entities/game.info.entity';
+import { UpdateChampRateEntity } from 'src/champ/entities/update.champ.rate.entity';
 
 describe('AdminService', () => {
   const mockRepository = () => {
@@ -41,6 +43,8 @@ describe('AdminService', () => {
             },
           },
         },
+        { provide: getRepositoryToken(GameInfoEntity), useValue: mockRepository },
+        { provide: getRepositoryToken(UpdateChampRateEntity), useValue: mockRepository },
         {
           provide: getRepositoryToken(UserEntity),
           useValue: mockRepository,
