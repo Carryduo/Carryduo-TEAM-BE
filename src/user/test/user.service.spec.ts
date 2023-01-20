@@ -10,6 +10,8 @@ import { ChampSpellEntity } from 'src/champ/entities/champ.spell';
 import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
 import { ChampRateEntity } from 'src/champ/entities/champ.rate.entity';
 import { CACHE_MANAGER } from '@nestjs/common';
+import { UpdateChampRateEntity } from 'src/champ/entities/update.champ.rate.entity';
+import { GameInfoEntity } from 'src/champ/entities/game.info.entity';
 
 describe('UserService', () => {
   let service: UserService;
@@ -33,6 +35,8 @@ describe('UserService', () => {
           provide: getRepositoryToken(ChampEntity),
           useValue: mockRepository,
         },
+        { provide: getRepositoryToken(GameInfoEntity), useValue: mockRepository },
+        { provide: getRepositoryToken(UpdateChampRateEntity), useValue: mockRepository },
         {
           provide: getRepositoryToken(ChampRateEntity),
           useValue: mockRepository,

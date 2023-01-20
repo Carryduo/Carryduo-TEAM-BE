@@ -11,6 +11,8 @@ import * as preferChampUserList from './data/prefer.champ.user.list.json';
 import * as champSpell from './data/champ.spell.json';
 import * as champResponse from './data/champ.target.response.json';
 import * as testData from './data/champ.info';
+import { GameInfoEntity } from '../entities/game.info.entity';
+import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
 
 class MockRepository {}
 
@@ -80,6 +82,8 @@ describe('ChampService', () => {
         ChampService,
         { provide: ChampRepository, useClass: MockChampRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
+        { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
+        { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },
         {
           provide: getRepositoryToken(ChampSpellEntity),
           useClass: MockRepository,
