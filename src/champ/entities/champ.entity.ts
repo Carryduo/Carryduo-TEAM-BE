@@ -9,9 +9,9 @@ import { OmitType } from '@nestjs/swagger';
 import { ChampSpellEntity } from './champ.spell';
 import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
 import { ChampRateEntity } from './champ.rate.entity';
-import { Champ_Rate_Entity } from './champ.rate.test.entity';
-import { Champ_BAN_Entity } from './champ.ban.entity';
-import { Champ_SPELL_Entity } from './champ.spell.test.entity';
+import { UpdateChampRateEntity } from './update.champ.rate.entity';
+import { ChampBanEntity } from './champ.ban.entity';
+import { UpdateChampSpellEntity } from './update.champ.spell.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -36,20 +36,20 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   position: string;
 
   //업데이트 챔프 테이블
-  @OneToMany(() => Champ_Rate_Entity, (champ_rate: Champ_Rate_Entity) => champ_rate.champId, {
+  @OneToMany(() => UpdateChampRateEntity, (champ_rate: UpdateChampRateEntity) => champ_rate.champId, {
     cascade: true,
   })
-  champ_Rate: Champ_Rate_Entity;
+  champ_rate: UpdateChampRateEntity;
 
-  @OneToMany(() => Champ_BAN_Entity, (champ_ban: Champ_BAN_Entity) => champ_ban.champId, {
+  @OneToMany(() => ChampBanEntity, (champ_ban: ChampBanEntity) => champ_ban.champId, {
     cascade: true,
   })
-  champ_ban: Champ_BAN_Entity;
+  champ_ban: ChampBanEntity;
 
-  @OneToMany(() => Champ_SPELL_Entity, (champ_spell: Champ_SPELL_Entity) => champ_spell.champId, {
+  @OneToMany(() => UpdateChampSpellEntity, (champ_spell: UpdateChampSpellEntity) => champ_spell.champId, {
     cascade: true,
   })
-  champ_spell: Champ_SPELL_Entity;
+  champ_spell: UpdateChampSpellEntity;
 
   //기존 챔프 테이블
   @OneToMany(() => ChampRateEntity, (champRate: ChampRateEntity) => champRate.champId, {

@@ -5,7 +5,7 @@ import { ChampEntity } from './champ.entity';
 @Entity({
   name: 'CHAMP_BAN',
 })
-export class Champ_BAN_Entity extends CommonEntity {
+export class ChampBanEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   banCount: number;
 

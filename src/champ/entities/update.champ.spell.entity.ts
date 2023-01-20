@@ -5,7 +5,7 @@ import { ChampEntity } from './champ.entity';
 @Entity({
   name: 'CHAMP_SPELL',
 })
-export class Champ_SPELL_Entity extends CommonEntity {
+export class UpdateChampSpellEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   spell1: number;
 
