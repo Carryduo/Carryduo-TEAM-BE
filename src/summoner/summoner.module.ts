@@ -10,19 +10,8 @@ import { SummonerRepository } from './summoner.repository';
 import { SummonerService } from './summoner.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      SummonerHistoryEntity,
-      SummonerEntity,
-      ChampEntity,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([SummonerHistoryEntity, SummonerEntity, ChampEntity])],
   controllers: [SummonerController],
-  providers: [
-    SummonerService,
-    SummonerRepository,
-    summonerResponseCleansing,
-    SummonerHistoryDataCleansing,
-  ],
+  providers: [SummonerService, SummonerRepository, summonerResponseCleansing, SummonerHistoryDataCleansing],
 })
 export class SummonerModule {}

@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "carryduo",
-      "script": "dist/main.js",
+      "script": "dist/src/main.js",
       "args": "src/main.ts",
       "instances": 0,
       "exec_mode": "cluster"
