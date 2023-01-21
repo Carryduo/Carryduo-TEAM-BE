@@ -2,7 +2,6 @@ import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { IndiviudalChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
-import { CombinationStatCommonDto } from './dtos/combination-stat.common.dto';
 
 @Injectable()
 export class CombinationStatService {
