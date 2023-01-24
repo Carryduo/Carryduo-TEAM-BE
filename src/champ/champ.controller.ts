@@ -59,7 +59,7 @@ export class ChampController {
     description: '특정 챔피언 스킬 정보 조회 수정본 응답 예시',
     type: UpdateChampDetailResponseDTO,
   })
-  @Get('/:champId/:position')
+  @Get('/:champId/position/:position')
   async getTargetChampion2(@Param('champId') champId: string, @Param('position') position: string) {
     return await this.champService.getTargetChampion2(champId, position);
   }
