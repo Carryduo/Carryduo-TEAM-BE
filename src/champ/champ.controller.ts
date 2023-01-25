@@ -1,4 +1,4 @@
-import { CacheInterceptor, Get, Param, UseFilters, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, Get, Param, Query, UseFilters, UseInterceptors } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
@@ -14,13 +14,13 @@ import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 export class ChampController {
   constructor(private readonly champService: ChampService) {}
 
-  @Get()
   @ApiOperation({ summary: '챔피언 리스트 조회' })
   @ApiResponse({
     status: 200,
     description: '챔피언 리스트 조회 예시',
     type: ChampCommonDTO,
   })
+  @Get()
   async getChampionList() {
     return await this.champService.getChampList();
   }
@@ -50,7 +50,7 @@ export class ChampController {
   })
   @ApiParam({
     name: 'position',
-    example: 'DEFAULT ,TOP/ JUNGLE/ MIDDLE/ BOTTOM/ UTILITY ',
+    example: 'default ,top/ jungle/ middle/ bottom/ utility ',
     required: true,
     description: '조회할 챔피언의 position',
   })
