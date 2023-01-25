@@ -69,13 +69,11 @@ export class ChampService {
 
     let emptyPosition = false;
 
-    if (position === 'DEFAULT') emptyPosition = true;
+    if (position === 'default') emptyPosition = true;
 
     const defaultPosition = emptyPosition && (await this.champRepository.getMostPosition(champId, rateLatestVersions[0]));
-
     //position 파라미터가 없을 경우 모스트 포지션 계산 있을경우 받은 포지션
-    const champPosition = emptyPosition ? defaultPosition[0]?.position : position;
-
+    const champPosition = emptyPosition ? defaultPosition[0]?.position : position.toLocaleUpperCase();
     //존재하면 default로 요청
     const champData = await this.champRepository.getChampData(champId, champPosition, rateLatestVersions[0]);
     const banData = await this.champRepository.getBanRate(champId, rateLatestVersions[0]);
