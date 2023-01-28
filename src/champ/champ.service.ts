@@ -121,7 +121,20 @@ export class ChampService {
 
     const spell1 = champData.champInfo[0]?.spell1;
     const spell2 = champData.champInfo[0]?.spell2;
-    const spellData = await this.getSpellImage(spell1, spell2);
+    const spellInfo = {
+      21: 'SummonerBarrier',
+      1: 'SummonerBoost',
+      14: 'SummonerDot',
+      3: 'SummonerExhaust',
+      4: 'SummonerFlash',
+      6: 'SummonerHaste',
+      7: 'SummonerHeal',
+      13: 'SummonerMana',
+      11: 'SummonerSmite',
+      12: 'SummonerTeleport',
+    };
+    const spell1Img = spell1 ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell1]}.png` : 'default spell Image';
+    const spell2Img = spell2 ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell2]}.png` : 'default spell Image';
     const data = {
       id,
       champNameKo,
@@ -132,98 +145,13 @@ export class ChampService {
       pickRate,
       //position 정보가 DB에 없을경우 default 있는경우 DB position명을 파라미터 포지션명으로 변환
       position: existPosition ? Object.keys(positionList).find((key) => positionList[key] === existPosition) : 'default position',
-      spell1Img: spellData.spell1Img,
-      spell2Img: spellData.spell2Img,
+      spell1Img,
+      spell2Img,
       version,
       skill,
     };
 
     return data;
-  }
-
-  async getSpellImage(spell1: number, spell2: number) {
-    const SummonerBarrier = 21;
-    const SummonerBoost = 1;
-    const SummonerDot = 14;
-    const SummonerExhaust = 3;
-    const SummonerFlash = 4;
-    const SummonerHaste = 6;
-    const SummonerHeal = 7;
-    const SummonerMana = 13;
-    const SummonerSmite = 11;
-    const SummonerTeleport = 12;
-    let spell1Img: string;
-    let spell2Img: string;
-    switch (spell1) {
-      case SummonerBarrier:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
-        break;
-      case SummonerBoost:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
-        break;
-      case SummonerDot:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
-        break;
-      case SummonerExhaust:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
-        break;
-      case SummonerFlash:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
-        break;
-      case SummonerHaste:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
-        break;
-      case SummonerHeal:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
-      case SummonerMana:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
-        break;
-      case SummonerSmite:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
-        break;
-      case SummonerTeleport:
-        spell1Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
-        break;
-      default:
-        spell1Img = `default spell image`;
-        break;
-    }
-    switch (spell2) {
-      case SummonerBarrier:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBarrier.png`;
-        break;
-      case SummonerBoost:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerBoost.png`;
-        break;
-      case SummonerDot:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerDot.png`;
-        break;
-      case SummonerExhaust:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerExhaust.png`;
-        break;
-      case SummonerFlash:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerFlash.png`;
-        break;
-      case SummonerHaste:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHaste.png`;
-        break;
-      case SummonerHeal:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerHeal.png`;
-        break;
-      case SummonerMana:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerMana.png`;
-        break;
-      case SummonerSmite:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerSmite.png`;
-        break;
-      case SummonerTeleport:
-        spell2Img = `${process.env.S3_ORIGIN_URL}/spell/SummonerTeleport.png`;
-        break;
-      default:
-        spell2Img = `default spell image`;
-        break;
-    }
-    return { spell1Img, spell2Img };
   }
 
   //기존 함수
