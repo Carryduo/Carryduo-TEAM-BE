@@ -71,13 +71,26 @@ export class ChampService {
 
     if (position === 'default') emptyPosition = true;
 
-    const defaultPosition = emptyPosition && (await this.champRepository.getMostPosition(champId, rateLatestVersions[0]));
-    //position 파라미터가 없을 경우 모스트 포지션 계산 있을경우 받은 포지션
-    const champPosition = emptyPosition ? defaultPosition[0]?.position : position.toLocaleUpperCase();
+    const positionList = {
+      top: 'TOP',
+      jungle: 'JUNGLE',
+      mid: 'MIDDLE',
+      ad: 'BOTTOM',
+      support: 'UTILITY',
+      default: 'default',
+    };
+    //파라미터값을 DB에 있는 포지션명으로 변경
+    const positionDbName = positionList[position];
+
+    //default 파라미터인 경우 최대 많이 플레이한 포지션 산출
+    const findMostPosition = emptyPosition && (await this.champRepository.getMostPosition(champId, rateLatestVersions[0]));
+
+    //DB에서 산출한 position명 또는 DB에 있는 포지션값으로 할당
+    const champPosition = emptyPosition ? findMostPosition[0]?.position : positionDbName;
+
     //존재하면 default로 요청
     const champData = await this.champRepository.getChampData(champId, champPosition, rateLatestVersions[0]);
     const banData = await this.champRepository.getBanRate(champId, rateLatestVersions[0]);
-
     const skill = champData.skillInfo.map((v) => {
       return {
         id: v.id,
@@ -99,6 +112,7 @@ export class ChampService {
     const existBanRate = banData ? banData.banCount : 0;
     const existPickRate = champData.champInfo[0]?.pickRate;
     const existVersion = champData.champInfo[0]?.version;
+    const existPosition = champData.champInfo[0]?.position;
 
     const winRate = existWinRate ? Number(Number(existWinRate).toFixed(2)) : 0;
     const banRate = existBanRate ? Number(Number(existBanRate).toFixed(2)) : 0;
@@ -116,8 +130,8 @@ export class ChampService {
       winRate,
       banRate,
       pickRate,
-      //position 데이터가 DB에 없을 경우 default
-      position: champPosition ? champPosition : position,
+      //position 정보가 DB에 없을경우 default 있는경우 DB position명을 파라미터 포지션명으로 변환
+      position: existPosition ? Object.keys(positionList).find((key) => positionList[key] === existPosition) : 'default position',
       spell1Img: spellData.spell1Img,
       spell2Img: spellData.spell2Img,
       version,
