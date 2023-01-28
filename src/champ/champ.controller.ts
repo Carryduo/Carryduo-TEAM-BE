@@ -33,7 +33,7 @@ export class ChampController {
   })
   @ApiResponse({
     status: 200,
-    description: '특정 챔피언 스킬 정보 조회 응답 예시',
+    description: '특정 챔피언 정보 조회 응답 예시',
     type: ChampDetailResponseDTO,
   })
   @UseInterceptors(CacheInterceptor)
@@ -50,13 +50,13 @@ export class ChampController {
   })
   @ApiParam({
     name: 'position',
-    example: 'default ,top/ jungle/ middle/ bottom/ utility ',
+    example: 'default ,top / jungle / mid / ad / support',
     required: true,
     description: '조회할 챔피언의 position',
   })
   @ApiResponse({
     status: 200,
-    description: '특정 챔피언 스킬 정보 조회 수정본 응답 예시',
+    description: '특정 챔피언 정보 조회 수정본 응답 예시',
     type: UpdateChampDetailResponseDTO,
   })
   @Get('/:champId/position/:position')
