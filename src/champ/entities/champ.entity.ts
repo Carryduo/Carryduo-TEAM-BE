@@ -6,9 +6,7 @@ import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { OmitType } from '@nestjs/swagger';
-import { ChampSpellEntity } from './champ.spell';
 import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
-import { ChampRateEntity } from './champ.rate.entity';
 import { UpdateChampRateEntity } from './update.champ.rate.entity';
 import { ChampBanEntity } from './champ.ban.entity';
 import { UpdateChampSpellEntity } from './update.champ.spell.entity';
@@ -47,17 +45,6 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     cascade: true,
   })
   champ_spell: UpdateChampSpellEntity;
-
-  //기존 챔프 테이블
-  @OneToMany(() => ChampRateEntity, (champRate: ChampRateEntity) => champRate.champId, {
-    cascade: true,
-  })
-  champRate: ChampRateEntity;
-
-  @OneToMany(() => ChampSpellEntity, (champSpell: ChampSpellEntity) => champSpell.champId, {
-    cascade: true,
-  })
-  champSpell: ChampSpellEntity;
 
   @OneToMany(() => ChampSkillInfoEntity, (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId, {
     cascade: true,

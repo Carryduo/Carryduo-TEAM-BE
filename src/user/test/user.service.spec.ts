@@ -6,9 +6,7 @@ import { UserEntity } from '../entities/user.entity';
 import { createQueryBuilder } from 'typeorm';
 import { ChampRepository } from 'src/champ/champ.repository';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { ChampSpellEntity } from 'src/champ/entities/champ.spell';
 import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
-import { ChampRateEntity } from 'src/champ/entities/champ.rate.entity';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { UpdateChampRateEntity } from 'src/champ/entities/update.champ.rate.entity';
 import { GameInfoEntity } from 'src/champ/entities/game.info.entity';
@@ -38,15 +36,7 @@ describe('UserService', () => {
         { provide: getRepositoryToken(GameInfoEntity), useValue: mockRepository },
         { provide: getRepositoryToken(UpdateChampRateEntity), useValue: mockRepository },
         {
-          provide: getRepositoryToken(ChampRateEntity),
-          useValue: mockRepository,
-        },
-        {
           provide: getRepositoryToken(ChampSkillInfoEntity),
-          useValue: mockRepository,
-        },
-        {
-          provide: getRepositoryToken(ChampSpellEntity),
           useValue: mockRepository,
         },
         { provide: CACHE_MANAGER, useClass: MockChache },

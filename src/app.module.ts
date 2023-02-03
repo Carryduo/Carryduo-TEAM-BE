@@ -19,11 +19,9 @@ import { CommentEntity } from './comments/entities/comments.entity';
 import { CombinationStatEntity } from './combination-stat/entities/combination-stat.entity';
 import { SubscriptionEntity } from './subscription/entities/subscription.entity';
 import { SummonerHistoryEntity } from './summoner/entities/summoner.history.entity';
-import { ChampSpellEntity } from './champ/entities/champ.spell';
 import { SimulationModule } from './simulation/simulation.module';
 import { SimulationEntity } from './simulation/entities/simulation.entity';
 import * as redisStore from 'cache-manager-redis-store';
-import { ChampRateEntity } from './champ/entities/champ.rate.entity';
 import { UpdateChampRateEntity } from './champ/entities/update.champ.rate.entity';
 import { ChampBanEntity } from './champ/entities/champ.ban.entity';
 import { UpdateChampSpellEntity } from './champ/entities/update.champ.spell.entity';
@@ -38,7 +36,7 @@ const typeOrmModuleOptions = {
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
-    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampRateEntity, ChampSkillInfoEntity, ChampSpellEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
+    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillInfoEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: false,
     autoLoadEntities: true,
     logging: false,

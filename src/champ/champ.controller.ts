@@ -4,7 +4,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
 import { TypeOrmFilter } from 'src/common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
-import { ChampDetailResponseDTO, UpdateChampDetailResponseDTO } from './dto/champ-detail/champ.detail.dto';
+import { UpdateChampDetailResponseDTO } from './dto/champ-detail/champ.detail.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 
@@ -31,23 +31,6 @@ export class ChampController {
     required: true,
     description: '조회할 챔피언의 ID',
   })
-  @ApiResponse({
-    status: 200,
-    description: '특정 챔피언 정보 조회 응답 예시',
-    type: ChampDetailResponseDTO,
-  })
-  @UseInterceptors(CacheInterceptor)
-  @Get('/:champId')
-  async getTargetChampion(@Param('champId') champId: string) {
-    return await this.champService.getTargetChampion(champId);
-  }
-
-  @ApiOperation({ summary: '특정 챔피언 정보 조회 수정본' })
-  @ApiParam({
-    name: 'champId',
-    required: true,
-    description: '조회할 챔피언의 ID',
-  })
   @ApiParam({
     name: 'position',
     example: 'default ,top / jungle / mid / ad / support',
@@ -61,7 +44,7 @@ export class ChampController {
   })
   @Get('/:champId/position/:position')
   async getTargetChampion2(@Param('champId') champId: string, @Param('position') position: string) {
-    return await this.champService.getTargetChampion2(champId, position);
+    return await this.champService.getTargetChampion(champId, position);
   }
 
   @ApiOperation({ summary: '특정 챔피언 선호한 유저 조회' })
