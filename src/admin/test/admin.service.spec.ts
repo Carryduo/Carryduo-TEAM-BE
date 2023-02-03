@@ -9,9 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CommentRepository } from 'src/comments/comments.repository';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { ChampRateEntity } from 'src/champ/entities/champ.rate.entity';
 import { ChampSkillInfoEntity } from 'src/champ/entities/champSkillInfo.entity';
-import { ChampSpellEntity } from 'src/champ/entities/champ.spell';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { CommentEntity } from 'src/comments/entities/comments.entity';
 import { GameInfoEntity } from 'src/champ/entities/game.info.entity';
@@ -54,15 +52,7 @@ describe('AdminService', () => {
           useValue: mockRepository,
         },
         {
-          provide: getRepositoryToken(ChampRateEntity),
-          useValue: mockRepository,
-        },
-        {
           provide: getRepositoryToken(ChampSkillInfoEntity),
-          useValue: mockRepository,
-        },
-        {
-          provide: getRepositoryToken(ChampSpellEntity),
           useValue: mockRepository,
         },
         {
