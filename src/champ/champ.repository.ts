@@ -3,9 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
-import { ChampSpellEntity } from './entities/champ.spell';
 import { Cache } from 'cache-manager';
-import { ChampRateEntity } from './entities/champ.rate.entity';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
@@ -15,13 +13,9 @@ export class ChampRepository {
     @InjectRepository(GameInfoEntity)
     private readonly gameDataRepository: Repository<GameInfoEntity>,
     @InjectRepository(UpdateChampRateEntity)
-    private readonly champRateRepository2: Repository<UpdateChampRateEntity>,
+    private readonly champRateRepository: Repository<UpdateChampRateEntity>,
     @InjectRepository(ChampEntity)
     private readonly champRepository: Repository<ChampEntity>,
-    @InjectRepository(ChampSpellEntity)
-    private readonly champSpellRepository: Repository<ChampSpellEntity>,
-    @InjectRepository(ChampRateEntity)
-    private readonly champRateRepository: Repository<ChampRateEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @Inject(CACHE_MANAGER)
@@ -66,9 +60,9 @@ export class ChampRepository {
   }
 
   async getMostPosition(champId: string, version: string) {
-    return await this.champRateRepository2.createQueryBuilder().where('champId = :champId', { champId }).andWhere('version = :version', { version }).select('position').orderBy('pick_count', 'DESC').limit(1).execute();
+    return await this.champRateRepository.createQueryBuilder().where('champId = :champId', { champId }).andWhere('version = :version', { version }).select('position').orderBy('pick_count', 'DESC').limit(1).execute();
   }
-  async getGameTotalCount(version) {
+  async getGameTotalCount(version: string) {
     return await this.gameDataRepository.createQueryBuilder().select('game_count').where('version = :version', { version }).getRawOne();
   }
 
@@ -104,29 +98,5 @@ export class ChampRepository {
     const { game_count } = await this.getGameTotalCount(version);
 
     return await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champ_ban', 'ban').select(`ban.ban_count / ${game_count}*100 banCount`).where('champ.champId = :champId', { champId }).andWhere('ban.version = :version', { version }).getRawOne();
-  }
-
-  async getTargetChampion(champId: string, version: string) {
-    try {
-      return await this.champRepository
-        .createQueryBuilder('champ')
-        .leftJoinAndSelect('champ.champSkillInfo', 'skill')
-        .leftJoinAndSelect('champ.champRate', 'rate')
-        .select(['champ.id', 'champ.champNameKo', 'champ.champNameEn', 'champ.champMainImg', 'skill.skillId', 'skill.skillName', 'skill.skillDesc', 'skill.skillToolTip', 'skill.skillImg', 'rate.winRate', 'rate.banRate', 'rate.pickRate', 'rate.topRate', 'rate.jungleRate', 'rate.midRate', 'rate.adRate', 'rate.supportRate', 'rate.version'])
-        .where('champ.id = :champId', { champId })
-        .andWhere('rate.version = :version', { version })
-        .orderBy('skill.createdAt', 'ASC')
-        .getOne();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async spellVersion() {
-    return await this.champSpellRepository.createQueryBuilder('spell').select('DISTINCT spell.version').where('spell.version <> :version', { version: 'old' }).getRawMany();
-  }
-
-  async getChampSpell(champId: string, version: string) {
-    return await this.champSpellRepository.createQueryBuilder('spell').where('spell.champId = :champId', { champId }).andWhere('spell.version = :version', { version }).select(['spell.spell1', 'spell.spell2', 'spell.pickRate', 'spell.version', 'spell.champId']).addSelect('SUM(spell.sample_num) OVER(PARTITION BY spell.champID) total').orderBy('spell.sample_num', 'DESC').limit(1).execute();
   }
 }
