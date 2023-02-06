@@ -1,70 +1,32 @@
-import { CACHE_MANAGER, HttpException, HttpStatus } from '@nestjs/common';
+import { CACHE_MANAGER, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampRepository } from '../champ.repository';
 import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
-import * as champList from './data/champ.list.json';
-import * as preferChampUserList from './data/prefer.champ.user.list.json';
+import * as champListData from './data/champ.list.json';
+import * as preferChampUserData from './data/prefer.champ.user.list.json';
 import * as champSpell from './data/champ.spell.json';
 import * as champResponse from './data/champ.target.response.json';
 import * as testData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
 
-class MockRepository {}
-
-class MockUserRepository {}
-
-class MockChampRepository {
-  champIds = ['1', '2', '3', '4', '5'];
-  preferChamp = [
-    { preferChamp: '1', user: 'kim' },
-    { preferChamp: '1', user: 'lee' },
-    { preferChamp: '2', user: 'park' },
-  ];
-
-  existChamp(champId) {
-    if (!this.champIds.includes(champId)) {
-      return null;
-    } else if (this.champIds.includes(champId)) {
-      return champList[0];
-    }
-  }
+class MockRepository {
   getChampList() {
-    return champList;
+    return champListData;
   }
-  findPreferChampUsers(champId) {
-    for (const p of this.preferChamp) {
-      if (p.preferChamp === champId) {
-        return preferChampUserList;
-      } else {
-        return [];
-      }
-    }
+  findPreferChampUsers(champId: string) {
+    const preferChampIdList = ['1', '2', '3', '4'];
+    const preferChampUser = preferChampIdList.includes(champId) ? preferChampUserData : [];
+    return preferChampUser;
   }
-  rateVersion() {
-    return [{ version: '12.22' }, { version: '12.21' }, { version: '12.20' }];
-  }
-  rateLatestVersions() {
-    return ['old'];
-  }
+  getTargetChampion(champId: string, position: string) {}
 
-  getTargetChampion(champId) {
-    if (!this.champIds.includes(champId)) {
-      throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
-    } else {
-      return testData.champInfo;
-    }
-  }
-
-  spellVersion() {
-    return [{ version: '12.22' }, { version: '12.21' }, { version: '12.20' }];
-  }
-
-  getChampSpell(champId) {
-    return champSpell;
+  existChamp(champId: string) {
+    const existChampList = ['1', '2', '3'];
+    return existChampList.includes(champId) ? true : false;
   }
 }
 
@@ -79,13 +41,13 @@ describe('ChampService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChampService,
-        { provide: ChampRepository, useClass: MockChampRepository },
+        { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
         { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },
         {
           provide: getRepositoryToken(UserEntity),
-          useClass: MockUserRepository,
+          useClass: MockRepository,
         },
         { provide: CACHE_MANAGER, useClass: MockChache },
       ],
@@ -104,23 +66,25 @@ describe('ChampService', () => {
     expect(service).toBeDefined();
   });
 
-  //   it('getChampList return champList?', async () => {
-  //     expect(await service.getChampList()).toBe(champList);
-  //   });
+  it('getChampList return champList?', async () => {
+    const champList = await service.getChampList();
+    expect(champList).toBe(champListData);
+  });
 
-  //   it('getPreferChampUsers는 champId를 찾으면 preferChampUserList return?', async () => {
-  //     const champId = '1';
-  //     expect(await service.getPreferChampUsers(champId)).toEqual(preferChampUserList);
-  //   });
+  it('해당 챔피언을 선호하는 유저가 있으면 유저의 정보, 없으면 빈 배열을 return?', async () => {
+    let champId = '1';
+    let preferUsers = await service.getPreferChampUsers(champId);
+    expect(preferUsers).toEqual(preferChampUserData);
 
-  //   it('getPreferChampUsers는 champId를 못찾으면 빈 배열을 return?', async () => {
-  //     const champId = '100';
-  //     expect(await service.getPreferChampUsers(champId)).toEqual([]);
-  //   });
+    champId = '6';
+    preferUsers = await service.getPreferChampUsers(champId);
+    expect(preferUsers).toEqual([]);
+  });
 
-  //   it('getTargetChampion은 detailChampInfo를 리턴?', async () => {
-  //     expect(await service.getTargetChampion('1')).toEqual(champResponse);
-  //   });
+  // it('getTargetChampion은 존재하지 않는 챔피언id를 받으면 error return?', async () => {
+  //   const result = await service.getTargetChampion('4', 'default');
+  //   await expect(result).rejects.toThrowError(new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST));
+  // });
 
   //   it('getTargetChampion은 champion Id 가 없을 경우 error return?', async () => {
   //     const exception = '해당하는 챔피언 정보가 없습니다.';
