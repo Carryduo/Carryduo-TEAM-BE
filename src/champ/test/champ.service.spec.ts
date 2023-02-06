@@ -7,9 +7,8 @@ import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
 import * as champListData from './data/champ.list.json';
 import * as preferChampUserData from './data/prefer.champ.user.list.json';
-import * as champSpell from './data/champ.spell.json';
-import * as champResponse from './data/champ.target.response.json';
-import * as testData from './data/champ.info';
+import * as targetChampionResponseData from './data/champ.target.response.json';
+import * as champData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
 
@@ -27,6 +26,27 @@ class MockRepository {
   existChamp(champId: string) {
     const existChampList = ['1', '2', '3'];
     return existChampList.includes(champId) ? true : false;
+  }
+  rateVersion() {
+    return [{ version: '12.23' }, { version: '13.1.' }];
+  }
+  getMostPosition(champId: string, version: string) {
+    const champPositionInfo = [
+      { champId: '1', position: 'MIDDLE', version: '12.23' },
+      { champId: '1', position: 'BOTTOM', version: '12.21' },
+      { champId: '1', position: 'JUNGLE', version: '13.1.' },
+    ];
+    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
+    return mostPosition;
+  }
+  getChampData(champId: string, position: string, version: string) {
+    const { champDefaultData } = champData;
+    const { skillInfo } = champData;
+    const { champInfo } = champData;
+    return { champDefaultData, skillInfo, champInfo };
+  }
+  getBanRate() {
+    return { banCount: '0.2546' };
   }
 }
 
@@ -81,17 +101,18 @@ describe('ChampService', () => {
     expect(preferUsers).toEqual([]);
   });
 
-  // it('getTargetChampion은 존재하지 않는 챔피언id를 받으면 error return?', async () => {
-  //   const result = await service.getTargetChampion('4', 'default');
-  //   await expect(result).rejects.toThrowError(new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST));
-  // });
+  it('getTargetChampion은 존재하지 않는 챔피언id를 받으면 error return?', async () => {
+    let error = null;
+    try {
+      await service.getTargetChampion('4', 'default');
+    } catch (err) {
+      error = err;
+    }
+    expect(error).not.toBeNull();
+  });
 
-  //   it('getTargetChampion은 champion Id 가 없을 경우 error return?', async () => {
-  //     const exception = '해당하는 챔피언 정보가 없습니다.';
-  //     try {
-  //       await service.getTargetChampion('100');
-  //     } catch (err) {
-  //       expect(err.message).toStrictEqual(exception);
-  //     }
-  //   });
+  it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 해당 데이터를 return?', async () => {
+    const result = await service.getTargetChampion('1', 'default');
+    expect(result).toEqual(targetChampionResponseData);
+  });
 });
