@@ -55,7 +55,6 @@ export class ChampService {
   //TODO: 스펠 이미지 추가
   async getTargetChampion(champId: string, position: string) {
     const existChamp = await this.champRepository.existChamp(champId);
-
     if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
     }
@@ -63,9 +62,7 @@ export class ChampService {
     const rateVersionList = await this.champRepository.rateVersion();
     const rateLatestVersions = await this.getVersion(rateVersionList);
 
-    let emptyPosition = false;
-
-    if (position === 'default') emptyPosition = true;
+    const emptyPosition = position === 'default' ? true : false;
 
     const positionList = {
       top: 'TOP',
@@ -79,11 +76,10 @@ export class ChampService {
     const positionDbName = positionList[position];
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출
-    const findMostPosition = emptyPosition && (await this.champRepository.getMostPosition(champId, rateLatestVersions[0]));
+    const targetPosition = emptyPosition ? await this.champRepository.getMostPosition(champId, rateLatestVersions[0]) : positionDbName;
 
     //DB에서 산출한 position명 또는 DB에 있는 포지션값으로 할당
-    const champPosition = emptyPosition ? findMostPosition[0]?.position : positionDbName;
-
+    const champPosition = emptyPosition ? targetPosition[0]?.position : targetPosition;
     //존재하면 default로 요청
     const champData = await this.champRepository.getChampData(champId, champPosition, rateLatestVersions[0]);
     const banData = await this.champRepository.getBanRate(champId, rateLatestVersions[0]);
