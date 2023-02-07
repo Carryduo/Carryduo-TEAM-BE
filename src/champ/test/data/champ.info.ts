@@ -43,13 +43,54 @@ export const skillInfo = [
   },
 ];
 
-export const champInfo = [
+export const TOP = [
   {
-    winRate: '47.8238',
+    winRate: '30.8238',
     pickRate: '0.5701',
+    spell1: 14,
+    spell2: 4,
+    version: '13.1.',
+    position: 'TOP',
+  },
+];
+export const JUNGLE = [
+  {
+    winRate: '50.8238',
+    pickRate: '30.5701',
+    spell1: 14,
+    spell2: 4,
+    version: '13.1.',
+    position: 'JUNGLE',
+  },
+];
+export const MIDDLE = [
+  {
+    winRate: '20.8238',
+    pickRate: '5.5701',
     spell1: 14,
     spell2: 4,
     version: '13.1.',
     position: 'MIDDLE',
   },
 ];
+export const UTILITY = [
+  {
+    winRate: '10.8238',
+    pickRate: '10.5701',
+    spell1: 14,
+    spell2: 4,
+    version: '13.1.',
+    position: 'UTILITY',
+  },
+];
+export const BOTTOM = [
+  {
+    winRate: '5.8238',
+    pickRate: '1.5701',
+    spell1: 14,
+    spell2: 4,
+    version: '13.1.',
+    position: 'BOTTOM',
+  },
+];
+export const DEFAULT = [];
