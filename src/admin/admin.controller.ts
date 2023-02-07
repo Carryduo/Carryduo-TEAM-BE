@@ -3,10 +3,10 @@ import { Controller } from '@nestjs/common';
 import { Get, UseGuards, Delete, UseFilters } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { jwtGuard } from './jwt/jwt.guard';
-import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
+import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
-import { User } from 'src/common/decorators/user.decorator';
+import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { User } from '../common/decorators/user.decorator';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)

@@ -1,10 +1,8 @@
-import { SummonerCommonDTO } from './../../summoner/dto/summoner/summoner.common.dto';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { ChampEntity } from '../../champ/entities/champ.entity';
+import { SummonerEntity } from '../../summoner/entities/summoner.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 
 @Entity({
   name: 'COMMENT',
@@ -44,14 +42,10 @@ export class CommentEntity extends CommonEntity {
   ])
   champId: ChampEntity;
 
-  @ManyToOne(
-    () => SummonerEntity,
-    (summonerEntity: SummonerEntity) => summonerEntity.summonerName,
-    {
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    },
-  )
+  @ManyToOne(() => SummonerEntity, (summonerEntity: SummonerEntity) => summonerEntity.summonerName, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn([
     {
       name: 'summonerName',

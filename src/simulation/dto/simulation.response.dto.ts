@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
+import { ChampCommonDTO } from '../../champ/dto/champ/champ.common.dto';
 
 export class simulationResponseDto {
   @ApiProperty({

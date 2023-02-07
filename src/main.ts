@@ -14,10 +14,7 @@ async function bootstrap() {
   app.disable('x-powered-by');
 
   // swagger ooptions
-  const config = new DocumentBuilder()
-    .setTitle('carryduo')
-    .setVersion('1.0.0')
-    .build();
+  const config = new DocumentBuilder().setTitle('carryduo').setVersion('1.0.0').build();
   const document = SwaggerModule.createDocument(app, config);
 
   // prod
@@ -25,10 +22,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'prod') {
     // cors
     corsOptions = {
-      origin: [
-        `${process.env.FRONT_URL_PROD}`,
-        `${process.env.FRONT_URL2_PROD}`,
-      ],
+      origin: [`${process.env.FRONT_URL_PROD}`, `${process.env.FRONT_URL2_PROD}`],
       credentials: true,
     };
   }
@@ -36,11 +30,7 @@ async function bootstrap() {
   else if (process.env.NODE_ENV === 'dev') {
     // cors
     corsOptions = {
-      origin: [
-        `${process.env.FRONT_URL_DEV}`,
-        `${process.env.FRONT_URL2_DEV}`,
-        `${process.env.FRONT_URL_LOCAL}`,
-      ],
+      origin: [`${process.env.FRONT_URL_DEV}`, `${process.env.FRONT_URL2_DEV}`, `${process.env.FRONT_URL_LOCAL}`],
       credentials: true,
     };
 

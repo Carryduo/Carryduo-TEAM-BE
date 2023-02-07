@@ -1,8 +1,8 @@
 import { CacheInterceptor, Get, Param, Query, UseFilters, UseInterceptors } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
-import { TypeOrmFilter } from 'src/common/exception/typeorm-exception.filter';
+import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
+import { TypeOrmFilter } from '../common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
 import { UpdateChampDetailResponseDTO } from './dto/champ-detail/champ.detail.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
