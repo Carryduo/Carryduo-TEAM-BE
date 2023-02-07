@@ -16,7 +16,7 @@ export class redisOption {
     isGlobal: true,
     store: redisStore,
     host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT_TESET,
+    port: process.env.REDIS_PORT,
     password: process.env.REDIS_PASSWORD,
     ttl: Number(process.env.REDIS_TTL),
     no_ready_check: true,
