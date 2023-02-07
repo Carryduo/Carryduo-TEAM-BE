@@ -1,9 +1,9 @@
 import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete, Patch, ParseUUIDPipe, HttpException, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { jwtGuard } from 'src/admin/jwt/jwt.guard';
-import { User } from 'src/common/decorators/user.decorator';
-import { CommonResponseDTO } from 'src/common/dto/common.response.dto';
-import { HttpExceptionFilter } from 'src/common/exception/http-exception.filter';
+import { jwtGuard } from '../admin/jwt/jwt.guard';
+import { User } from '../common/decorators/user.decorator';
+import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { CommentsService } from './comments.service';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { CommentGetResponseDTO } from './dto/comment.response.dto';

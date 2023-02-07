@@ -7,13 +7,13 @@ import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { KakaoStrategy } from './kakao.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { jwtStrategy } from './jwt/jwt.strategy';
 import { AdminRepository } from './admin.repository';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { ChampRepository } from 'src/champ/champ.repository';
-import { ChampModule } from 'src/champ/champ.module';
-import { UserRepository } from 'src/user/user.repository';
+import { CommentEntity } from '../comments/entities/comments.entity';
+import { ChampRepository } from '../champ/champ.repository';
+import { ChampModule } from '../champ/champ.module';
+import { UserRepository } from '../user/user.repository';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, CommentEntity]),
@@ -26,14 +26,7 @@ import { UserRepository } from 'src/user/user.repository';
     ChampModule,
   ],
   controllers: [AdminController],
-  providers: [
-    AdminService,
-    KakaoStrategy,
-    jwtStrategy,
-    AdminRepository,
-    UserRepository,
-    CommentRepository,
-  ],
+  providers: [AdminService, KakaoStrategy, jwtStrategy, AdminRepository, UserRepository, CommentRepository],
   exports: [AdminRepository],
 })
 export class AdminModule {}

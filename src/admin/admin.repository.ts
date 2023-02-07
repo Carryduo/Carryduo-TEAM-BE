@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { kakaoPayload } from './dto/kakao.payload';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { CommentEntity } from '../comments/entities/comments.entity';
 
 @Injectable()
 export class AdminRepository {

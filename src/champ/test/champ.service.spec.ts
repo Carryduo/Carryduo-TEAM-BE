@@ -1,13 +1,13 @@
-import { CACHE_MANAGER, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampRepository } from '../champ.repository';
 import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
 import * as champListData from './data/champ.list.json';
 import * as preferChampUserData from './data/prefer.champ.user.list.json';
-import * as targetChampionResponseData from './data/champ.target.response.json';
+import * as responseData from './data/champ.target.response';
 import * as champData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
@@ -21,7 +21,6 @@ class MockRepository {
     const preferChampUser = preferChampIdList.includes(champId) ? preferChampUserData : [];
     return preferChampUser;
   }
-  getTargetChampion(champId: string, position: string) {}
 
   existChamp(champId: string) {
     const existChampList = ['1', '2', '3'];
@@ -31,18 +30,28 @@ class MockRepository {
     return [{ version: '12.23' }, { version: '13.1.' }];
   }
   getMostPosition(champId: string, version: string) {
+    //id:2에 해당하는 챔피언 데이터가 없는 경우
+    if (champId === '2') return [];
+
     const champPositionInfo = [
       { champId: '1', position: 'MIDDLE', version: '12.23' },
       { champId: '1', position: 'BOTTOM', version: '12.21' },
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
+
     const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
     return mostPosition;
   }
   getChampData(champId: string, position: string, version: string) {
     const { champDefaultData } = champData;
     const { skillInfo } = champData;
-    const { champInfo } = champData;
+    const champInfo = champData[position];
+
+    //id:2에 해당하는 챔피언 데이터가 없는 경우
+    if (champId === '2') {
+      return { champDefaultData, skillInfo, champInfo: champData.DEFAULT };
+    }
+
     return { champDefaultData, skillInfo, champInfo };
   }
   getBanRate() {
@@ -111,8 +120,69 @@ describe('ChampService', () => {
     expect(error).not.toBeNull();
   });
 
-  it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 해당 데이터를 return?', async () => {
-    const result = await service.getTargetChampion('1', 'default');
-    expect(result).toEqual(targetChampionResponseData);
+  it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾는가?', async () => {
+    const champId = '1';
+    const version = '13.1.';
+    let position = 'default';
+
+    const positionList = {
+      top: 'TOP',
+      jungle: 'JUNGLE',
+      mid: 'MIDDLE',
+      ad: 'BOTTOM',
+      support: 'UTILITY',
+      default: 'default',
+    };
+    let emptyPosition = positionList[position] === 'default' ? true : false;
+
+    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
+      const positionInfo = [
+        { champId: '1', position: 'JUNGLE', version: '13.1.' },
+        { champId: '1', position: 'TOP', version: '12.1' },
+      ];
+      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
+      return MostPosition;
+    });
+
+    const mostPosition = emptyPosition && (await repository.getMostPosition(champId, version));
+
+    expect(getMostPosition).toBeCalled();
+    expect(mostPosition[0].position).toBe('JUNGLE');
+
+    //default 파라미터가 아닌 경우
+    position = 'mid';
+    emptyPosition = positionList[position] === 'default' ? true : false;
+    const targetPosition = emptyPosition ? await repository.getMostPosition(champId, version) : positionList[position];
+
+    //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
+    expect(getMostPosition).toHaveBeenCalledTimes(1);
+    expect(targetPosition).toBe('MIDDLE');
+  });
+
+  it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 포지션에 맞는 데이터를 return?', async () => {
+    const champId = '1';
+    const version = '13.1.';
+    let position = 'default';
+
+    const result = await service.getTargetChampion(champId, position);
+
+    const targetPosition = await repository.getMostPosition(champId, version);
+
+    expect(targetPosition[0]?.position).toEqual('JUNGLE');
+    expect(result).toEqual(responseData.JUNGLE);
+  });
+
+  it('getTargetChampion에서 포지션 파라미터의 값대로 response를 return?', async () => {
+    const champId = '1';
+    const position = 'mid';
+    const result = await service.getTargetChampion(champId, position);
+    expect(result).toEqual(responseData.MID);
+  });
+
+  it('getTargetChampion에서 특정 챔피언의 정보가 없으면 default data return?', async () => {
+    const champId = '2';
+    const position = 'default';
+    const result = await service.getTargetChampion(champId, position);
+    expect(result).toEqual(responseData.DEFAULT);
   });
 });

@@ -1,17 +1,10 @@
 import { OmitType } from '@nestjs/swagger';
 import { IsString, IsUUID } from 'class-validator';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
-import { CommonEntity } from 'src/common/entities/common.entity';
-import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { ChampEntity } from '../../champ/entities/champ.entity';
+import { CommentEntity } from '../../comments/entities/comments.entity';
+import { CommonEntity } from '../../common/entities/common.entity';
+import { SubscriptionEntity } from '../../subscription/entities/subscription.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
   name: 'USER',
@@ -46,22 +39,14 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @Column({ type: 'boolean', default: true })
   enableChat: boolean;
 
-  @OneToMany(
-    () => SubscriptionEntity,
-    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.userId,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => SubscriptionEntity, (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.userId, {
+    cascade: true,
+  })
   subscription: SubscriptionEntity;
 
-  @OneToMany(
-    () => CommentEntity,
-    (commentEntity: CommentEntity) => commentEntity.userId,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => CommentEntity, (commentEntity: CommentEntity) => commentEntity.userId, {
+    cascade: true,
+  })
   comment: CommentEntity;
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {

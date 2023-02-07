@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
+import { ChampCommonDTO } from '../../../champ/dto/champ/champ.common.dto';
 import { SummonerHistoryResponseDTO } from '../history/history.dto';
 import { SummonerCommonDTO } from './summoner.common.dto';
 

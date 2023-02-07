@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
-import { CommonEntity } from 'src/common/entities/common.entity';
+import { ChampCommonDTO } from '../../../champ/dto/champ/champ.common.dto';
+import { CommonEntity } from '../../../common/entities/common.entity';
 
 export class SummonerCommonDTO extends CommonEntity {
   @ApiProperty({

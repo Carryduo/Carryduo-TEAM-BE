@@ -2,11 +2,11 @@ import { CombinationStatEntity } from './../../combination-stat/entities/combina
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { ChampSkillInfoEntity } from './champSkillInfo.entity';
-import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { SummonerEntity } from '../../summoner/entities/summoner.entity';
+import { UserEntity } from '../../user/entities/user.entity';
+import { CommentEntity } from '../../comments/entities/comments.entity';
 import { OmitType } from '@nestjs/swagger';
-import { SimulationEntity } from 'src/simulation/entities/simulation.entity';
+import { SimulationEntity } from '../../simulation/entities/simulation.entity';
 import { UpdateChampRateEntity } from './update.champ.rate.entity';
 import { ChampBanEntity } from './champ.ban.entity';
 import { UpdateChampSpellEntity } from './update.champ.spell.entity';

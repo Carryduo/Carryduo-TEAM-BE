@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
 import { ChampEntity } from './entities/champ.entity';
 import { Cache } from 'cache-manager';

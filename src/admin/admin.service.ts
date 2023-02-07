@@ -4,8 +4,8 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { kakaoPayload } from './dto/kakao.payload';
 import { Brackets } from 'typeorm';
-import { ChampRepository } from 'src/champ/champ.repository';
-import { UserRepository } from 'src/user/user.repository';
+import { ChampRepository } from '../champ/champ.repository';
+import { UserRepository } from '../user/user.repository';
 @Injectable()
 export class AdminService {
   constructor(private readonly adminRepository: AdminRepository, private jwtService: JwtService, private readonly commentRepository: CommentRepository, private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}

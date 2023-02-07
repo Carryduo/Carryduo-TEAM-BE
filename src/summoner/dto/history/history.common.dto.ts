@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { CommonEntity } from 'src/common/entities/common.entity';
+import { CommonEntity } from '../../../common/entities/common.entity';
 
 export class SummonerHistoryCommonDTO extends CommonEntity {
   @ApiProperty({

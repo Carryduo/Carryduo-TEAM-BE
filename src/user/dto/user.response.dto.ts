@@ -1,19 +1,8 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
+import { ChampCommonDTO } from '../../champ/dto/champ/champ.common.dto';
 import { UserCommonDto } from './user.common.dto';
 
-export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
-  'userId',
-  'createdAt',
-  'socialId',
-  'social',
-  'createdAt',
-  'updatedAt',
-  'deletedAt',
-  'preferChamp1',
-  'preferChamp2',
-  'preferChamp3',
-]) {
+export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, ['userId', 'createdAt', 'socialId', 'social', 'createdAt', 'updatedAt', 'deletedAt', 'preferChamp1', 'preferChamp2', 'preferChamp3']) {
   @ApiProperty({
     example: 'wqeqwQWE244',
     description: '유저ID',
@@ -45,7 +34,4 @@ export class UserSpecificInfoResponseDTO extends OmitType(UserCommonDto, [
   preferChamp3: ChampCommonDTO | null;
 }
 
-export class UserBasicInfoResponseDTO extends PickType(UserCommonDto, [
-  'nickname',
-  'profileImg',
-]) {}
+export class UserBasicInfoResponseDTO extends PickType(UserCommonDto, ['nickname', 'profileImg']) {}

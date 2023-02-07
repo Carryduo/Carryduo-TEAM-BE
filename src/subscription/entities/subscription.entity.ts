@@ -1,7 +1,7 @@
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { SummonerEntity } from '../../summoner/entities/summoner.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
@@ -24,13 +24,9 @@ export class SubscriptionEntity extends CommonEntity {
   ])
   userId: UserEntity;
 
-  @ManyToOne(
-    () => SummonerEntity,
-    (summoner: SummonerEntity) => summoner.summonerName,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
+  @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.summonerName, {
+    onDelete: 'CASCADE',
+  })
   @ApiProperty({
     example: 'xzczcaQWWWE23',
     description: '구독한 소환사 ID',

@@ -1,8 +1,8 @@
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { ChampEntity } from '../../champ/entities/champ.entity';
+import { SubscriptionEntity } from '../../subscription/entities/subscription.entity';
+import { CommentEntity } from '../../comments/entities/comments.entity';
 import { SummonerHistoryEntity } from './summoner.history.entity';
 import { OmitType } from '@nestjs/swagger';
 

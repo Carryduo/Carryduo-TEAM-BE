@@ -1,6 +1,6 @@
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { ChampEntity } from '../../champ/entities/champ.entity';
 
 @Entity({
   name: 'COMBINATION_STAT',

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { ChampEntity } from '../champ/entities/champ.entity';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
 import { SummonerEntity } from './entities/summoner.entity';
