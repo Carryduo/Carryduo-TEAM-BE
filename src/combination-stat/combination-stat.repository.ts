@@ -15,7 +15,7 @@ export class CombinationStatRepository {
     return await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select(['DISTINCT COMBINATION_STAT.version']).getRawMany();
   }
   //   mainPage 티어리스트
-  async getTierList(category: string | number, version): Promise<CombinationStatCommonDto[]> {
+  async getTierList(category: number, version: string): Promise<CombinationStatCommonDto[]> {
     return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')

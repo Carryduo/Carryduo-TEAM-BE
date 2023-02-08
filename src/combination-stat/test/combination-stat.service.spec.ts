@@ -44,8 +44,6 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getTierList').mockImplementation(
       (category, version) =>
         new Promise((resolve) => {
-          console.log(category);
-          console.log(version);
           if (category === 0) {
             if (version === testData.input0_tierList[0].version) {
               resolve(testData.input0_tierList);

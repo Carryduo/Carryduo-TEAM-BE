@@ -1,15 +1,22 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as expressBasicAuth from 'express-basic-auth';
 import { HttpExceptionFilter } from './common/exception/http-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe()); // class-validator 등록
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // class-traonsformer로 exclude, expose를 적용
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // 아무 decorator 도 없는 어떤 property의 object를 거름
+      forbidNonWhitelisted: true, // 잘못된 property의 리퀘스트 자체를 막아버림
+      transform: true, // 실제 원하는 타입으로 변경해줌
+    }),
+  ); // class-validator 등록
   app.useGlobalFilters(new HttpExceptionFilter()); // httpException filter 등록
   app.disable('x-powered-by');
 

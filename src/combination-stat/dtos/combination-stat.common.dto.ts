@@ -90,4 +90,15 @@ export class CombinationStatCommonDto {
 
   @IsNotEmpty()
   champ2_champImg: string;
+
+  static editCategoryForEntity(type: string) {
+    switch (type) {
+      case 'top-jungle':
+        return 0;
+      case 'mid-jungle':
+        return 1;
+      case 'ad-support':
+        return 2;
+    }
+  }
 }
