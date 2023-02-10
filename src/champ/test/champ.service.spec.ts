@@ -42,20 +42,27 @@ class MockRepository {
     const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
     return mostPosition;
   }
+
+  getSkillData(champId: string) {
+    return champData.skillInfo;
+  }
+
+  getChampDefaultData(champId: string) {
+    return champData.champDefaultData;
+  }
+
   getChampData(champId: string, position: string, version: string) {
-    const { champDefaultData } = champData;
-    const { skillInfo } = champData;
     const champInfo = champData[position];
 
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') {
-      return { champDefaultData, skillInfo, champInfo: champData.DEFAULT };
+      return { champInfo: champData.DEFAULT };
     }
 
-    return { champDefaultData, skillInfo, champInfo };
+    return { champInfo };
   }
   getBanRate() {
-    return { banCount: '0.2546' };
+    return { banRate: 0.2 };
   }
 }
 
