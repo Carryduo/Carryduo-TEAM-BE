@@ -53,8 +53,7 @@ export class ChampService {
   }
 
   async getChampList(): Promise<ChampDto[]> {
-    const champList = await this.champRepository.getChampList();
-    return ChampDto.transformDTO(champList);
+    return await this.champRepository.getChampList();
   }
 
   //TODO: 스펠 이미지 추가
@@ -86,33 +85,38 @@ export class ChampService {
     const champPosition = emptyPosition ? targetPosition[0]?.position : targetPosition;
     //존재하면 default로 요청
     const champData = await this.champRepository.getChampData(param.champId, champPosition, rateLatestVersions[0]);
-    const banData = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
-    const skill = champData.skillInfo.map((v) => {
+
+    const champDefaultData = await this.champRepository.getChampDefaultData(param.champId);
+
+    const skillData = await this.champRepository.getSkillData(param.champId);
+
+    const skill = skillData.map((v) => {
       return {
         id: v.id,
         name: v.name,
-        desc: v.skillDesc,
+        desc: v.desc,
         toolTip: v.toolTip,
         image: v.image,
       };
     });
 
+    const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     //챔피언 기본 정보
-    const { id } = champData.champDefaultData;
-    const { champNameKo } = champData.champDefaultData;
-    const { champNameEn } = champData.champDefaultData;
-    const { champImg } = champData.champDefaultData;
+    const { id } = champDefaultData;
+    const { champNameKo } = champDefaultData;
+    const { champNameEn } = champDefaultData;
+    const { champImg } = champDefaultData;
 
     //데이터 분석을 통한 챔피언 상세 정보
     const existWinRate = champData.champInfo[0]?.winRate;
-    const existBanRate = banData ? banData.banCount : 0;
     const existPickRate = champData.champInfo[0]?.pickRate;
     const existVersion = champData.champInfo[0]?.version;
     const existPosition = champData.champInfo[0]?.position;
 
     const winRate = existWinRate ? Number(Number(existWinRate).toFixed(2)) : 0;
-    const banRate = existBanRate ? Number(Number(existBanRate).toFixed(2)) : 0;
+    const { banRate } = banInfo;
     const pickRate = existPickRate ? Number(Number(existPickRate).toFixed(2)) : 0;
+
     const version = existVersion ? existVersion : 'default version';
 
     const spell1 = champData.champInfo[0]?.spell1;
@@ -149,9 +153,7 @@ export class ChampService {
     return data;
   }
 
-  async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {
-    const targetUser = await this.champRepository.findPreferChampUsers(champId);
-
-    return targetUser;
+  async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[] | []> {
+    return await this.champRepository.findPreferChampUsers(champId);
   }
 }
