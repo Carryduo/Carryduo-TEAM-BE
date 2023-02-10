@@ -61,7 +61,7 @@ export class ChampRepository {
     return await this.champRateRepository.createQueryBuilder('rate').select('DISTINCT rate.version').where('rate.version <> :version', { version: 'old' }).getRawMany();
   }
 
-  async getMostPosition(champId: string, version: string): Promise<UpdateChampRateEntity[]> {
+  async getMostPosition(champId: string, version: string) {
     return await this.champRateRepository.createQueryBuilder().where('champId = :champId', { champId }).andWhere('version = :version', { version }).select('position').orderBy('pick_count', 'DESC').limit(1).execute();
   }
   async getGameTotalCount(version: string): Promise<GameInfoEntity> {
@@ -72,11 +72,11 @@ export class ChampRepository {
     try {
       const { gameCount } = await this.getGameTotalCount(version);
 
-      const skillInfo: ChampSkillEntity[] = await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champSkillInfo', 'skill').select(['skill.skillId skillId', 'skill.skillName skillName', 'skill.skillDesc skillDesc', 'skill.skillToolTip skillToolTip', 'skill.skillImg skillImg']).where('champ.champId = :champId', { champId }).orderBy('skill.createdAt', 'ASC').getRawMany();
+      const skillInfo = await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champSkillInfo', 'skill').select(['skill.skillId skillId', 'skill.skillName skillName', 'skill.skillDesc skillDesc', 'skill.skillToolTip skillToolTip', 'skill.skillImg skillImg']).where('champ.champId = :champId', { champId }).orderBy('skill.createdAt', 'ASC').getRawMany();
 
-      const champDefaultData: ChampEntity = await this.champRepository.createQueryBuilder('champ').where('champId = :champId', { champId }).select(['champ.id id', 'champ.champNameKo champNameKo', 'champ.champNameEn champNameEn', 'champ.champMainImg champImg']).getRawOne();
+      const champDefaultData = await this.champRepository.createQueryBuilder('champ').where('champId = :champId', { champId }).select(['champ.id id', 'champ.champNameKo champNameKo', 'champ.champNameEn champNameEn', 'champ.champMainImg champImg']).getRawOne();
 
-      const champInfo: UpdateChampRateEntity = await this.champRepository
+      const champInfo = await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champ_rate', 'rate')
         .leftJoinAndSelect('champ.champ_spell', 'spell')

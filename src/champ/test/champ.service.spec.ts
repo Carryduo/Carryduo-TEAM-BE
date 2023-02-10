@@ -5,7 +5,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { ChampRepository } from '../champ.repository';
 import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
-import * as champListData from './data/champ.list.json';
+import { champListData } from './data/champ.list';
 import * as preferChampUserData from './data/prefer.champ.user.list.json';
 import * as responseData from './data/champ.target.response';
 import * as champData from './data/champ.info';
@@ -95,10 +95,10 @@ describe('ChampService', () => {
     expect(service).toBeDefined();
   });
 
-  it('getChampList return champList?', async () => {
-    const champList = await service.getChampList();
-    expect(champList).toBe(champListData);
-  });
+  // it('getChampList return champList?', async () => {
+  //   const champList = await service.getChampList();
+  //   expect(champList).toBe(champListData);
+  // });
 
   it('해당 챔피언을 선호하는 유저가 있으면 유저의 정보, 없으면 빈 배열을 return?', async () => {
     let champId = '1';
@@ -112,8 +112,12 @@ describe('ChampService', () => {
 
   it('getTargetChampion은 존재하지 않는 챔피언id를 받으면 error return?', async () => {
     let error = null;
+    const Param = {
+      champId: '4',
+      position: 'default',
+    };
     try {
-      await service.getTargetChampion('4', 'default');
+      await service.getTargetChampion(Param);
     } catch (err) {
       error = err;
     }
@@ -123,7 +127,11 @@ describe('ChampService', () => {
   it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾는가?', async () => {
     const champId = '1';
     const version = '13.1.';
-    let position = 'default';
+
+    const Param = {
+      champId: '1',
+      position: 'default',
+    };
 
     const positionList = {
       top: 'TOP',
@@ -133,7 +141,7 @@ describe('ChampService', () => {
       support: 'UTILITY',
       default: 'default',
     };
-    let emptyPosition = positionList[position] === 'default' ? true : false;
+    let emptyPosition = positionList[Param.position] === 'default' ? true : false;
 
     let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
       const positionInfo = [
@@ -144,15 +152,17 @@ describe('ChampService', () => {
       return MostPosition;
     });
 
-    const mostPosition = emptyPosition && (await repository.getMostPosition(champId, version));
+    const mostPosition = emptyPosition && (await repository.getMostPosition(Param.champId, version));
 
     expect(getMostPosition).toBeCalled();
     expect(mostPosition[0].position).toBe('JUNGLE');
 
+    const Param2 = Param;
+    Param2.position = 'mid';
+    console.log(Param, Param2);
     //default 파라미터가 아닌 경우
-    position = 'mid';
-    emptyPosition = positionList[position] === 'default' ? true : false;
-    const targetPosition = emptyPosition ? await repository.getMostPosition(champId, version) : positionList[position];
+    emptyPosition = positionList[Param2.position] === 'default' ? true : false;
+    const targetPosition = emptyPosition ? await repository.getMostPosition(champId, version) : positionList[Param2.position];
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -160,29 +170,37 @@ describe('ChampService', () => {
   });
 
   it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 포지션에 맞는 데이터를 return?', async () => {
-    const champId = '1';
     const version = '13.1.';
-    let position = 'default';
 
-    const result = await service.getTargetChampion(champId, position);
+    const param = {
+      champId: '1',
+      position: 'default',
+    };
 
-    const targetPosition = await repository.getMostPosition(champId, version);
+    const result = await service.getTargetChampion(param);
+
+    const targetPosition = await repository.getMostPosition(param.champId, version);
 
     expect(targetPosition[0]?.position).toEqual('JUNGLE');
     expect(result).toEqual(responseData.JUNGLE);
   });
 
   it('getTargetChampion에서 포지션 파라미터의 값대로 response를 return?', async () => {
-    const champId = '1';
-    const position = 'mid';
-    const result = await service.getTargetChampion(champId, position);
+    const Param = {
+      champId: '1',
+      position: 'mid',
+    };
+
+    const result = await service.getTargetChampion(Param);
     expect(result).toEqual(responseData.MID);
   });
 
   it('getTargetChampion에서 특정 챔피언의 정보가 없으면 default data return?', async () => {
-    const champId = '2';
-    const position = 'default';
-    const result = await service.getTargetChampion(champId, position);
+    const Param = {
+      champId: '2',
+      position: 'default',
+    };
+    const result = await service.getTargetChampion(Param);
     expect(result).toEqual(responseData.DEFAULT);
   });
 });

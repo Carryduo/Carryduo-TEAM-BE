@@ -58,7 +58,7 @@ export class ChampService {
   }
 
   //TODO: 스펠 이미지 추가
-  async getTargetChampion(param: TargetChampionReqDTO): Promise<TargetChampionResDto> {
+  async getTargetChampion(param: TargetChampionReqDTO) {
     const existChamp = await this.champRepository.existChamp(param.champId);
     if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
@@ -82,7 +82,6 @@ export class ChampService {
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출
     const targetPosition = emptyPosition ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0]) : positionDbName;
-
     //DB에서 산출한 position명 또는 DB에 있는 포지션값으로 할당
     const champPosition = emptyPosition ? targetPosition[0]?.position : targetPosition;
     //존재하면 default로 요청
@@ -90,11 +89,11 @@ export class ChampService {
     const banData = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     const skill = champData.skillInfo.map((v) => {
       return {
-        id: v.skillId,
-        name: v.skillName,
+        id: v.id,
+        name: v.name,
         desc: v.skillDesc,
-        toolTip: v.skillToolTip,
-        image: v.skillImg,
+        toolTip: v.toolTip,
+        image: v.image,
       };
     });
 
@@ -147,7 +146,7 @@ export class ChampService {
       version,
       skill,
     };
-    return new TargetChampionResDto(data);
+    return data;
   }
 
   async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {
