@@ -7,6 +7,8 @@ import { Cache } from 'cache-manager';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
 import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
+import { ChampSkillEntity } from './entities/champSkillInfo.entity';
+import { ChampBanEntity } from './entities/champ.ban.entity';
 
 export class ChampRepository {
   constructor(
@@ -22,7 +24,7 @@ export class ChampRepository {
     private cacheManager: Cache,
   ) {}
 
-  async existChamp(champId) {
+  async existChamp(champId: string): Promise<ChampEntity> {
     return await this.champRepository.createQueryBuilder().where('champId = :champId', { champId }).getOne();
   }
 
@@ -51,35 +53,35 @@ export class ChampRepository {
     await this.cacheManager.del(`/champ/${key}/users`);
   }
 
-  async getChampList() {
+  async getChampList(): Promise<ChampEntity[]> {
     return await this.champRepository.createQueryBuilder().select(['champId AS id', 'champ_name_ko AS champNameKo ', 'champ_name_en AS champNameEn', 'champ_main_img AS champMainImg', 'champ_img AS champImg']).orderBy('champ_name_ko', 'ASC').getRawMany();
   }
 
-  async rateVersion() {
+  async rateVersion(): Promise<UpdateChampRateEntity[]> {
     return await this.champRateRepository.createQueryBuilder('rate').select('DISTINCT rate.version').where('rate.version <> :version', { version: 'old' }).getRawMany();
   }
 
-  async getMostPosition(champId: string, version: string) {
+  async getMostPosition(champId: string, version: string): Promise<UpdateChampRateEntity[]> {
     return await this.champRateRepository.createQueryBuilder().where('champId = :champId', { champId }).andWhere('version = :version', { version }).select('position').orderBy('pick_count', 'DESC').limit(1).execute();
   }
-  async getGameTotalCount(version: string) {
-    return await this.gameDataRepository.createQueryBuilder().select('game_count').where('version = :version', { version }).getRawOne();
+  async getGameTotalCount(version: string): Promise<GameInfoEntity> {
+    return await this.gameDataRepository.createQueryBuilder().select('game_count gameCount').where('version = :version', { version }).getRawOne();
   }
 
   async getChampData(champId: string, position: string, version: string) {
     try {
-      const { game_count } = await this.getGameTotalCount(version);
+      const { gameCount } = await this.getGameTotalCount(version);
 
-      const skillInfo = await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champSkillInfo', 'skill').select(['skill.skillId id', 'skill.skillName name', 'skill.skillDesc skillDesc', 'skill.skillToolTip toolTip', 'skill.skillImg image']).where('champ.champId = :champId', { champId }).orderBy('skill.createdAt', 'ASC').getRawMany();
+      const skillInfo: ChampSkillEntity[] = await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champSkillInfo', 'skill').select(['skill.skillId skillId', 'skill.skillName skillName', 'skill.skillDesc skillDesc', 'skill.skillToolTip skillToolTip', 'skill.skillImg skillImg']).where('champ.champId = :champId', { champId }).orderBy('skill.createdAt', 'ASC').getRawMany();
 
-      const champDefaultData = await this.champRepository.createQueryBuilder('champ').where('champId = :champId', { champId }).select(['champ.id id', 'champ.champNameKo champNameKo', 'champ.champNameEn champNameEn', 'champ.champMainImg champImg']).getRawOne();
+      const champDefaultData: ChampEntity = await this.champRepository.createQueryBuilder('champ').where('champId = :champId', { champId }).select(['champ.id id', 'champ.champNameKo champNameKo', 'champ.champNameEn champNameEn', 'champ.champMainImg champImg']).getRawOne();
 
-      const champInfo = await this.champRepository
+      const champInfo: UpdateChampRateEntity = await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champ_rate', 'rate')
         .leftJoinAndSelect('champ.champ_spell', 'spell')
         .select('(rate.win/rate.pick_count)*100 winRate')
-        .addSelect(`(rate.pick_count / ${game_count})*100 pickRate`)
+        .addSelect(`(rate.pick_count / ${gameCount})*100 pickRate`)
         .addSelect(['spell.spell1 spell1', 'spell.spell2 spell2', 'rate.version version', 'rate.position position'])
         .where('champ.champId = :champId', { champId })
         .andWhere('rate.version = :version', { version })
@@ -94,9 +96,10 @@ export class ChampRepository {
       console.log(err);
     }
   }
-  async getBanRate(champId: string, version: string) {
-    const { game_count } = await this.getGameTotalCount(version);
 
-    return await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champ_ban', 'ban').select(`ban.ban_count / ${game_count}*100 banCount`).where('champ.champId = :champId', { champId }).andWhere('ban.version = :version', { version }).getRawOne();
+  async getBanRate(champId: string, version: string): Promise<ChampBanEntity> {
+    const { gameCount } = await this.getGameTotalCount(version);
+
+    return await this.champRepository.createQueryBuilder('champ').leftJoinAndSelect('champ.champ_ban', 'ban').select(`ban.ban_count / ${gameCount}*100 banCount`).where('champ.champId = :champId', { champId }).andWhere('ban.version = :version', { version }).getRawOne();
   }
 }

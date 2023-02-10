@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
 import { IsDecimal, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { UpdateChampRateEntity } from 'src/champ/entities/update.champ.rate.entity';
 
 export class ChampRateCommonDTO {
   @ApiProperty({
@@ -85,57 +88,78 @@ export class ChampRateCommonDTO {
 }
 
 export class UpdateChampRateCommonDTO {
+  @Exclude() private readonly _win: number;
+  @Exclude() private readonly _lose: number;
+  @Exclude() private readonly _position: string;
+  @Exclude() private readonly _pickCount: number;
+  @Exclude() private readonly _version: string;
+  @Exclude() private readonly _champId: ChampEntity;
+
+  constructor(data: UpdateChampRateEntity | null) {
+    this._win = data.win;
+    this._lose = data.lose;
+    this._position = data.position;
+    this._pickCount = data.pickCount;
+    this._version = data.version;
+    this._champId = data.champId;
+  }
   @ApiProperty({
     example: '1',
     description: '승 수',
     required: true,
   })
-  @IsNumber()
-  @IsNotEmpty()
-  win: number;
+  @Expose()
+  get win() {
+    return this._win;
+  }
 
   @ApiProperty({
     example: '1',
     description: '패 수',
     required: true,
   })
-  @IsNumber()
-  @IsNotEmpty()
-  lose: number;
+  @Expose()
+  get lose() {
+    return this._lose;
+  }
 
   @ApiProperty({
     example: 'TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY',
     description: '포지션',
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  position: string;
+  @Expose()
+  get position() {
+    return this._position;
+  }
 
   @ApiProperty({
     example: '2',
     description: '챔피언 플레이 횟수',
     required: true,
   })
-  @IsNumber()
-  @IsNotEmpty()
-  pickCount: number;
+  @Expose()
+  get pickCount() {
+    return this._pickCount;
+  }
 
   @ApiProperty({
     example: '13.1.',
     description: '플레이 게임 버전',
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  version: string;
+  @Expose()
+  get version() {
+    return this._version;
+  }
 
   @ApiProperty({
     example: '1',
     description: '챔피언 Id',
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  champId: string;
+  @Expose()
+  get champId() {
+    return this._champId;
+  }
 }

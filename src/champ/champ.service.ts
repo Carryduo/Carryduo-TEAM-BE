@@ -1,12 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChampRepository } from './champ.repository';
+import { ChampCommonDTO, ChampDto } from './dto/champ/champ.common.dto';
 import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
+import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
+import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
+import { skillInfo } from './test/data/champ.info';
 
 @Injectable()
 export class ChampService {
   constructor(private readonly champRepository: ChampRepository) {}
 
-  private async getVersion(versions: { version: string }[]) {
+  private async getVersion(versions: { version: string }[]): Promise<Array<string>> {
     let data = [];
     for (const value of versions) {
       data.push(value.version);
@@ -48,13 +52,14 @@ export class ChampService {
     return versionList_DESC;
   }
 
-  async getChampList() {
-    return await this.champRepository.getChampList();
+  async getChampList(): Promise<ChampDto[]> {
+    const champList = await this.champRepository.getChampList();
+    return ChampDto.transformDTO(champList);
   }
 
   //TODO: 스펠 이미지 추가
-  async getTargetChampion(champId: string, position: string) {
-    const existChamp = await this.champRepository.existChamp(champId);
+  async getTargetChampion(param: TargetChampionReqDTO): Promise<TargetChampionResDto> {
+    const existChamp = await this.champRepository.existChamp(param.champId);
     if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
     }
@@ -62,7 +67,7 @@ export class ChampService {
     const rateVersionList = await this.champRepository.rateVersion();
     const rateLatestVersions = await this.getVersion(rateVersionList);
 
-    const emptyPosition = position === 'default' ? true : false;
+    const emptyPosition = param.position === 'default' ? true : false;
 
     const positionList = {
       top: 'TOP',
@@ -73,23 +78,23 @@ export class ChampService {
       default: 'default',
     };
     //파라미터값을 DB에 있는 포지션명으로 변경
-    const positionDbName = positionList[position];
+    const positionDbName = positionList[param.position];
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출
-    const targetPosition = emptyPosition ? await this.champRepository.getMostPosition(champId, rateLatestVersions[0]) : positionDbName;
+    const targetPosition = emptyPosition ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0]) : positionDbName;
 
     //DB에서 산출한 position명 또는 DB에 있는 포지션값으로 할당
     const champPosition = emptyPosition ? targetPosition[0]?.position : targetPosition;
     //존재하면 default로 요청
-    const champData = await this.champRepository.getChampData(champId, champPosition, rateLatestVersions[0]);
-    const banData = await this.champRepository.getBanRate(champId, rateLatestVersions[0]);
+    const champData = await this.champRepository.getChampData(param.champId, champPosition, rateLatestVersions[0]);
+    const banData = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     const skill = champData.skillInfo.map((v) => {
       return {
-        id: v.id,
-        name: v.name,
+        id: v.skillId,
+        name: v.skillName,
         desc: v.skillDesc,
-        toolTip: v.toolTip,
-        image: v.image,
+        toolTip: v.skillToolTip,
+        image: v.skillImg,
       };
     });
 
@@ -142,8 +147,7 @@ export class ChampService {
       version,
       skill,
     };
-
-    return data;
+    return new TargetChampionResDto(data);
   }
 
   async getPreferChampUsers(champId: string): Promise<preferChampUsersDTO[]> {

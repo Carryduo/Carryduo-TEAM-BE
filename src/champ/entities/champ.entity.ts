@@ -1,7 +1,7 @@
 import { CombinationStatEntity } from './../../combination-stat/entities/combination-stat.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { ChampSkillInfoEntity } from './champSkillInfo.entity';
+import { ChampSkillEntity } from './champSkillInfo.entity';
 import { SummonerEntity } from '../../summoner/entities/summoner.entity';
 import { UserEntity } from '../../user/entities/user.entity';
 import { CommentEntity } from '../../comments/entities/comments.entity';
@@ -46,10 +46,10 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   })
   champ_spell: UpdateChampSpellEntity;
 
-  @OneToMany(() => ChampSkillInfoEntity, (champSkillInfo: ChampSkillInfoEntity) => champSkillInfo.champId, {
+  @OneToMany(() => ChampSkillEntity, (champSkillInfo: ChampSkillEntity) => champSkillInfo.champId, {
     cascade: true,
   })
-  champSkillInfo: ChampSkillInfoEntity;
+  champSkillInfo: ChampSkillEntity;
 
   @OneToMany(() => SummonerEntity, (summoner: SummonerEntity) => [summoner.mostChamp1, summoner.mostChamp2, summoner.mostChamp3], {
     cascade: true,

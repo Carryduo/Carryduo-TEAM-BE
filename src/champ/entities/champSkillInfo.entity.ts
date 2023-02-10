@@ -5,10 +5,7 @@ import { ChampEntity } from './champ.entity';
 @Entity({
   name: 'CHAMPSKILLINFO',
 })
-export class ChampSkillInfoEntity extends CommonEntity {
-  map(arg0: (value: any) => void) {
-    throw new Error('Method not implemented.');
-  }
+export class ChampSkillEntity extends CommonEntity {
   @Column({ type: 'varchar', nullable: false })
   skillId: string;
 
