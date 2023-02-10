@@ -1,7 +1,7 @@
 import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { UpdateChampRateCommonDTO } from '../champ-rate/champ.rate.common.dto';
-import { ChampSkillCommonDTO } from '../champ-skill/champ.skill.common.dto';
+import { ChampSkillDTO } from '../champ-skill/champ.skill.common.dto';
 import { ChampDto } from '../champ/champ.common.dto';
 
 export class TargetChampionResDto extends IntersectionType(OmitType(ChampDto, ['champMainImg'] as const), PickType(UpdateChampRateCommonDTO, ['position', 'version'] as const)) {
@@ -44,7 +44,7 @@ export class TargetChampionResDto extends IntersectionType(OmitType(ChampDto, ['
   @ApiProperty({
     description: '챔피언 스킬 정보',
     isArray: true,
-    type: ChampSkillCommonDTO,
+    type: ChampSkillDTO,
   })
-  skill: ChampSkillCommonDTO[];
+  skill: ChampSkillDTO[];
 }

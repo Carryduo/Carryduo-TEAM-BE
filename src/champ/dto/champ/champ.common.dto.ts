@@ -111,8 +111,4 @@ export class ChampDto {
   get champImg() {
     return this._champImg;
   }
-
-  static transformDTO(champList: ChampEntity[]) {
-    return champList.map((v) => new ChampDto(v));
-  }
 }

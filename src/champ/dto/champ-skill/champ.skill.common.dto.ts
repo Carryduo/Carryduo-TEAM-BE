@@ -2,7 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { ChampSkillEntity } from 'src/champ/entities/champSkillInfo.entity';
 
-export class ChampSkillCommonDTO {
+export class ChampSkillDTO {
+  @Exclude() private readonly _id: string;
+  @Exclude() private readonly _name: string;
+  @Exclude() private readonly _desc: string;
+  @Exclude() private readonly _toolTip: string;
+  @Exclude() private readonly _image: string;
+
+  constructor(data: ChampSkillEntity) {
+    this._id = data.skillId;
+    this._name = data.skillName;
+    this._desc = data.skillDesc;
+    this._toolTip = data.skillToolTip;
+    this._image = data.skillImg;
+  }
+
   @ApiProperty({
     example: 'q',
     description: 'q | w | e | r | passive',
@@ -10,7 +24,9 @@ export class ChampSkillCommonDTO {
     name: 'id',
   })
   @Expose()
-  id: string;
+  get id() {
+    return this._id;
+  }
 
   @ApiProperty({
     example: '결정타',
@@ -19,7 +35,9 @@ export class ChampSkillCommonDTO {
     name: 'name',
   })
   @Expose()
-  name: string;
+  get name() {
+    return this._name;
+  }
 
   @ApiProperty({
     example: '가렌의 이동 속도가 큰 폭으로 증가하고.....',
@@ -28,7 +46,9 @@ export class ChampSkillCommonDTO {
     name: 'desc',
   })
   @Expose()
-  desc: string;
+  get desc() {
+    return this._desc;
+  }
 
   @ApiProperty({
     example: '가렌에게 적용된 모든 둔화 효과가 제거되고.....',
@@ -37,7 +57,9 @@ export class ChampSkillCommonDTO {
     name: 'toolTip',
   })
   @Expose()
-  toolTip: string;
+  get toolTip() {
+    return this._toolTip;
+  }
 
   @ApiProperty({
     example: 'example.png',
@@ -46,5 +68,7 @@ export class ChampSkillCommonDTO {
     name: 'image',
   })
   @Expose()
-  image: string;
+  get image() {
+    return this._image;
+  }
 }
