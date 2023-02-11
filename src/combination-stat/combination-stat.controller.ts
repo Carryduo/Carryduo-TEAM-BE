@@ -34,7 +34,7 @@ export class CombinationStatController {
   })
   @Get('/:category')
   async getTierList(@Param('category', TierListParamPipe) category: string): Promise<TierListDto[]> {
-    return this.combinationStatService.getCombinationData(category);
+    return this.combinationStatService.getTierList(category);
   }
 
   @ApiOperation({ summary: '개인 챔피언의 조합승률 TOP 5 조회' })
