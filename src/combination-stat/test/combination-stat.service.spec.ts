@@ -1,14 +1,16 @@
+import { CombinationStatRepositoryRawQueryDto, CombinationStatRepositoryVersionResponseDto } from './../dtos/combination-stat.repository.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CombinationStatRepository } from '../combination-stat.repository';
 import { CombinationStatService } from '../combination-stat.service';
 import { CombinationStatEntity } from '../entities/combination-stat.entity';
 import * as testData from './data/combination-stat.test.data';
+import { Brackets } from 'typeorm';
 const mockRepository = () => {
   createQueryBuilder: jest.fn();
 };
 
-describe('CombinationStatController', () => {
+describe('CombinationStatService', () => {
   let service: CombinationStatService;
   let repository: CombinationStatRepository;
   jest.setTimeout(50000);
@@ -29,9 +31,14 @@ describe('CombinationStatController', () => {
 
   it('request로 받은 category에 대응해 TierList를 response 하는가?', async () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
-      () =>
+      (): Promise<CombinationStatRepositoryVersionResponseDto[]> =>
         new Promise((resolve) => {
-          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+          const data = [{ version: '13.1.' }, { version: '12.23' }];
+          resolve(
+            data.map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
     jest.spyOn(repository, 'getMainpageData').mockImplementation(
@@ -42,41 +49,66 @@ describe('CombinationStatController', () => {
     );
 
     jest.spyOn(repository, 'getTierList').mockImplementation(
-      (category, version) =>
+      (requestOption: { category: number; version: string }): Promise<CombinationStatRepositoryRawQueryDto[]> =>
         new Promise((resolve) => {
-          console.log(category);
-          console.log(version);
+          const { category, version } = requestOption;
           if (category === 0) {
             if (version === testData.input0_tierList[0].version) {
-              resolve(testData.input0_tierList);
+              resolve(
+                testData.input0_tierList.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             } else {
-              resolve(testData.input0_tierList_oldVersion);
+              resolve(
+                testData.input0_tierList_oldVersion.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             }
           }
           if (category === 1) {
-            if (version === testData.input0_tierList[0].version) {
-              resolve(testData.input1_tierList);
+            if (version === testData.input1_tierList[0].version) {
+              resolve(
+                testData.input1_tierList.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             } else {
-              resolve(testData.input1_tierList_oldVersion);
+              resolve(
+                testData.input1_tierList_oldVersion.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             }
           }
           if (category === 2) {
-            if (version === testData.input0_tierList[0].version) {
-              resolve(testData.input2_tierList);
+            if (version === testData.input2_tierList[0].version) {
+              resolve(
+                testData.input2_tierList.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             } else {
-              resolve(testData.input2_tierList_oldVersion);
+              resolve(
+                testData.input2_tierList_oldVersion.map((value) => {
+                  return new CombinationStatRepositoryRawQueryDto(value);
+                }),
+              );
             }
           }
         }),
     );
 
-    const response = await service.getCombinationData('top-jungle');
-    const response_mid = await service.getCombinationData('mid-jungle');
-    const response_ad = await service.getCombinationData('ad-support');
+    const response = await service.getTierList('top-jungle');
+
     expect(response[0].category).toEqual(0);
     expect(response[0].version).toEqual('13.1.');
+    const response_mid = await service.getTierList('mid-jungle');
+
     expect(response_mid[0].version).toEqual('13.1.');
     expect(response_mid[0].category).toEqual(1);
+    const response_ad = await service.getTierList('ad-support');
     expect(response_ad[0].version).toEqual('13.1.');
     expect(response_ad[0].category).toEqual(2);
   });
@@ -85,7 +117,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: 'example' }]);
+          resolve(
+            [{ version: 'example' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -96,9 +132,13 @@ describe('CombinationStatController', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }): Promise<CombinationStatRepositoryRawQueryDto[]> =>
         new Promise((resolve) => {
-          resolve(testData.result_individualChamp_noResponse);
+          resolve(
+            testData.result_individualChamp_noResponse.map((value) => {
+              return new CombinationStatRepositoryRawQueryDto(value);
+            }),
+          );
         }),
     );
     expect(await service.getIndiviualChampData('888', 'support')).toEqual({
@@ -111,7 +151,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: 'example' }]);
+          resolve(
+            [{ version: 'example' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -122,9 +166,13 @@ describe('CombinationStatController', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }): Promise<CombinationStatRepositoryRawQueryDto[]> =>
         new Promise((resolve) => {
-          resolve(JSON.parse(JSON.stringify(testData.input_IndividualChamp)));
+          resolve(
+            JSON.parse(JSON.stringify(testData.input_IndividualChamp)).map((value) => {
+              return new CombinationStatRepositoryRawQueryDto(value);
+            }),
+          );
         }),
     );
     const value_ad = await service.getIndiviualChampData('875', 'ad');
@@ -149,7 +197,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: 'example' }]);
+          resolve(
+            [{ version: 'example' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -160,9 +212,13 @@ describe('CombinationStatController', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }) =>
         new Promise((resolve) => {
-          resolve(testData.input_IndividualChamp);
+          resolve(
+            testData.input_IndividualChamp.map((value) => {
+              return new CombinationStatRepositoryRawQueryDto(value);
+            }),
+          );
         }),
     );
     const value_support = await service.getIndiviualChampData('875', 'support');
@@ -175,7 +231,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: 'example' }]);
+          resolve(
+            [{ version: 'example' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -186,9 +246,13 @@ describe('CombinationStatController', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }) =>
         new Promise((resolve) => {
-          resolve(testData.input_IndividualChamp_jungle);
+          resolve(
+            testData.input_IndividualChamp_jungle.map((value) => {
+              return new CombinationStatRepositoryRawQueryDto(value);
+            }),
+          );
         }),
     );
     const value_jungle = await service.getIndiviualChampData('875', 'jungle');
@@ -201,7 +265,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+          resolve(
+            [{ version: '13.1.' }, { version: '12.23' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -213,12 +281,21 @@ describe('CombinationStatController', () => {
     );
 
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }) =>
         new Promise((resolve) => {
+          const { version } = requestOption;
           if (testData.input_IndividualChamp_jungle_recentVersion[0].version === version) {
-            resolve(testData.input_IndividualChamp_jungle_recentVersion);
+            resolve(
+              testData.input_IndividualChamp_jungle_recentVersion.map((value) => {
+                return new CombinationStatRepositoryRawQueryDto(value);
+              }),
+            );
           } else {
-            resolve(testData.input_IndividualChamp_jungle_oldVersion);
+            resolve(
+              testData.input_IndividualChamp_jungle_oldVersion.map((value) => {
+                return new CombinationStatRepositoryRawQueryDto(value);
+              }),
+            );
           }
         }),
     );
@@ -230,7 +307,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+          resolve(
+            [{ version: '13.1.' }, { version: '12.23' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -242,12 +323,21 @@ describe('CombinationStatController', () => {
     );
 
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (option, version) =>
+      (requestOption: { option: { category: Brackets; champ: Brackets }; version: string }) =>
         new Promise((resolve) => {
+          const { version } = requestOption;
           if (testData.input_IndividualChamp_jungle_recentVersion[0].version === version) {
-            resolve(testData.input_IndividualChamp_jungle_recentVersion);
+            resolve(
+              testData.input_IndividualChamp_jungle_recentVersion.map((value) => {
+                return new CombinationStatRepositoryRawQueryDto(value);
+              }),
+            );
           } else {
-            resolve(testData.input_IndividualChamp_jungle_oldVersion);
+            resolve(
+              testData.input_IndividualChamp_jungle_oldVersion.map((value) => {
+                return new CombinationStatRepositoryRawQueryDto(value);
+              }),
+            );
           }
         }),
     );
@@ -259,7 +349,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+          resolve(
+            [{ version: '13.1.' }, { version: '12.23' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
 
@@ -276,7 +370,11 @@ describe('CombinationStatController', () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+          resolve(
+            [{ version: '13.1.' }, { version: '12.23' }].map((value) => {
+              return new CombinationStatRepositoryVersionResponseDto(value);
+            }),
+          );
         }),
     );
     jest.spyOn(repository, 'getMainpageData').mockImplementation(

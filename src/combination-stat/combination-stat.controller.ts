@@ -2,7 +2,7 @@ import { CombinationStatService } from './combination-stat.service';
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { IndividualChampDataParamPipe, TierListParamPipe } from './pipes/combination-stat.param.validator.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IndiviudalChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import { IndiviudalChampResponseDto, TierListDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
 
 @ApiTags('Combination-stat')
 @Controller('combination-stat')
@@ -30,11 +30,11 @@ export class CombinationStatController {
   @ApiResponse({
     status: 200,
     description: '개인 챔피언의 조합승률 TOP 5 조회 성공',
-    type: TierListResponseDto,
+    type: TierListDto,
   })
   @Get('/:category')
-  async getTierList(@Param('category', TierListParamPipe) category: string): Promise<TierListResponseDto[]> {
-    return this.combinationStatService.getCombinationData(category);
+  async getTierList(@Param('category', TierListParamPipe) category: string): Promise<TierListDto[]> {
+    return this.combinationStatService.getTierList(category);
   }
 
   @ApiOperation({ summary: '개인 챔피언의 조합승률 TOP 5 조회' })

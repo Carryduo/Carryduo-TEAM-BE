@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ChampBanEntity } from '../../champ/entities/champ.ban.entity';
 import { ChampEntity } from '../../champ/entities/champ.entity';
-import { ChampSkillInfoEntity } from '../../champ/entities/champSkillInfo.entity';
+import { ChampSkillEntity } from '../../champ/entities/champSkillInfo.entity';
 import { GameInfoEntity } from '../../champ/entities/game.info.entity';
 import { UpdateChampRateEntity } from '../../champ/entities/update.champ.rate.entity';
 import { UpdateChampSpellEntity } from '../../champ/entities/update.champ.spell.entity';
@@ -23,7 +23,7 @@ export class typeOrmOption {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillInfoEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
+    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: false,
     autoLoadEntities: true,
     logging: false,
@@ -39,7 +39,7 @@ export class typeOrmOption {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME_TEST,
-    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillInfoEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
+    entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: true,
     autoLoadEntities: true,
     logging: false,

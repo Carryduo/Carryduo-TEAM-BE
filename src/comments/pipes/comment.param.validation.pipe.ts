@@ -1,15 +1,9 @@
-import {
-  PipeTransform,
-  ParseIntPipe,
-  ParseUUIDPipe,
-  HttpException,
-} from '@nestjs/common';
+import { PipeTransform, ParseIntPipe, ParseUUIDPipe, HttpException } from '@nestjs/common';
 
 export class CommentCategoryPipe implements PipeTransform {
   readonly categoryOptions = ['summoner', 'champ'];
   transform(value: any) {
-    if (!this.isCategoryValid(value))
-      throw new HttpException(`${value} 는 평판 카테고리가 아닙니다`, 400);
+    if (!this.isCategoryValid(value)) throw new HttpException(`${value} 는 평판 카테고리가 아닙니다`, 400);
     return value;
   }
   private isCategoryValid(value: any) {
