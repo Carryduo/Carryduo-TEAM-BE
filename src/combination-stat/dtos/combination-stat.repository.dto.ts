@@ -221,7 +221,7 @@ export class CombinationStatRepositoryRawQueryDto extends CombinationStatReposit
     this._champ1_id = data.champ1_id;
     this._champ1_champNameKo = data.champ1_champNameKo;
     this._champ1_champNameEn = data.champ1_champNameEn;
-    this._champ1_champImg = data.champ1_champNameKo;
+    this._champ1_champImg = data.champ1_champImg;
     this._champ2_id = data.champ2_id;
     this._champ2_champNameKo = data.champ2_champNameKo;
     this._champ2_champNameEn = data.champ2_champNameEn;
