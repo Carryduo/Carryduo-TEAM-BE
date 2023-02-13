@@ -6,24 +6,26 @@ import { kakaoPayload } from './dto/kakao.payload';
 import { Brackets } from 'typeorm';
 import { ChampRepository } from '../champ/champ.repository';
 import { UserRepository } from '../user/user.repository';
+import { FirstLoginResponseDto } from './dto/admin.response';
 @Injectable()
 export class AdminService {
   constructor(private readonly adminRepository: AdminRepository, private jwtService: JwtService, private readonly commentRepository: CommentRepository, private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
 
-  async kakaoLogin(data: kakaoPayload) {
+  async kakaoLogin(data: kakaoPayload): Promise<FirstLoginResponseDto> {
     // 유저 검증 및 생성
     let user = await this.adminRepository.checkUser(data);
     if (user === null) {
       user = await this.adminRepository.createUser(data);
     }
+    return new FirstLoginResponseDto(user, await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }));
 
-    return {
-      id: user.userId,
-      nickname: user.nickname,
-      token: await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }),
-    };
+    // TODO: DTO 생성 | 로그인 시 기본 정보, 감싸기
+    // TODO: DTO 생성: POST, DELETE 등 RESPONSE 값
+    // TODO: RESPONSE DTO 생성
+    // TODO: CACHE INTERCEPTOR에 PLAIN 감싸기
   }
 
+  // TODO: 삭제에 대한 STATUS CODE, user, comment 마무리하고 작업하기
   async deleteUser(userId: string) {
     try {
       // 작성한 평판 목록 조회

@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entities/user.entity';
 import { kakaoPayload } from './dto/kakao.payload';
 import { CommentEntity } from '../comments/entities/comments.entity';
+import { UserRepositoryBasicInfoResponseDto, UserRepositoryFirstLoginInfoResponseDto } from 'src/user/dto/user.repository.dto';
 
+// TODO: SELECT의 경우, RETURN 값을 보내주기
 @Injectable()
 export class AdminRepository {
   constructor(
@@ -15,13 +17,14 @@ export class AdminRepository {
     private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
-  async checkUser(data: kakaoPayload): Promise<{ userId: string; nickname: string }> {
+  async checkUser(data: kakaoPayload): Promise<UserRepositoryFirstLoginInfoResponseDto> {
     const { socialId, social } = data;
     const user = await this.usersRepository.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
-    return user;
+    if (user === null) return null;
+    return new UserRepositoryFirstLoginInfoResponseDto(user);
   }
 
-  async createUser(data: kakaoPayload): Promise<{ userId: string; nickname: string }> {
+  async createUser(data: kakaoPayload): Promise<UserRepositoryFirstLoginInfoResponseDto> {
     const { socialId, social } = data;
     let newUser;
     await this.usersRepository.manager.transaction(async (transactionalEntityManager) => {
@@ -35,11 +38,12 @@ export class AdminRepository {
         .execute();
       newUser = await transactionalEntityManager.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
     });
-    return newUser;
+
+    return new UserRepositoryFirstLoginInfoResponseDto(newUser);
   }
 
-  async findById(userId: string) {
-    return await this.usersRepository.createQueryBuilder('user').select().where('user.userId = :userId', { userId }).getOne();
+  async findById(userId: string): Promise<UserRepositoryBasicInfoResponseDto> {
+    return new UserRepositoryBasicInfoResponseDto(await this.usersRepository.createQueryBuilder('user').select(['user.userId', 'user.nickname', 'user.profileImg']).where('user.userId = :userId', { userId }).getOne());
   }
 
   async deleteUser(userId: string) {
