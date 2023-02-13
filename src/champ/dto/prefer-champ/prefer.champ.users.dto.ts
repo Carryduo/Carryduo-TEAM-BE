@@ -2,7 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { UserEntity } from 'src/user/entities/user.entity';
 
-export class preferChampUsersDTO {
+export class preferChampUsersResDTO {
   @Exclude() private readonly _userId: string;
   @Exclude() private readonly _nickname: string;
   @Exclude() private readonly _profileImge: string;

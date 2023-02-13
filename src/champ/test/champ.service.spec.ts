@@ -11,6 +11,7 @@ import * as responseData from './data/champ.target.response';
 import * as champData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
+import { ChampMostPositionDTO } from '../dto/champ-position/champ.most.position.dto';
 
 class MockRepository {
   getChampList() {
@@ -39,7 +40,9 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
+    const mostPosition = [
+      champPositionInfo.find((v) => v.champId === champId && v.version === version),
+    ];
     return mostPosition;
   }
 
@@ -150,16 +153,22 @@ describe('ChampService', () => {
     };
     let emptyPosition = positionList[Param.position] === 'default' ? true : false;
 
-    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
-      const positionInfo = [
-        { champId: '1', position: 'JUNGLE', version: '13.1.' },
-        { champId: '1', position: 'TOP', version: '12.1' },
-      ];
-      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
-      return MostPosition;
-    });
+    let getMostPosition = jest
+      .spyOn(repository, 'getMostPosition')
+      .mockImplementation(async (champId: string, version: string) => {
+        const positionInfo = [
+          { champId: '1', _position: 'JUNGLE', version: '13.1.' },
+          { champId: '1', _position: 'TOP', version: '12.1' },
+        ];
+        const MostPosition = [
+          positionInfo.find((v) => v.champId === champId && v.version === version),
+        ];
+        ChampMostPositionDTO.tranformDto(mostPosition);
+        return MostPosition;
+      });
 
-    const mostPosition = emptyPosition && (await repository.getMostPosition(Param.champId, version));
+    const mostPosition =
+      emptyPosition && (await repository.getMostPosition(Param.champId, version));
 
     expect(getMostPosition).toBeCalled();
     expect(mostPosition[0].position).toBe('JUNGLE');
@@ -169,7 +178,9 @@ describe('ChampService', () => {
     console.log(Param, Param2);
     //default 파라미터가 아닌 경우
     emptyPosition = positionList[Param2.position] === 'default' ? true : false;
-    const targetPosition = emptyPosition ? await repository.getMostPosition(champId, version) : positionList[Param2.position];
+    const targetPosition = emptyPosition
+      ? await repository.getMostPosition(champId, version)
+      : positionList[Param2.position];
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);

@@ -1,5 +1,3 @@
-import { ChampDto } from 'src/champ/dto/champ/champ.common.dto';
-
 export const champListData = [
   {
     id: '86',
