@@ -59,7 +59,7 @@ export class ChampController {
     description: '특정 챔피언 선호한 유저 조회 응답 예시',
     type: preferChampUsersDTO,
   })
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(CacheInterceptor)
   @Get('/:champId/users')
   async getPreferChampUser(@Param('champId') champId: string) {
     return await this.champService.getPreferChampUsers(champId);
