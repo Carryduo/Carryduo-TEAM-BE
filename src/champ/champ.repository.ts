@@ -13,7 +13,7 @@ import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { ChampMostPositionDTO } from './dto/champ-position/champ.most.position.dto';
 import { rateVersionDTO } from './dto/champ-rate/champ.rate.version.dto';
 import { GetChampDataDTO } from './dto/champ-rate/champ.rate.dto';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 export class ChampRepository {
   constructor(
@@ -63,7 +63,9 @@ export class ChampRepository {
       .orderBy('user.tier', 'DESC')
       .select(['user.userId', 'user.nickname', 'user.profileImg', 'user.tier'])
       .getMany();
-    return preferUsers.map((v) => new preferChampUsersResDTO(v));
+    const user = plainToInstance(preferChampUsersResDTO, instanceToPlain(preferUsers));
+    console.log(user);
+    return plainToInstance(preferChampUsersResDTO, preferUsers);
   }
 
   async delPreferChampCache(key: string) {
@@ -96,8 +98,9 @@ export class ChampRepository {
       .orderBy('pick_count', 'DESC')
       .limit(1)
       .execute();
-    return ChampMostPositionDTO.tranformDto(mostPosition[0]?.position);
+    return plainToInstance(ChampMostPositionDTO, { position: mostPosition[0]?.position });
   }
+
   async getGameTotalCount(version: string) {
     return await this.gameDataRepository
       .createQueryBuilder()
@@ -121,7 +124,6 @@ export class ChampRepository {
       .orderBy('skill.createdAt', 'ASC')
       .getRawMany();
 
-    skillInfo.map((v) => console.log(v));
     return skillInfo.map((v) => new ChampSkillCommonDTO(v));
   }
 
@@ -179,6 +181,6 @@ export class ChampRepository {
       .where('champ.champId = :champId', { champId })
       .andWhere('ban.version = :version', { version })
       .getRawOne();
-    return ChampBanRateDto.tranformDto(Number(banData?.banRate));
+    return plainToInstance(ChampBanRateDto, { banRate: banData?.banRate });
   }
 }

@@ -45,9 +45,7 @@ export class ChampController {
   })
   @Get('/:champId/position/:position')
   async getTargetChampion(@Param() param: TargetChampionReqDTO) {
-    const champ = await this.champService.getTargetChampion(param);
-    console.log(champ);
-    return champ;
+    return await this.champService.getTargetChampion(param);
   }
 
   @ApiOperation({ summary: '특정 챔피언 선호한 유저 조회' })
