@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
+import { IsUUID } from 'class-validator';
 import { CombinationStatRepositoryDto, CombinationStatRepositoryRawQueryDto } from './combination-stat.repository.dto';
 
 export class CombinationStatServiceResponseDto {
+  @Exclude() @IsUUID() protected _id: string;
   @Exclude() protected _category: number;
   @Exclude() protected _sampleNum: number;
   @Exclude() protected _version: string;
@@ -16,6 +18,16 @@ export class CombinationStatServiceResponseDto {
   @Exclude() protected _champ2_champNameKo: string;
   @Exclude() protected _champ2_champNameEn: string;
   @Exclude() protected _champ2_champImg: string;
+
+  @ApiProperty({
+    example: 'qwwndi21n039ff890dsdf',
+    description: '데이터의 고유 ID',
+    required: true,
+  })
+  @Expose()
+  get id() {
+    return this._id;
+  }
 
   @ApiProperty({
     example: '0(top-jungle)/1(mid-jungle)/2(ad-support)',
@@ -112,6 +124,7 @@ export class TierListDto extends CombinationStatServiceResponseDto {
   @Exclude() private readonly _index: number;
   constructor(data: CombinationStatRepositoryRawQueryDto, index: number) {
     super();
+    this._id = data.id;
     this._category = data.category;
     this._sampleNum = data.sampleNum;
     this._version = data.version;
@@ -157,6 +170,7 @@ export class IndiviudalChampResponseDto extends CombinationStatServiceResponseDt
   @Exclude() private readonly _position: string;
   constructor(data: CombinationStatRepositoryRawQueryDto, position: string) {
     super();
+    this._id = data.id;
     this._category = data.category;
     this._sampleNum = data.sampleNum;
     this._version = data.version;
