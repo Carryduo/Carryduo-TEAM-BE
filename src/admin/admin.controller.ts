@@ -7,6 +7,8 @@ import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommonResponseDTO } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
+import { FirstLoginResponseDto, LoginResposeDto } from './dto/admin.response';
+import { kakaoPayload } from './dto/kakao.payload';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
@@ -28,7 +30,7 @@ export class AdminController {
   })
   @Delete()
   @UseGuards(jwtGuard)
-  async deleteUser(@User() user) {
+  async deleteUser(@User() user: LoginResposeDto) {
     return this.adminService.deleteUser(user.userId);
   }
 
@@ -44,12 +46,12 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: 'success',
-    type: CommonResponseDTO,
+    type: FirstLoginResponseDto,
   })
   @ApiResponse({ status: 400, description: 'fail' })
   @Get('/kakao/callback')
   @UseGuards(AuthGuard('kakao'))
-  async kakaoCallback(@User() user) {
+  async kakaoCallback(@User() user: kakaoPayload): Promise<FirstLoginResponseDto> {
     return this.adminService.kakaoLogin(user);
   }
 }

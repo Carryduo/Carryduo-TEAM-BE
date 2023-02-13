@@ -1,3 +1,4 @@
+import { UserRepositoryFirstLoginInfoResponseDto } from 'src/user/dto/user.repository.dto';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from 'src/user/user.repository';
@@ -98,10 +99,13 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'checkUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve({ userId: 'sampleId', nickname: data.nickname });
+          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
         }),
     );
-    expect(await service.kakaoLogin(loginData)).toEqual(loginResult);
+    const response = await service.kakaoLogin(loginData);
+    expect(response.nickname).toEqual(loginResult.nickname);
+    expect(response.token).toEqual(loginResult.token);
+    expect(response.id).toEqual(loginResult.id);
   });
 
   it('kakaoLogin test: 카카오 로그인 시, 신규 유저일 경우, 유저를 생성한 뒤 id, nickname, token을 return 하는가?', async () => {
@@ -114,10 +118,13 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'createUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve({ userId: 'sampleId', nickname: data.nickname });
+          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
         }),
     );
-    expect(await service.kakaoLogin(loginData)).toEqual(loginResult);
+    const response = await service.kakaoLogin(loginData);
+    expect(response.nickname).toEqual(loginResult.nickname);
+    expect(response.token).toEqual(loginResult.token);
+    expect(response.id).toEqual(loginResult.id);
   });
 
   it('deleteUser 테스트: 정상작동 및 예외처리', async () => {
