@@ -1,5 +1,9 @@
 import { Expose, Transform } from 'class-transformer';
 
+export class GetBanRateDto {
+  readonly banRate: string;
+}
+
 export class ChampBanRateDto {
   @Expose()
   @Transform(({ value }) => {

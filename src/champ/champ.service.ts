@@ -1,23 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { instanceToInstance, plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { ChampRepository } from './champ.repository';
-import { rateVersionDTO } from './dto/champ-rate/champ.rate.version.dto';
-import { ChampSkillCommonDTO } from './dto/champ-skill/champ.skill.common.dto';
-import { ChampResDto } from './dto/champ/champ.common.dto';
-import { preferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
+import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
+import { GetMostPositionDto, positionList } from './dto/champ-position/champ.most.position.dto';
+import { ChampRateDataDto } from './dto/champ-rate/champ.rate.dto';
+import { ChampCommonDTO } from './dto/champ/champ.common.dto';
+import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
-import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
 @Injectable()
 export class ChampService {
   constructor(private readonly champRepository: ChampRepository) {}
 
-  async getChampList(): Promise<ChampResDto[]> {
-    return await this.champRepository.getChampList();
+  async getChampList(): Promise<ChampCommonDTO[]> {
+    const champList = await this.champRepository.getChampList();
+    return plainToInstance(ChampCommonDTO, champList);
   }
 
-  async getPreferChampUsers(champId: string): Promise<preferChampUsersResDTO[] | []> {
-    return await this.champRepository.findPreferChampUsers(champId);
+  async getPreferChampUsers(champId: string): Promise<PreferChampUsersResDTO[] | []> {
+    const users = await this.champRepository.findPreferChampUsers(champId);
+    return plainToInstance(PreferChampUsersResDTO, users);
   }
 
   //TODO: 스펠 이미지 추가
@@ -30,26 +32,16 @@ export class ChampService {
     const rateVersionList = await this.champRepository.rateVersion();
     const rateLatestVersions = await this.getVersion(rateVersionList);
 
-    const emptyPosition = param.position === 'default' ? true : false;
-
-    const positionList = {
-      top: 'TOP',
-      jungle: 'JUNGLE',
-      mid: 'MIDDLE',
-      ad: 'BOTTOM',
-      support: 'UTILITY',
-      default: 'default position',
-    };
     //파라미터값을 DB에 있는 포지션명으로 변경
-    const positionDbName = positionList[param.position];
-
+    const positionDbName = param.position === 'default' ? false : positionList[param.position];
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 / DB에 있는 포지션명 할당
-    const getPosition = emptyPosition
+    const getPosition = !positionDbName
       ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0])
       : positionDbName;
 
     //default 파라미터인 경우 Dto get 호출 / DB에 있는 포지션명 할당
-    const champPosition = emptyPosition ? getPosition?.position : getPosition;
+    const champPosition = !positionDbName ? getPosition[0]?.position : getPosition;
+    const { position } = plainToInstance(GetMostPositionDto, { position: champPosition });
 
     const champData = await this.champRepository.getChampData(
       param.champId,
@@ -57,74 +49,36 @@ export class ChampService {
       rateLatestVersions[0],
     );
 
+    const transformChampRate = ChampRateDataDto.transform(champData);
+
     const champDefaultData = await this.champRepository.getChampDefaultData(param.champId);
 
     const skill = await this.champRepository.getSkillData(param.champId);
 
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
-
-    //챔피언 기본 정보
-    const { id } = champDefaultData;
-    const { champNameKo } = champDefaultData;
-    const { champNameEn } = champDefaultData;
-    const { champImg } = champDefaultData;
-
-    //데이터 분석을 통한 챔피언 상세 정보
-    const { winRate } = champData;
-    const { banRate } = banInfo;
-    const { pickRate } = champData;
-    const { spell1 } = champData;
-    const { spell2 } = champData;
-    const { version } = champData;
-    const targetPosition = champData.position;
-
-    const spellInfo = {
-      21: 'SummonerBarrier',
-      1: 'SummonerBoost',
-      14: 'SummonerDot',
-      3: 'SummonerExhaust',
-      4: 'SummonerFlash',
-      6: 'SummonerHaste',
-      7: 'SummonerHeal',
-      13: 'SummonerMana',
-      11: 'SummonerSmite',
-      12: 'SummonerTeleport',
-      default: 'default spell Image',
-    };
-
-    const spell1Img =
-      spell1 !== spellInfo.default
-        ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell1]}.png`
-        : spell1;
-    const spell2Img =
-      spell2 !== spellInfo.default
-        ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell2]}.png`
-        : spell2;
+    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
 
     const data = {
-      id,
-      champNameKo,
-      champNameEn,
-      champImg,
-      winRate,
-      banRate,
-      pickRate,
-      // DB에서 가져온 position이 default position이 아니면 positionList에서 position 이름 변경 / default position
-      position:
-        targetPosition !== positionList.default
-          ? Object.keys(positionList).find((key) => positionList[key] === targetPosition)
-          : targetPosition,
-      spell1Img,
-      spell2Img,
-      version,
+      id: champDefaultData.id,
+      champNameKo: champDefaultData.champNameKo,
+      champNameEn: champDefaultData.champNameEn,
+      champImg: champDefaultData.champImg,
       skill,
+      position,
+      banRate,
+      winRate: transformChampRate.winRate,
+      pickRate: transformChampRate.pickRate,
+      spell1Img: transformChampRate.spell1Img,
+      spell2Img: transformChampRate.spell2Img,
+      version: transformChampRate.version,
     };
-    return new TargetChampionResDto(data);
+    return data;
+    // return new TargetChampionResDto(data);
   }
 
-  private async getVersion(versionList: rateVersionDTO): Promise<Array<string>> {
+  private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {
     let data = [];
-    for (const value of versionList.version) {
+    for (const value of versionList) {
       data.push(value.version);
     }
 

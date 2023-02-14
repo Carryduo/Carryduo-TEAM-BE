@@ -1,107 +1,75 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
-export class GetChampDataDTO {
-  @Exclude() private _winRate: string | number;
-  @Exclude() private _pickRate: string | number;
-  @Exclude() private _spell1: number | string;
-  @Exclude() private _spell2: number | string;
-  @Exclude() private _version: string;
-  @Exclude() private _position: string;
+const spellInfo = {
+  21: 'SummonerBarrier',
+  1: 'SummonerBoost',
+  14: 'SummonerDot',
+  3: 'SummonerExhaust',
+  4: 'SummonerFlash',
+  6: 'SummonerHaste',
+  7: 'SummonerHeal',
+  13: 'SummonerMana',
+  11: 'SummonerSmite',
+  12: 'SummonerTeleport',
+  default: 'default spell Image',
+};
 
-  @ApiProperty({
-    example: 48.4522,
-    description: '승률',
-    required: true,
-  })
-  @Expose()
+export class GetChampRateDto {
+  readonly winRate: string | number;
+  readonly pickRate: string | number;
+  readonly spell1: number;
+  readonly spell2: number;
+  readonly version: string;
+}
+
+export class ChampRateDataDto {
+  private _winRate: number;
+  private _pickRate: number;
+  private _spell1Img: string;
+  private _spell2Img: string;
+  private _version: string;
   get winRate() {
     return this._winRate;
   }
-  set winRate(winRate: string | number) {
+  set winRate(winRate: number) {
     this._winRate = winRate;
   }
 
-  @ApiProperty({
-    example: 8.19,
-    description: '픽률',
-    required: true,
-  })
-  @Expose()
   get pickRate() {
     return this._pickRate;
   }
-  set pickRate(pickRate: string | number) {
+  set pickRate(pickRate: number) {
     this._pickRate = pickRate;
   }
-  @ApiProperty({
-    example: 7,
-    description: '첫번째 스펠id',
-    required: true,
-  })
-  @Expose()
-  get spell1() {
-    return this._spell1;
+
+  get spell1Img() {
+    return this._spell1Img;
   }
-  set spell1(spell1: number | string) {
-    this._spell1 = spell1;
+  set spell1Img(spell1: string) {
+    this._spell1Img = spell1;
   }
-  @ApiProperty({
-    example: 4,
-    description: '두번째 스펠id',
-    required: true,
-  })
-  @Expose()
-  get spell2() {
-    return this._spell2;
+
+  get spell2Img() {
+    return this._spell2Img;
   }
-  set spell2(spell2: number | string) {
-    this._spell2 = spell2;
+  set spell2Img(spell2: string) {
+    this._spell2Img = spell2;
   }
-  @ApiProperty({
-    example: '13.3.',
-    description: '버전 정보',
-    required: true,
-  })
-  @Expose()
+
   get version() {
     return this._version;
   }
-  set version(version: string) {
-    this._version = version;
-  }
-  @ApiProperty({
-    example: 'BOTTOM',
-    description: '승률',
-    required: true,
-  })
-  @Expose()
-  get position() {
-    return this._position;
-  }
-  set position(position: string) {
-    this._position = position;
+  set version(verison: string) {
+    this._version = verison;
   }
 
-  static tranformDto(
-    champInfo: Array<{
-      winRate: string;
-      pickRate: string;
-      spell1: number;
-      spell2: number;
-      version: string;
-      position: string;
-    }>,
-  ) {
-    const champData = new GetChampDataDTO();
-    champData.winRate = champInfo[0]?.winRate ? Number(Number(champInfo[0].winRate).toFixed(2)) : 0;
-    champData.pickRate = champInfo[0]?.pickRate
-      ? Number(Number(champInfo[0].pickRate).toFixed(2))
-      : 0;
-    champData.spell1 = champInfo[0]?.spell1 ? champInfo[0].spell1 : 'default spell Image';
-    champData.spell2 = champInfo[0]?.spell2 ? champInfo[0].spell2 : 'default spell Image';
-    champData.version = champInfo[0]?.version ? champInfo[0].version : 'deafult version';
-    champData.position = champInfo[0]?.position ? champInfo[0].position : 'default position';
-    return champData;
+  static transform(data: GetChampRateDto[]) {
+    const champRate = new ChampRateDataDto();
+    champRate.winRate = data[0]?.winRate ? Number(Number(data[0].winRate).toFixed(2)) : 0;
+    champRate.pickRate = data[0]?.pickRate ? Number(Number(data[0].pickRate).toFixed(2)) : 0;
+    champRate.spell1Img = data[0]?.spell1 ? spellInfo[data[0]?.spell1] : spellInfo.default;
+    champRate.spell2Img = data[0]?.spell2 ? spellInfo[data[0]?.spell2] : spellInfo.default;
+    champRate.version = data[0]?.version ? data[0]?.version : 'default version';
+    return champRate;
   }
 }
