@@ -4,8 +4,8 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { TypeOrmFilter } from '../common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
-import { ChampDto } from './dto/champ/champ.common.dto';
-import { preferChampUsersDTO } from './dto/prefer-champ/prefer.champ.dto';
+import { ChampCommonDTO } from './dto/champ/champ.common.dto';
+import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
 import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
@@ -19,10 +19,10 @@ export class ChampController {
   @ApiResponse({
     status: 200,
     description: '챔피언 리스트 조회 예시',
-    type: ChampDto,
+    type: ChampCommonDTO,
   })
   @Get()
-  async getChampionList(): Promise<ChampDto[]> {
+  async getChampionList(): Promise<ChampCommonDTO[]> {
     return await this.champService.getChampList();
   }
 
@@ -57,11 +57,11 @@ export class ChampController {
   @ApiResponse({
     status: 200,
     description: '특정 챔피언 선호한 유저 조회 응답 예시',
-    type: preferChampUsersDTO,
+    type: PreferChampUsersResDTO,
   })
   // @UseInterceptors(CacheInterceptor)
   @Get('/:champId/users')
-  async getPreferChampUser(@Param('champId') champId: string) {
+  async getPreferChampUser(@Param('champId') champId: string): Promise<PreferChampUsersResDTO[]> {
     return await this.champService.getPreferChampUsers(champId);
   }
 }

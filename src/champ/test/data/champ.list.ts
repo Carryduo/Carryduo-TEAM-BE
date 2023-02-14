@@ -1,5 +1,3 @@
-import { ChampDto } from 'src/champ/dto/champ/champ.common.dto';
-
 export const champListData = [
   {
     id: '86',
@@ -16,5 +14,3 @@ export const champListData = [
     champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Galio.png',
   },
 ];
-
-// export const champListData = ChampDto.transformDTO(champList);
