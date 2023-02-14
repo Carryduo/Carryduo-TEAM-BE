@@ -36,5 +36,3 @@ export class ChampCommonDTO {
   })
   champImg: string;
 }
-
-export class GetChampDefaultData extends ChampCommonDTO {}

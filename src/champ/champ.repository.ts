@@ -6,10 +6,9 @@ import { ChampEntity } from './entities/champ.entity';
 import { Cache } from 'cache-manager';
 import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
-import { GetChampDefaultData } from './dto/champ/champ.common.dto';
-import { ChampSkillCommonDTO } from './dto/champ-skill/champ.skill.common.dto';
+import { ChampCommonDTO } from './dto/champ/champ.common.dto';
+import { skillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
-import { plainToInstance } from 'class-transformer';
 import { GetBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { GetMostPositionDto } from './dto/champ-position/champ.most.position.dto';
 
@@ -85,7 +84,7 @@ export class ChampRepository {
       .execute();
   }
 
-  async getGameTotalCount(version: string) {
+  async getGameTotalCount(version: string): Promise<{ gameCount: string }> {
     return await this.gameDataRepository
       .createQueryBuilder()
       .select('game_count gameCount')
@@ -93,8 +92,8 @@ export class ChampRepository {
       .getRawOne();
   }
 
-  async getSkillData(champId: string): Promise<ChampSkillCommonDTO[]> {
-    const skillInfo = await this.champRepository
+  async getSkillData(champId: string): Promise<skillSet[]> {
+    return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skill')
       .select([
@@ -107,12 +106,10 @@ export class ChampRepository {
       .where('champ.champId = :champId', { champId })
       .orderBy('skill.createdAt', 'ASC')
       .getRawMany();
-
-    return skillInfo.map((v) => new ChampSkillCommonDTO(v));
   }
 
-  async getChampDefaultData(champId: string) {
-    const champDefaultData = await this.champRepository
+  async getChampDefaultData(champId: string): Promise<ChampCommonDTO> {
+    return await this.champRepository
       .createQueryBuilder('champ')
       .where('champId = :champId', { champId })
       .select([
@@ -122,7 +119,6 @@ export class ChampRepository {
         'champ.champMainImg champImg',
       ])
       .getRawOne();
-    return plainToInstance(GetChampDefaultData, champDefaultData);
   }
 
   async getChampData(
@@ -133,7 +129,7 @@ export class ChampRepository {
     try {
       const { gameCount } = await this.getGameTotalCount(version);
 
-      const champInfo = await this.champRepository
+      return await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champ_rate', 'rate')
         .leftJoinAndSelect('champ.champ_spell', 'spell')
@@ -148,7 +144,6 @@ export class ChampRepository {
         .orderBy('spell.playCount', 'DESC')
         .limit(1)
         .execute();
-      return champInfo;
     } catch (err) {
       console.log(err);
     }

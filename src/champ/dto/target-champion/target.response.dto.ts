@@ -1,49 +1,42 @@
-import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
+import { ChampRateDataDto } from '../champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO } from '../champ-skill/champ.skill.common.dto';
-
-export class TargetChampionData {
-  id: string;
-  champNameKo: string;
-  champNameEn: string;
-  champImg: string;
-  winRate: string | number;
-  banRate: string | number;
-  pickRate: string | number;
-  position: string;
-  spell1Img: string;
-  spell2Img: string;
-  version: string;
-  skill: ChampSkillCommonDTO[];
-}
+import { ChampCommonDTO } from '../champ/champ.common.dto';
 
 export class TargetChampionResDto {
   @Exclude() private _id: string;
   @Exclude() private _champNameKo: string;
   @Exclude() private _champNameEn: string;
   @Exclude() private _champImg: string;
-  @Exclude() private _winRate: string | number;
-  @Exclude() private _banRate: string | number;
-  @Exclude() private _pickRate: string | number;
+  @Exclude() private _winRate: number;
+  @Exclude() private _banRate: number;
+  @Exclude() private _pickRate: number;
   @Exclude() private _position: string;
-  @Exclude() private _spell1Img: number | string;
-  @Exclude() private _spell2Img: number | string;
+  @Exclude() private _spell1Img: string;
+  @Exclude() private _spell2Img: string;
   @Exclude() private _version: string;
   @Exclude() private _skill: ChampSkillCommonDTO[];
 
-  constructor(data: TargetChampionData) {
-    this._id = data.id;
-    this._champNameKo = data.champNameKo;
-    this._champNameEn = data.champNameEn;
-    this._champImg = data.champImg;
-    this._winRate = data.winRate;
-    this._banRate = data.banRate;
-    this._pickRate = data.pickRate;
-    this._position = data.position;
-    this._spell1Img = data.spell1Img;
-    this._spell2Img = data.spell2Img;
-    this._version = data.version;
-    this._skill = data.skill;
+  constructor(
+    champDefault: ChampCommonDTO,
+    champSkill: ChampSkillCommonDTO[],
+    champRate: ChampRateDataDto,
+    champBanRate: number,
+    champPosition: string,
+  ) {
+    this._id = champDefault.id;
+    this._champNameKo = champDefault.champNameKo;
+    this._champNameEn = champDefault.champNameEn;
+    this._champImg = champDefault.champImg;
+    this._winRate = champRate.winRate;
+    this._pickRate = champRate.pickRate;
+    this._spell1Img = champRate.spell1Img;
+    this._spell2Img = champRate.spell2Img;
+    this._version = champRate.version;
+    this._banRate = champBanRate;
+    this._position = champPosition;
+    this._skill = champSkill;
   }
   @ApiProperty({
     example: 86,
