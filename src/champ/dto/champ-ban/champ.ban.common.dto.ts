@@ -5,7 +5,6 @@ export class GetBanRateDto {
 }
 
 export class ChampBanRateDto {
-  @Expose()
   @Transform(({ value }) => {
     return !value ? 0 : Number(Number(value).toFixed(2));
   })
