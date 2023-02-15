@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { ChampRepository } from './champ.repository';
 import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { GetMostPositionDto, positionList } from './dto/champ-position/champ.most.position.dto';
@@ -38,30 +38,19 @@ export class ChampService {
     const positionDbName = param.position === 'default' ? false : positionList[param.position];
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 or DB에 있는 포지션명 할당
-    const getPosition = !positionDbName
-      ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0])
-      : positionDbName;
+    const getPosition = !positionDbName ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0]) : positionDbName;
 
     //default 파라미터인 경우 모스트 포지션 값 할당 or DB에 있는 포지션명 할당
     const champPosition = !positionDbName ? getPosition[0]?.position : getPosition;
     const { position } = plainToInstance(GetMostPositionDto, { position: champPosition });
 
-    const champRate: GetChampRateDto[] | [] = await this.champRepository.getChampRate(
-      param.champId,
-      champPosition,
-      rateLatestVersions[0],
-    );
+    const champRate: GetChampRateDto[] | [] = await this.champRepository.getChampRate(param.champId, champPosition, rateLatestVersions[0]);
 
     //배열 형식으로 dto return
-    const createChampRateDto =
-      champRate.length === 0
-        ? [GetChampRateDto.transformDto(null)]
-        : champRate.map((v) => GetChampRateDto.transformDto(v));
+    const createChampRateDto = champRate.length === 0 ? [GetChampRateDto.transformDto(null)] : champRate.map((v) => GetChampRateDto.transformDto(v));
     const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
 
-    const champDefaultData: ChampCommonDTO = await this.champRepository.getChampDefaultData(
-      param.champId,
-    );
+    const champDefaultData: ChampCommonDTO = await this.champRepository.getChampDefaultData(param.champId);
 
     const skillInfo: SkillSet[] = await this.champRepository.getSkillData(param.champId);
     const skill = skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
@@ -69,8 +58,7 @@ export class ChampService {
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
 
-    return new TargetChampionResDto(champDefaultData, skill, position, banRate, champRateData[0]);
-
+    return plainToInstance(TargetChampionResDto, { ...champDefaultData, skill, position, banRate, ...champRateData[0] });
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {

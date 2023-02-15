@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChampRateDataDto } from '../champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO } from '../champ-skill/champ.skill.common.dto';
-import { ChampCommonDTO } from '../champ/champ.common.dto';
 
 export class TargetChampionResDto {
   @ApiProperty({
@@ -87,25 +85,4 @@ export class TargetChampionResDto {
     type: ChampSkillCommonDTO,
   })
   readonly skill: ChampSkillCommonDTO[];
-
-  constructor(
-    champ: ChampCommonDTO,
-    skill: ChampSkillCommonDTO[],
-    position: string,
-    banRate: number,
-    rate: ChampRateDataDto,
-  ) {
-    this.id = champ.id;
-    this.champNameKo = champ.champNameKo;
-    this.champNameEn = champ.champNameEn;
-    this.champImg = champ.champImg;
-    this.skill = skill;
-    this.position = position;
-    this.banRate = banRate;
-    this.winRate = rate.winRate;
-    this.pickRate = rate.pickRate;
-    this.spell1Img = rate.spell1Img;
-    this.spell2Img = rate.spell2Img;
-    this.version = rate.version;
-  }
 }
