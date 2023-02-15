@@ -7,14 +7,16 @@ import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommonResponseDTO } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
-import { FirstLoginResponseDto, LoginResposeDto } from './dto/admin.response';
 import { kakaoPayload } from './dto/kakao.payload';
+import { FirstLoginResponseDto, LoginResponseDto } from './dto/admin.response.dto';
+import { DeleteUserDto, FirstLoginRequestDto } from './dto/admin.request.dto';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  // TODO: 회원탈퇴 COMMENT 이외에 DTO, ENTITY 수정하기
   // 회원탈퇴
   @ApiOperation({ summary: '회원탈퇴' })
   @ApiBearerAuth('authorization')
@@ -30,8 +32,9 @@ export class AdminController {
   })
   @Delete()
   @UseGuards(jwtGuard)
-  async deleteUser(@User() user: LoginResposeDto) {
-    return this.adminService.deleteUser(user.userId);
+  // TODO: LoginResponseDto 바꾸기
+  async deleteUser(@User() user: LoginResponseDto) {
+    return this.adminService.deleteUser(DeleteUserDto.creatDeleteUserDto(user.userId));
   }
 
   // 로컬용 로그인
@@ -52,6 +55,6 @@ export class AdminController {
   @Get('/kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoCallback(@User() user: kakaoPayload): Promise<FirstLoginResponseDto> {
-    return this.adminService.kakaoLogin(user);
+    return this.adminService.kakaoLogin(FirstLoginRequestDto.createFristLoginRequestDto(user));
   }
 }

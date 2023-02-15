@@ -1,17 +1,7 @@
 import { UserCommonDto } from './user.common.dto';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 
-export class OptionRequestDTO extends OmitType(UserCommonDto, [
-  'userId',
-  'createdAt',
-  'updatedAt',
-  'deletedAt',
-  'social',
-  'socialId',
-  'preferChamp1',
-  'preferChamp2',
-  'preferChamp3',
-]) {
+export class OptionRequestDTO extends OmitType(UserCommonDto, ['userId', 'createdAt', 'updatedAt', 'deletedAt', 'social', 'socialId', 'preferChamp1', 'preferChamp2', 'preferChamp3']) {
   @ApiProperty({
     example: 56,
     description: '선호챔피언3',
