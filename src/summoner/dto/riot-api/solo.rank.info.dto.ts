@@ -28,14 +28,12 @@ const tierImgInfo = {
 };
 
 export class SoloRankDataDto {
-  private win: number;
-  private lose: number;
-  private winRate: number;
-  private tier: string;
-  private lp: number;
-  private tierImg: string;
-
-  leaguePoints: number;
+  win: number;
+  lose: number;
+  winRate: number;
+  tier: string;
+  lp: number;
+  tierImg: string;
   static transformSoloRankData(data: LeagueEntryDTO[] | null) {
     const soloRankData = new SoloRankDataDto();
     soloRankData.win = data ? data[0].wins : 0;

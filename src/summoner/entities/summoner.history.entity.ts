@@ -1,5 +1,6 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { SummonerEntity } from './summoner.entity';
 
 @Entity({
   name: 'SUMMONERHISTORY',
@@ -24,11 +25,20 @@ export class SummonerHistoryEntity extends CommonEntity {
   champId: number;
 
   @Column({ type: 'varchar', nullable: false })
-  summonerName: string;
-
-  @Column({ type: 'varchar', nullable: false })
   summonerId: string;
 
   @Column({ type: 'varchar', nullable: false })
   matchId: string;
+
+  @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.summonerName, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'summonerName',
+      referencedColumnName: 'summonerName',
+    },
+  ])
+  summonerName: SummonerEntity;
 }

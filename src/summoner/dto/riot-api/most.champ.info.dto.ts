@@ -11,9 +11,9 @@ export class ChampionMasteryDto {
 }
 
 export class MostChampDataDto {
-  private mostChamp1: number;
-  private mostChamp2: number;
-  private mostChamp3: number;
+  mostChamp1: number;
+  mostChamp2: number;
+  mostChamp3: number;
 
   static transformMostChampData(data: ChampionMasteryDto[]) {
     const mostChamp = new MostChampDataDto();
