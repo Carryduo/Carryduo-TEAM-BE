@@ -93,6 +93,7 @@ export class ChampRepository {
   }
 
   async getSkillData(champId: string): Promise<SkillSet[]> {
+
     return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skill')
@@ -129,7 +130,7 @@ export class ChampRepository {
     try {
       const { gameCount } = await this.getGameTotalCount(version);
 
-      const champInfo = await this.champRepository
+      return await this.champRepository
         .createQueryBuilder('champ')
         .leftJoinAndSelect('champ.champ_rate', 'rate')
         .leftJoinAndSelect('champ.champ_spell', 'spell')
@@ -144,7 +145,6 @@ export class ChampRepository {
         .orderBy('spell.playCount', 'DESC')
         .limit(1)
         .execute();
-      return champInfo;
     } catch (err) {
       console.log(err);
     }

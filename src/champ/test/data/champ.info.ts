@@ -1,3 +1,5 @@
+import { skillSet } from 'src/champ/dto/champ-skill/champ.skill.common.dto';
+
 export const champDefaultData = {
   id: '1',
   champNameKo: '애니',
@@ -5,7 +7,7 @@ export const champDefaultData = {
   champImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Annie_0.jpg',
 };
 
-export const skillInfo = [
+export const skillInfo: skillSet[] = [
   {
     skillId: 'q',
     skillName: '붕괴',
@@ -56,7 +58,6 @@ export const TOP = [
     spell1: 14,
     spell2: 4,
     version: '13.1.',
-    position: 'TOP',
   },
 ];
 export const JUNGLE = [
@@ -66,7 +67,6 @@ export const JUNGLE = [
     spell1: 14,
     spell2: 4,
     version: '13.1.',
-    position: 'JUNGLE',
   },
 ];
 export const MIDDLE = [
@@ -76,7 +76,6 @@ export const MIDDLE = [
     spell1: 14,
     spell2: 4,
     version: '13.1.',
-    position: 'MIDDLE',
   },
 ];
 export const UTILITY = [
@@ -86,7 +85,6 @@ export const UTILITY = [
     spell1: 14,
     spell2: 4,
     version: '13.1.',
-    position: 'UTILITY',
   },
 ];
 export const BOTTOM = [
@@ -96,7 +94,6 @@ export const BOTTOM = [
     spell1: 14,
     spell2: 4,
     version: '13.1.',
-    position: 'BOTTOM',
   },
 ];
 export const DEFAULT = [];

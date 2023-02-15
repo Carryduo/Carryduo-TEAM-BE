@@ -1,7 +1,7 @@
 import { CommentRepository } from './comments.repository';
 import { PostCommentDTO } from './dto/comment.request.dto';
 import { Injectable, HttpException } from '@nestjs/common';
-import { AdminResponseDTO } from 'src/admin/dto/admin.response';
+import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
 import { CommentGetResponseDTO } from './dto/comment.response.dto';
 import { Brackets } from 'typeorm';
 
@@ -26,7 +26,8 @@ export class CommentsService {
     return data;
   }
 
-  postComment(category: string, target: string, user: AdminResponseDTO, data: PostCommentDTO) {
+  // TODO: user dto
+  postComment(category: string, target: string, user: { userId: string; nickname: string; profileImg: string }, data: PostCommentDTO) {
     let value, option;
     if (category === 'champ') {
       value = {

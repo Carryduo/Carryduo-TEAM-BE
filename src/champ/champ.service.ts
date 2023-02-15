@@ -70,6 +70,7 @@ export class ChampService {
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
 
     return new TargetChampionResDto(champDefaultData, skill, position, banRate, champRateData[0]);
+
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {

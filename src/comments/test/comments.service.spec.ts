@@ -80,9 +80,7 @@ describe('CommentsService', () => {
     const userId = 'kim';
     const content = '~~~~!';
 
-    jest
-      .spyOn(repository, 'updateContent')
-      .mockImplementation(async () => comments.commentsData);
+    jest.spyOn(repository, 'updateContent').mockImplementation(async () => comments.commentsData);
 
     jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
     expect(await service.updateContent(id, userId, content)).toEqual({
@@ -99,9 +97,7 @@ describe('CommentsService', () => {
   it('deleteComment가 잘 실행되나?', async () => {
     const id = '69b1852f-ba0d-438d-a568-127dc01de86f';
     const userId = 'kim';
-    jest
-      .spyOn(repository, 'deleteComment')
-      .mockResolvedValue(comments.commentsData);
+    jest.spyOn(repository, 'deleteComment').mockResolvedValue(comments.commentsData);
 
     jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
     expect(await service.deleteComment(id, userId)).toEqual({
@@ -117,9 +113,7 @@ describe('CommentsService', () => {
 
   it('updateReportNum이 잘 실행되나?', async () => {
     const id = '69b1852f-ba0d-438d-a568-127dc01de86f';
-    jest
-      .spyOn(repository, 'updateReportNum')
-      .mockResolvedValue(comments.commentsData);
+    jest.spyOn(repository, 'updateReportNum').mockResolvedValue(comments.commentsData);
 
     jest.spyOn(repository, 'setCommentCache').mockResolvedValue();
 

@@ -1,3 +1,4 @@
+import { FirstLoginRequestDto, DeleteUserDto } from './../dto/admin.request.dto';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from 'src/user/user.repository';
@@ -101,7 +102,10 @@ describe('AdminService', () => {
           resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    expect(await service.kakaoLogin(loginData)).toEqual(loginResult);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
+    expect(response.nickname).toEqual(loginResult.nickname);
+    expect(response.token).toEqual(loginResult.token);
+    expect(response.id).toEqual(loginResult.id);
   });
 
   it('kakaoLogin test: 카카오 로그인 시, 신규 유저일 경우, 유저를 생성한 뒤 id, nickname, token을 return 하는가?', async () => {
@@ -117,7 +121,10 @@ describe('AdminService', () => {
           resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    expect(await service.kakaoLogin(loginData)).toEqual(loginResult);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
+    expect(response.nickname).toEqual(loginResult.nickname);
+    expect(response.token).toEqual(loginResult.token);
+    expect(response.id).toEqual(loginResult.id);
   });
 
   it('deleteUser 테스트: 정상작동 및 예외처리', async () => {
@@ -190,12 +197,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -244,12 +251,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -318,12 +325,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -359,12 +366,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }

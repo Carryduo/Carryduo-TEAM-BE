@@ -221,7 +221,7 @@ describe('ChampService', () => {
       champRateData[0],
     );
     const result = await service.getTargetChampion(param);
-
+  
     expect(result).toEqual(response);
   });
 
@@ -282,6 +282,7 @@ describe('ChampService', () => {
       position,
       banRate,
       champRateData[0],
+
     );
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
