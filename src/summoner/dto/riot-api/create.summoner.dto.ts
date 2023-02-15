@@ -32,9 +32,9 @@ export class createSummonerDto {
     this.lose = rankInfo.lose;
     this.winRate = rankInfo.winRate;
 
-    this.mostChamp1 = mostChamps.mostChamp1;
-    this.mostChamp2 = mostChamps.mostChamp2;
-    this.mostChamp3 = mostChamps.mostChamp3;
+    // this.mostChamp1 = mostChamps.mostChamp1;
+    // this.mostChamp2 = mostChamps.mostChamp2;
+    // this.mostChamp3 = mostChamps.mostChamp3;
   }
 
   toEntity() {
