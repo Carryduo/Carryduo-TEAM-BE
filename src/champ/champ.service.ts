@@ -4,9 +4,11 @@ import { ChampRepository } from './champ.repository';
 import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { GetMostPositionDto, positionList } from './dto/champ-position/champ.most.position.dto';
 import { ChampRateDataDto } from './dto/champ-rate/champ.rate.dto';
+import { ChampSkillCommonDTO, skillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
+import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
 @Injectable()
 export class ChampService {
@@ -53,7 +55,8 @@ export class ChampService {
 
     const champDefaultData = await this.champRepository.getChampDefaultData(param.champId);
 
-    const skill = await this.champRepository.getSkillData(param.champId);
+    const skillInfo = await this.champRepository.getSkillData(param.champId);
+    const skill = skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
 
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
@@ -72,8 +75,8 @@ export class ChampService {
       spell2Img: transformChampRate.spell2Img,
       version: transformChampRate.version,
     };
-    return data;
-    // return new TargetChampionResDto(data);
+
+    return plainToInstance(TargetChampionResDto, data);
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {
