@@ -26,7 +26,8 @@ export class CommentsService {
     return data;
   }
 
-  postComment(category: string, target: string, user: LoginResponseDto, data: PostCommentDTO) {
+  // TODO: user dto
+  postComment(category: string, target: string, user: { userId: string; nickname: string; profileImg: string }, data: PostCommentDTO) {
     let value, option;
     if (category === 'champ') {
       value = {

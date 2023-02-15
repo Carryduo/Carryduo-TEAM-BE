@@ -1,4 +1,4 @@
-import { UserRepositoryFirstLoginInfoResponseDto } from 'src/user/dto/user.repository.dto';
+import { FirstLoginRequestDto, DeleteUserDto } from './../dto/admin.request.dto';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from 'src/user/user.repository';
@@ -99,10 +99,10 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'checkUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
+          resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(loginData);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);
@@ -118,10 +118,10 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'createUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
+          resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(loginData);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);
@@ -197,12 +197,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -251,12 +251,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -325,12 +325,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -366,12 +366,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }

@@ -1,3 +1,4 @@
+import { PickType } from '@nestjs/swagger';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,12 +16,12 @@ export class AdminRepository {
     private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
-  async checkUser(data: UserEntity): Promise<UserEntity> {
+  async checkUser(data: UserEntity): Promise<{ userId: string; nickname: string }> {
     const { socialId, social } = data;
     return await this.usersRepository.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
   }
 
-  async createUser(data: UserEntity): Promise<UserEntity> {
+  async createUser(data: UserEntity): Promise<{ userId: string; nickname: string }> {
     const { social, socialId } = data;
     let newUser: UserEntity;
     await this.usersRepository.manager.transaction(async (transactionalEntityManager) => {

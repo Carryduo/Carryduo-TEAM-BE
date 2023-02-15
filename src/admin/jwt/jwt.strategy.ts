@@ -1,4 +1,3 @@
-import { LoginResponseDto } from './../dto/admin.response.dto';
 import { AdminRepository } from './../admin.repository';
 import { HttpException, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -16,10 +15,14 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   // 검증 메소드: 디코딩은 모듈 자체에서 자동으로 되는 것으로 보임.
-  async validate(payload: jwtPayload): Promise<LoginResponseDto> {
+  async validate(payload: jwtPayload): Promise<{ userId: string; nickname: string; profileImg: string }> {
     const user = await this.adminRepository.findById(payload.sub);
     if (user) {
-      return new LoginResponseDto(user.userId, user.nickname, user.profileImg); // request의 user 파라미터 안에 cat을 삽입.
+      return {
+        userId: user.userId,
+        nickname: user.nickname,
+        profileImg: user.profileImg,
+      }; // request의 user 파라미터 안에 cat을 삽입.
     } else {
       throw new HttpException('토큰 에러', 401);
     }
