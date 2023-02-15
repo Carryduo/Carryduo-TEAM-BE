@@ -1,21 +1,7 @@
-import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { ChampRateDataDto } from '../champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO } from '../champ-skill/champ.skill.common.dto';
-
-export class TargetChampionData {
-  id: string;
-  champNameKo: string;
-  champNameEn: string;
-  champImg: string;
-  winRate: string | number;
-  banRate: string | number;
-  pickRate: string | number;
-  position: string;
-  spell1Img: string;
-  spell2Img: string;
-  version: string;
-  skill: ChampSkillCommonDTO;
-}
+import { ChampCommonDTO } from '../champ/champ.common.dto';
 
 export class TargetChampionResDto {
   @ApiProperty({
@@ -51,35 +37,35 @@ export class TargetChampionResDto {
     description: '승률',
     required: true,
   })
-  readonly winRate: string | number;
+  readonly winRate: number;
 
   @ApiProperty({
     example: 13.2,
     description: '밴 비율',
     required: true,
   })
-  readonly banRate: string | number;
+  readonly banRate: number;
 
   @ApiProperty({
     example: 8.19,
     description: '픽률',
     required: true,
   })
-  readonly pickRate: string | number;
+  readonly pickRate: number;
 
   @ApiProperty({
     example: 'spell1 image.png',
     description: '첫번째 스펠이미지',
     required: true,
   })
-  readonly spell1Img: number | string;
+  readonly spell1Img: string;
 
   @ApiProperty({
     example: 'spell2 image.png',
     description: '두번째 스펠이미지',
     required: true,
   })
-  readonly spell2Img: number | string;
+  readonly spell2Img: string;
 
   @ApiProperty({
     example: '13.3.',
@@ -100,5 +86,26 @@ export class TargetChampionResDto {
     isArray: true,
     type: ChampSkillCommonDTO,
   })
-  readonly skill: ChampSkillCommonDTO;
+  readonly skill: ChampSkillCommonDTO[];
+
+  constructor(
+    champ: ChampCommonDTO,
+    skill: ChampSkillCommonDTO[],
+    position: string,
+    banRate: number,
+    rate: ChampRateDataDto,
+  ) {
+    this.id = champ.id;
+    this.champNameKo = champ.champNameKo;
+    this.champNameEn = champ.champNameEn;
+    this.champImg = champ.champImg;
+    this.skill = skill;
+    this.position = position;
+    this.banRate = banRate;
+    this.winRate = rate.winRate;
+    this.pickRate = rate.pickRate;
+    this.spell1Img = rate.spell1Img;
+    this.spell2Img = rate.spell2Img;
+    this.version = rate.version;
+  }
 }
