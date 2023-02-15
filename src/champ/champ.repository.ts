@@ -6,12 +6,11 @@ import { ChampEntity } from './entities/champ.entity';
 import { Cache } from 'cache-manager';
 import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
-import { GetChampDefaultData } from './dto/champ/champ.common.dto';
-import { ChampSkillCommonDTO, skillSet } from './dto/champ-skill/champ.skill.common.dto';
-import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
+import { ChampCommonDTO } from './dto/champ/champ.common.dto';
+import { SkillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { plainToInstance } from 'class-transformer';
-import { GetBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { GetMostPositionDto } from './dto/champ-position/champ.most.position.dto';
+import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
 
 export class ChampRepository {
   constructor(
@@ -85,7 +84,7 @@ export class ChampRepository {
       .execute();
   }
 
-  async getGameTotalCount(version: string) {
+  async getGameTotalCount(version: string): Promise<{ gameCount: string }> {
     return await this.gameDataRepository
       .createQueryBuilder()
       .select('game_count gameCount')
@@ -93,7 +92,7 @@ export class ChampRepository {
       .getRawOne();
   }
 
-  async getSkillData(champId: string): Promise<skillSet[]> {
+  async getSkillData(champId: string): Promise<SkillSet[]> {
     return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skill')
@@ -109,8 +108,8 @@ export class ChampRepository {
       .getRawMany();
   }
 
-  async getChampDefaultData(champId: string) {
-    const champDefaultData = await this.champRepository
+  async getChampDefaultData(champId: string): Promise<ChampCommonDTO> {
+    return await this.champRepository
       .createQueryBuilder('champ')
       .where('champId = :champId', { champId })
       .select([
@@ -120,10 +119,9 @@ export class ChampRepository {
         'champ.champMainImg champImg',
       ])
       .getRawOne();
-    return plainToInstance(GetChampDefaultData, champDefaultData);
   }
 
-  async getChampData(
+  async getChampRate(
     champId: string,
     position: string,
     version: string,
@@ -152,7 +150,7 @@ export class ChampRepository {
     }
   }
 
-  async getBanRate(champId: string, version: string): Promise<GetBanRateDto> {
+  async getBanRate(champId: string, version: string): Promise<{ banRate: string }> {
     const { gameCount } = await this.getGameTotalCount(version);
 
     return await this.champRepository
