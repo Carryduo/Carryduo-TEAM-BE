@@ -15,11 +15,11 @@ const spellInfo = {
 };
 
 export class GetChampRateDto {
-  private winRate: string = null;
-  private pickRate: string = null;
-  private spell1: number = null;
-  private spell2: number = null;
-  private version: string = null;
+  winRate: string = null;
+  pickRate: string = null;
+  spell1: number = null;
+  spell2: number = null;
+  version: string = null;
   static transformDto(data: GetChampRateDto | null) {
     const champRate = new GetChampRateDto();
     if (!data) return champRate;

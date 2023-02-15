@@ -62,7 +62,6 @@ export class ChampService {
     const champDefaultData: ChampCommonDTO = await this.champRepository.getChampDefaultData(
       param.champId,
     );
-    console.log(champDefaultData);
 
     const skillInfo: SkillSet[] = await this.champRepository.getSkillData(param.champId);
     const skill = skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
