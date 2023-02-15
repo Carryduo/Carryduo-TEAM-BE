@@ -1,4 +1,5 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { IsString } from 'class-validator';
 
 export const positionList = {
   top: 'TOP',
@@ -16,5 +17,5 @@ export class GetMostPositionDto {
       ? positionList.default
       : Object.keys(positionList).find((key) => positionList[key] === value);
   })
-  position: string;
+  readonly position: string;
 }

@@ -1,4 +1,4 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 const spellInfo = {
   21: 'SummonerBarrier',
@@ -15,61 +15,48 @@ const spellInfo = {
 };
 
 export class GetChampRateDto {
-  readonly winRate: string | number;
-  readonly pickRate: string | number;
-  readonly spell1: number;
-  readonly spell2: number;
-  readonly version: string;
+  winRate: string = null;
+  pickRate: string = null;
+  spell1: number = null;
+  spell2: number = null;
+  version: string = null;
+  static transformDto(data: GetChampRateDto | null) {
+    const champRate = new GetChampRateDto();
+    if (!data) return champRate;
+    champRate.winRate = data.winRate;
+    champRate.pickRate = data.pickRate;
+    champRate.spell1 = data.spell1;
+    champRate.spell2 = data.spell2;
+    champRate.version = data.version;
+    return champRate;
+  }
 }
 
 export class ChampRateDataDto {
-  private _winRate: number;
-  private _pickRate: number;
-  private _spell1Img: string;
-  private _spell2Img: string;
-  private _version: string;
-  get winRate() {
-    return this._winRate;
-  }
-  set winRate(winRate: number) {
-    this._winRate = winRate;
-  }
+  @Transform(({ value }) => {
+    return value ? Number(Number(value).toFixed(2)) : 0;
+  })
+  readonly winRate: number;
 
-  get pickRate() {
-    return this._pickRate;
-  }
-  set pickRate(pickRate: number) {
-    this._pickRate = pickRate;
-  }
+  @Transform(({ value }) => {
+    return value ? Number(Number(value).toFixed(2)) : 0;
+  })
+  readonly pickRate: number;
 
-  get spell1Img() {
-    return this._spell1Img;
-  }
-  set spell1Img(spell1: string) {
-    this._spell1Img = spell1;
-  }
+  @Expose({ name: 'spell1' })
+  @Transform(({ value }) => {
+    return value ? spellInfo[value] : spellInfo.default;
+  })
+  readonly spell1Img: string;
 
-  get spell2Img() {
-    return this._spell2Img;
-  }
-  set spell2Img(spell2: string) {
-    this._spell2Img = spell2;
-  }
+  @Expose({ name: 'spell2' })
+  @Transform(({ value }) => {
+    return value ? spellInfo[value] : spellInfo.default;
+  })
+  readonly spell2Img: string;
 
-  get version() {
-    return this._version;
-  }
-  set version(verison: string) {
-    this._version = verison;
-  }
-
-  static transform(data: GetChampRateDto[]) {
-    const champRate = new ChampRateDataDto();
-    champRate.winRate = data[0]?.winRate ? Number(Number(data[0].winRate).toFixed(2)) : 0;
-    champRate.pickRate = data[0]?.pickRate ? Number(Number(data[0].pickRate).toFixed(2)) : 0;
-    champRate.spell1Img = data[0]?.spell1 ? spellInfo[data[0]?.spell1] : spellInfo.default;
-    champRate.spell2Img = data[0]?.spell2 ? spellInfo[data[0]?.spell2] : spellInfo.default;
-    champRate.version = data[0]?.version ? data[0]?.version : 'default version';
-    return champRate;
-  }
+  @Transform(({ value }) => {
+    return value ? value : 'default version';
+  })
+  readonly version: string;
 }

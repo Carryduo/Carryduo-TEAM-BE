@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 
 export class SummonerHistoryCommonDTO extends CommonEntity {
@@ -64,7 +65,7 @@ export class SummonerHistoryCommonDTO extends CommonEntity {
   })
   @IsString()
   @IsNotEmpty()
-  summonerName: string;
+  summonerName: SummonerEntity;
 
   @ApiProperty({
     example: 'uuid',

@@ -11,7 +11,7 @@ import * as responseData from './data/champ.target.response';
 import * as champData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { ChampRateDataDto } from '../dto/champ-rate/champ.rate.dto';
+import { ChampRateDataDto, GetChampRateDto } from '../dto/champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO } from '../dto/champ-skill/champ.skill.common.dto';
 import { plainToInstance } from 'class-transformer';
 import { ChampBanRateDto } from '../dto/champ-ban/champ.ban.common.dto';
@@ -59,7 +59,7 @@ class MockRepository {
     return champData.champDefaultData;
   }
 
-  getChampData(champId: string, position: string, version: string) {
+  getChampRate(champId: string, position: string, version: string) {
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') {
       return champData.DEFAULT;
@@ -201,19 +201,27 @@ describe('ChampService', () => {
     const { position } = plainToInstance(GetMostPositionDto, {
       position: getPosition[0]?.position,
     });
-    const transformChampRate = ChampRateDataDto.transform(champData.JUNGLE);
+
+    const champRate: GetChampRateDto[] = champData.JUNGLE;
+
+    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
+    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+
     const champDefaultData = champData.champDefaultData;
-    const transformChampSKill = champData.skillInfo.map((v) => new ChampSkillCommonDTO(v));
+
+    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+
     const response = new TargetChampionResDto(
       champDefaultData,
-      transformChampSKill,
-      transformChampRate,
-      banRate,
+      skill,
       position,
+      banRate,
+      champRateData[0],
     );
     const result = await service.getTargetChampion(param);
-
+  
     expect(result).toEqual(response);
   });
 
@@ -223,16 +231,24 @@ describe('ChampService', () => {
       position: 'mid',
     };
     const { position } = plainToInstance(GetMostPositionDto, { position: 'MIDDLE' });
-    const transformChampRate = ChampRateDataDto.transform(champData.MIDDLE);
+
+    const champRate: GetChampRateDto[] = champData.MIDDLE;
+
+    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
+    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+
     const champDefaultData = champData.champDefaultData;
-    const transformChampSKill = champData.skillInfo.map((v) => new ChampSkillCommonDTO(v));
+
+    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+
     const response = new TargetChampionResDto(
       champDefaultData,
-      transformChampSKill,
-      transformChampRate,
-      banRate,
+      skill,
       position,
+      banRate,
+      champRateData[0],
     );
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
@@ -243,17 +259,30 @@ describe('ChampService', () => {
       champId: '2',
       position: 'default',
     };
-    const { position } = plainToInstance(GetMostPositionDto, { position: undefined });
-    const transformChampRate = ChampRateDataDto.transform(champData.DEFAULT);
+    const { position } = plainToInstance(GetMostPositionDto, { position: null });
+
+    const champRate: GetChampRateDto[] = champData.DEFAULT;
+
+    const createChampRateDto =
+      champRate.length === 0
+        ? [GetChampRateDto.transformDto(null)]
+        : champRate.map((v) => GetChampRateDto.transformDto(v));
+
+    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+
     const champDefaultData = champData.champDefaultData;
-    const transformChampSKill = champData.skillInfo.map((v) => new ChampSkillCommonDTO(v));
+
+    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+
     const response = new TargetChampionResDto(
       champDefaultData,
-      transformChampSKill,
-      transformChampRate,
-      banRate,
+      skill,
       position,
+      banRate,
+      champRateData[0],
+
     );
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);

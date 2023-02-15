@@ -7,10 +7,10 @@ import { Cache } from 'cache-manager';
 import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
-import { skillSet } from './dto/champ-skill/champ.skill.common.dto';
-import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
-import { GetBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
+import { SkillSet } from './dto/champ-skill/champ.skill.common.dto';
+import { plainToInstance } from 'class-transformer';
 import { GetMostPositionDto } from './dto/champ-position/champ.most.position.dto';
+import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
 
 export class ChampRepository {
   constructor(
@@ -92,7 +92,8 @@ export class ChampRepository {
       .getRawOne();
   }
 
-  async getSkillData(champId: string): Promise<skillSet[]> {
+  async getSkillData(champId: string): Promise<SkillSet[]> {
+
     return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skill')
@@ -121,7 +122,7 @@ export class ChampRepository {
       .getRawOne();
   }
 
-  async getChampData(
+  async getChampRate(
     champId: string,
     position: string,
     version: string,
@@ -149,7 +150,7 @@ export class ChampRepository {
     }
   }
 
-  async getBanRate(champId: string, version: string): Promise<GetBanRateDto> {
+  async getBanRate(champId: string, version: string): Promise<{ banRate: string }> {
     const { gameCount } = await this.getGameTotalCount(version);
 
     return await this.champRepository

@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { ChampRepository } from './champ.repository';
 import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
 import { GetMostPositionDto, positionList } from './dto/champ-position/champ.most.position.dto';
-import { ChampRateDataDto } from './dto/champ-rate/champ.rate.dto';
-import { ChampSkillCommonDTO } from './dto/champ-skill/champ.skill.common.dto';
+import { ChampRateDataDto, GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
+import { ChampSkillCommonDTO, SkillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
@@ -25,7 +25,7 @@ export class ChampService {
   }
 
   //TODO: 스펠 이미지 추가
-  async getTargetChampion(param: TargetChampionReqDTO) {
+  async getTargetChampion(param: TargetChampionReqDTO): Promise<TargetChampionResDto> {
     const existChamp = await this.champRepository.existChamp(param.champId);
     if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
@@ -36,39 +36,41 @@ export class ChampService {
 
     //파라미터값을 DB에 있는 포지션명으로 변경
     const positionDbName = param.position === 'default' ? false : positionList[param.position];
-    //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 / DB에 있는 포지션명 할당
+
+    //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 or DB에 있는 포지션명 할당
     const getPosition = !positionDbName
       ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0])
       : positionDbName;
 
-    //default 파라미터인 경우 Dto get 호출 / DB에 있는 포지션명 할당
+    //default 파라미터인 경우 모스트 포지션 값 할당 or DB에 있는 포지션명 할당
     const champPosition = !positionDbName ? getPosition[0]?.position : getPosition;
     const { position } = plainToInstance(GetMostPositionDto, { position: champPosition });
 
-    const champData = await this.champRepository.getChampData(
+    const champRate: GetChampRateDto[] | [] = await this.champRepository.getChampRate(
       param.champId,
       champPosition,
       rateLatestVersions[0],
     );
 
-    const transformChampRate = ChampRateDataDto.transform(champData);
+    //배열 형식으로 dto return
+    const createChampRateDto =
+      champRate.length === 0
+        ? [GetChampRateDto.transformDto(null)]
+        : champRate.map((v) => GetChampRateDto.transformDto(v));
+    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
 
-    const champDefaultData = await this.champRepository.getChampDefaultData(param.champId);
+    const champDefaultData: ChampCommonDTO = await this.champRepository.getChampDefaultData(
+      param.champId,
+    );
 
-    const skill = await this.champRepository.getSkillData(param.champId);
-    const transformChampSKill = skill.map((v) => new ChampSkillCommonDTO(v));
+    const skillInfo: SkillSet[] = await this.champRepository.getSkillData(param.champId);
+    const skill = skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
 
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
     const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
 
-    const response = new TargetChampionResDto(
-      champDefaultData,
-      transformChampSKill,
-      transformChampRate,
-      banRate,
-      position,
-    );
-    return response;
+    return new TargetChampionResDto(champDefaultData, skill, position, banRate, champRateData[0]);
+
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {
