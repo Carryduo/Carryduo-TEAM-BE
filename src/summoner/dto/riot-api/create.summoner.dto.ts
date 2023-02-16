@@ -1,3 +1,4 @@
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerEntity } from '../../../summoner/entities/summoner.entity';
 
 export class CreateSummonerDto {
@@ -7,9 +8,9 @@ export class CreateSummonerDto {
   private summonerIcon: string;
   private summonerLevel: number;
 
-  private mostChamp1: number;
-  private mostChamp2: number;
-  private mostChamp3: number;
+  private mostChamp1: ChampEntity;
+  private mostChamp2: ChampEntity;
+  private mostChamp3: ChampEntity;
 
   private win: number;
   private lose: number;
