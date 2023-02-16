@@ -1,17 +1,17 @@
 export class LeagueEntryDTO {
   leagueId: string;
   queueType: string;
-  tier: string;
-  rank: string;
   summonerId: string;
   summonerName: string;
-  leaguePoints: number;
-  wins: number;
-  losses: number;
   veteran: boolean;
   inactive: boolean;
   freshBlood: boolean;
   hotStreak: boolean;
+  tier: string;
+  rank: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
 }
 
 const tierImgInfo = {
@@ -32,18 +32,19 @@ export class SoloRankDataDto {
   lose: number;
   winRate: number;
   tier: string;
-  lp: number;
   tierImg: string;
-  static transformSoloRankData(data: LeagueEntryDTO[] | null) {
+  lp: number;
+
+  static plainToSoloRankDataDto(data: LeagueEntryDTO | null) {
     const soloRankData = new SoloRankDataDto();
-    soloRankData.win = data ? data[0].wins : 0;
-    soloRankData.lose = data ? data[0].losses : 0;
+    soloRankData.win = data ? data.wins : 0;
+    soloRankData.lose = data ? data.losses : 0;
     soloRankData.winRate = data
-      ? Math.floor((data[0].wins / (data[0].wins + data[0].losses)) * 100)
+      ? Math.floor((data.wins / (data.wins + data.losses)) * 100)
       : 0;
-    soloRankData.tier = data ? data[0].tier + ' ' + data[0].rank : 'Unranked';
-    soloRankData.lp = data ? data[0].leaguePoints : 0;
-    soloRankData.tierImg = data ? tierImgInfo[data[0].tier] : tierImgInfo.Unranked;
+    soloRankData.tier = data ? data.tier + ' ' + data.rank : 'Unranked';
+    soloRankData.lp = data ? data.leaguePoints : 0;
+    soloRankData.tierImg = data ? tierImgInfo[data.tier] : tierImgInfo.Unranked;
     return soloRankData;
   }
 }
