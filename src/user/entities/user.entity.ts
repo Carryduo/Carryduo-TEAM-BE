@@ -47,7 +47,7 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @OneToMany(() => CommentEntity, (commentEntity: CommentEntity) => commentEntity.userId, {
     cascade: true,
   })
-  comment: CommentEntity;
+  comment: CommentEntity[];
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
@@ -88,7 +88,7 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   ])
   preferChamp3: ChampEntity;
 
-  static createUserOption(socialId: string, social: string, nickname: string, profileImg: string) {
+  static createUserOption(socialId: string, social: string, nickname: string, profileImg: string): UserEntity {
     const user = new UserEntity();
     user.socialId = socialId;
     user.social = social;
@@ -96,16 +96,31 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
     user.profileImg = profileImg;
     return user;
   }
-  static deleteUserOption(userId: string) {
+  static createSelectOption(userId: string): UserEntity {
     const user = new UserEntity();
     user.userId = userId;
     return user;
+  }
+
+  static createUpdateOption(data: { userId: string; nickname: string; profileImg: string; bio: string; preferPosition: string; tier: number; enableChat: boolean; preferChamp1: ChampEntity; preferChamp2: ChampEntity; preferChamp3: ChampEntity }) {
+    const option = new UserEntity();
+    option.userId = data.userId;
+    option.nickname = data.nickname;
+    option.profileImg = data.profileImg;
+    option.bio = data.bio;
+    option.preferPosition = data.preferPosition;
+    option.tier = data.tier;
+    option.enableChat = data.enableChat;
+    option.preferChamp1 = data.preferChamp1;
+    option.preferChamp2 = data.preferChamp2;
+    option.preferChamp3 = data.preferChamp3;
+    return option;
   }
 }
 
 // constructor(socialId?: string, social?: string, nickname?: string, profileImg?: string, bio?: string, preferPosition?: string, tier?: number, enableChat?: boolean, subscription?: SubscriptionEntity, comment?: CommentEntity, preferChamp1?: ChampEntity, preferChamp2?: ChampEntity, preferChamp3?: ChampEntity, userId?: string) {
 //   super();
-//   this.userId = userId;
+//   this.userId = body.userId;
 //   this.socialId = socialId;
 //   this.social = social;
 //   this.nickname = nickname;

@@ -2,7 +2,7 @@ import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete,
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
 import { User } from '../common/decorators/user.decorator';
-import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { CommentsService } from './comments.service';
 import { PostCommentDTO } from './dto/comment.request.dto';
@@ -64,7 +64,7 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 등록 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Post('/:category/:target')
   @UseGuards(jwtGuard)
@@ -89,7 +89,7 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 신고 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Patch('/report/:id')
   @UseGuards(jwtGuard)
@@ -107,7 +107,7 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 수정 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
@@ -126,7 +126,7 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 삭제 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)

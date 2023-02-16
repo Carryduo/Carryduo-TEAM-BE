@@ -6,7 +6,7 @@ import { Brackets } from 'typeorm';
 import { ChampRepository } from '../champ/champ.repository';
 import { UserRepository } from '../user/user.repository';
 import { FirstLoginResponseDto } from './dto/admin.response.dto';
-import { FirstLoginRequestDto, DeleteUserDto } from './dto/admin.request.dto';
+import { FirstLoginRequestDto, DeleteUserReqeustDto } from './dto/admin.request.dto';
 @Injectable()
 export class AdminService {
   constructor(private readonly adminRepository: AdminRepository, private jwtService: JwtService, private readonly commentRepository: CommentRepository, private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
@@ -27,7 +27,7 @@ export class AdminService {
   }
 
   // TODO: 삭제에 대한 STATUS CODE, user, comment 마무리하고 작업하기
-  async deleteUser(userId: DeleteUserDto) {
+  async deleteUser(userId: DeleteUserReqeustDto) {
     try {
       // 작성한 평판 목록 조회
       const option = userId.toEntity();

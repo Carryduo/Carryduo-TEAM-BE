@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
+import { GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto, UpdateUserOptionRequestDto } from 'src/user/dto/user.request.dto';
 
 // TODO: 얘는 RESPONSE DTO
 
@@ -66,5 +67,13 @@ export class LoginResponseDto {
   @Expose()
   get profileImg() {
     return this._profileImg;
+  }
+
+  toGetOwnInfoRequestDto(category: string) {
+    return GetUserInfoRequestDto.createDto(category, this._userId);
+  }
+
+  toUpdateOptionRequestDto(body: UpdateUserOptionRequestBodyDto) {
+    return UpdateUserOptionRequestDto.createDto(this._userId, body);
   }
 }
