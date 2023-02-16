@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
 import {
@@ -10,59 +10,58 @@ import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { SummonerDBResponseDTO } from './dto/summoner/summoner.response.dto';
 import { SummonerRepository } from './summoner.repository';
 import axios from 'axios';
+import { SummonerRiotRequest } from './summoner.riot.request';
+import { SummonerDefaultDataDto } from './dto/summoner/summoner.common.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class SummonerService {
   constructor(
     private readonly summonerRepository: SummonerRepository,
-    private readonly summonerResponse: summonerResponseCleansing,
-    private readonly summonerHistory: SummonerHistoryDataCleansing,
+    private readonly riotRequest: SummonerRiotRequest,
   ) {}
 
-  async cleansingData(summonerName: string, summoner: SummonerDBResponseDTO) {
-    const history = await this.summonerHistory.historyDataCleansing(
+  // async cleansingData(summonerName: string, summoner: SummonerDBResponseDTO) {
+  //   const history = await this.summonerHistory.historyDataCleansing(summonerName);
+  //   const summonerData = await this.summonerResponse.responseCleansing(summoner, history);
+  //   return summonerData;
+  // }
+
+  async getSummoner(summonerName: string) {
+    const summoner = await this.summonerRepository.getSummoner(summonerName);
+    if (!summoner) {
+      await this.createSummoner(summonerName);
+    }
+    const summonerDefaultDataDto =
+      SummonerDefaultDataDto.plainToSummonerDeafultDataDto(summoner);
+    console.log(summonerDefaultDataDto);
+    // return summonerDefaultDataDto;
+  }
+
+  private async createSummoner(summonerName: string) {
+    const createSummonerData = await this.riotRequest.requestRiotSummonerApi(
       summonerName,
     );
-    const summonerData = await this.summonerResponse.responseCleansing(
-      summoner,
-      history,
-    );
-    return summonerData;
-  }
+    // await this.summonerRepository.createSummoner(createSummonerData);
 
-  async getSummoner(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    if (!summoner) {
-      return await this.saveSummoner(summonerName);
-    }
-    return await this.cleansingData(summonerName, summoner);
-  }
-
-  async saveSummoner(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const newSummoner = await this.summonerRiotRequest(summonerName);
-    await this.summonerRepository.insertSummoner(newSummoner);
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    return await this.cleansingData(summonerName, summoner);
-  }
-
-  async refreshSummonerData(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    if (!summoner)
-      throw new HttpException(
-        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
-        HttpStatus.BAD_REQUEST,
+    const createSummonerHistoryData =
+      await this.riotRequest.requestRiotSummonerHistoryApi(
+        summonerName,
+        createSummonerData.summonerPuuId,
       );
-    const refreshSummoner = await this.summonerRiotRequest(summonerName);
-    await this.summonerRepository.updateSummoner(refreshSummoner);
-
-    return await this.getSummoner(summonerName);
+    // await this.summonerRepository.createSummonerHistory(
+    //   createSummonerHistoryData,
+    // );
   }
+
+  // async refreshSummonerData(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
+  //   const summoner = await this.summonerRepository.findSummoner(summonerName);
+  //   if (!summoner) throw new HttpException('갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)', HttpStatus.BAD_REQUEST);
+  //   const refreshSummoner = await this.summonerRiotRequest(summonerName);
+  //   await this.summonerRepository.updateSummoner(refreshSummoner);
+
+  //   return await this.getSummoner(summonerName);
+  // }
 
   //라이엇 API 요청, 데이터 저장 API
   async summonerRiotRequest(summonerName: string) {
@@ -194,9 +193,9 @@ export class SummonerService {
       const getSummonerHistory =
         await this.summonerRepository.getSummonerHistory(summonerName);
 
-      if (getSummonerHistory) {
-        await this.summonerRepository.deleteSummonerHistory(summonerName);
-      }
+      // if (getSummonerHistory) {
+      //   await this.summonerRepository.deleteSummonerHistory(summonerName);
+      // }
 
       for (let m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
@@ -240,7 +239,7 @@ export class SummonerService {
                 summonerId: p.summonerId,
                 matchId: m,
               };
-              await this.summonerRepository.createSummonerHistory(history);
+              // await this.summonerRepository.createSummonerHistory(history);
             } else {
               continue;
             }

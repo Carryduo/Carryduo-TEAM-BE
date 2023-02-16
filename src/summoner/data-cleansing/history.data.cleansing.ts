@@ -17,9 +17,9 @@ export class SummonerHistoryDataCleansing {
       summonerName,
     );
 
-    if (!check) {
-      return;
-    }
+    // if (!check) {
+    //   return;
+    // }
 
     const winInfo = await this.summonerRepository.sumWin(summonerName);
 
