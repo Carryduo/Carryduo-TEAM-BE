@@ -50,5 +50,5 @@ export class SummonerHistoryEntity extends CommonEntity {
       referencedColumnName: 'id',
     },
   ])
-  champId: ChampEntity | number;
+  champId: ChampEntity;
 }

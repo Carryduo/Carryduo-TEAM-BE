@@ -6,10 +6,8 @@ import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { Cache } from 'cache-manager';
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
-import {
-  SummonerAllDataDTO,
-  SummonerDataDTO,
-} from './dto/summoner/summoner.data.dto';
+import { SummonerAllDataDTO, SummonerDataDTO } from './dto/summoner/summoner.data.dto';
+import { SummonerRecordSumData } from './dto/history/summoner.record.dto';
 
 export class SummonerRepository {
   constructor(
@@ -23,10 +21,7 @@ export class SummonerRepository {
     private cacheManager: Cache,
   ) {}
 
-  async cacheSummoner(
-    summonerName: string,
-    data: SummonerAllDataDTO | SummonerDataDTO,
-  ) {
+  async cacheSummoner(summonerName: string, data: SummonerAllDataDTO | SummonerDataDTO) {
     await this.cacheManager.set(`/summoner/${summonerName}`, data);
   }
 
@@ -36,7 +31,6 @@ export class SummonerRepository {
       .leftJoinAndSelect('summoner.mostChamp1', 'most1')
       .leftJoinAndSelect('summoner.mostChamp2', 'most2')
       .leftJoinAndSelect('summoner.mostChamp3', 'most3')
-      .leftJoinAndSelect('summoner.history', 'history')
       .select([
         'summoner.summonerName',
         'summoner.summonerIcon',
@@ -65,31 +59,55 @@ export class SummonerRepository {
     return summoner;
   }
 
-  async getSummonerHistory(summonerName: string) {
-    // return await this.historyRepository
-    //   .createQueryBuilder('history')
-    //   .leftJoinAndSelect('history.champId', 'champ')
-    //   .leftJoinAndSelect('history.summonerName', 'summoner')
-    //   .select('SUM(history.win) winCount')
-    //   .addSelect('SUM(history.kill) killCount')
-    //   .addSelect('SUM(history.death) deathCount ')
-    //   .addSelect('SUM(history.assist) assistCount ')
-    //   .where('summonerName.summonerName = :summonerName', { summonerName });
+  async getSummonerRecordSum(summonerName: string): Promise<SummonerRecordSumData> {
+    return await this.historyRepository
+      .createQueryBuilder('history')
+      .leftJoinAndSelect('history.summonerName', 'summoner')
+      .select('SUM(history.win) winCount')
+      .addSelect('SUM(history.kill) killCount')
+      .addSelect('SUM(history.death) deathCount ')
+      .addSelect('SUM(history.assist) assistCount ')
+      .addSelect('COUNT(history.summonerName) totalCount ')
+      .where('summoner.summonerName = :summonerName', { summonerName })
+      .getRawOne();
+  }
+
+  async getSummonerPositionRecord(summonerName: string) {
+    return await this.historyRepository
+      .createQueryBuilder()
+      .where('summonerName = :summonerName', { summonerName })
+      .select(['COUNT(champId) cnt', 'position id'])
+      .groupBy('position')
+      .orderBy('cnt', 'DESC')
+      .limit(3)
+      .getRawMany();
+  }
+
+  async getRecentChamp(summonerName: string) {
+    return await this.historyRepository
+      .createQueryBuilder()
+      .where('summonerName = :summonerName', { summonerName })
+      .select(['COUNT(champId) count', 'champId'])
+      .groupBy('champId')
+      .orderBy('count', 'DESC')
+      .limit(3)
+      .getRawMany();
+  }
+
+  async getRecentChampInfo(champId: string, total: string) {
+    return await this.historyRepository
+      .createQueryBuilder('history')
+      .leftJoinAndSelect('history.champId', 'champ')
+      .select(['SUM(win) recentChampWin', 'champ.id', 'champ.champNameKo', 'champ.champImg'])
+      .where('history.champId = :champId', { champId })
+      .getRawMany();
   }
 
   async createSummoner(summoner: SummonerEntity) {
-    await this.summonerRepository
-      .createQueryBuilder()
-      .insert()
-      .values(summoner)
-      .execute();
+    await this.summonerRepository.createQueryBuilder().insert().values(summoner).execute();
   }
   async createSummonerHistory(data: SummonerHistoryEntity[]) {
-    return this.historyRepository
-      .createQueryBuilder()
-      .insert()
-      .values(data)
-      .execute();
+    return this.historyRepository.createQueryBuilder().insert().values(data).execute();
   }
 
   async updateSummoner(summonerInfo: SummonerRequestDTO) {

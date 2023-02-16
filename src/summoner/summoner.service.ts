@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
-import {
-  SummonerAllDataDTO,
-  SummonerDataDTO,
-} from './dto/summoner/summoner.data.dto';
+import { SummonerAllDataDTO, SummonerDataDTO } from './dto/summoner/summoner.data.dto';
 
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { SummonerDBResponseDTO } from './dto/summoner/summoner.response.dto';
@@ -13,6 +10,12 @@ import axios from 'axios';
 import { SummonerRiotRequest } from './summoner.riot.request';
 import { SummonerDefaultDataDto } from './dto/summoner/summoner.common.dto';
 import { plainToInstance } from 'class-transformer';
+import {
+  SummonerHistoryRateDto,
+  SummonerPositionDto,
+  SummonerRecordSumData,
+} from './dto/history/summoner.record.dto';
+import { RecentChampDto } from './dto/history/recent.champ.dto';
 
 @Injectable()
 export class SummonerService {
@@ -21,37 +24,49 @@ export class SummonerService {
     private readonly riotRequest: SummonerRiotRequest,
   ) {}
 
-  // async cleansingData(summonerName: string, summoner: SummonerDBResponseDTO) {
-  //   const history = await this.summonerHistory.historyDataCleansing(summonerName);
-  //   const summonerData = await this.summonerResponse.responseCleansing(summoner, history);
-  //   return summonerData;
-  // }
-
   async getSummoner(summonerName: string) {
     const summoner = await this.summonerRepository.getSummoner(summonerName);
     if (!summoner) {
-      await this.createSummoner(summonerName);
+      // await this.createSummoner(summonerName);
     }
-    const summonerDefaultDataDto =
-      SummonerDefaultDataDto.plainToSummonerDeafultDataDto(summoner);
-    console.log(summonerDefaultDataDto);
-    // return summonerDefaultDataDto;
+    const summonerDefaultDataDto = SummonerDefaultDataDto.plainToSummonerDeafultDataDto(summoner);
+
+    const recordSum: SummonerRecordSumData = await this.summonerRepository.getSummonerRecordSum(
+      summonerName,
+    );
+
+    const historyRateDto = SummonerHistoryRateDto.plainToSummonerHistoryRateDto(recordSum);
+
+    const position = await this.summonerRepository.getSummonerPositionRecord(summonerName);
+
+    const positions = SummonerPositionDto.plainToSummonerPositionDto(position);
+
+    const history = plainToInstance(SummonerHistoryRateDto, { ...historyRateDto, positions });
+
+    let recentChamp = await this.summonerRepository.getRecentChamp(summonerName);
+
+    let recentChampRate = [];
+    for (let r of recentChamp) {
+      recentChampRate.push(
+        ...(await this.summonerRepository.getRecentChampInfo(r.champId, r.count)),
+      );
+    }
+
+    console.log(recentChampRate);
+    // const recentChampDto = RecentChampDto.plainToRecentChampDto(recentChampInfo, recentChamp);
+
+    return { ...summonerDefaultDataDto, history };
   }
 
   private async createSummoner(summonerName: string) {
-    const createSummonerData = await this.riotRequest.requestRiotSummonerApi(
-      summonerName,
-    );
-    // await this.summonerRepository.createSummoner(createSummonerData);
+    const createSummonerData = await this.riotRequest.requestRiotSummonerApi(summonerName);
+    await this.summonerRepository.createSummoner(createSummonerData);
 
-    const createSummonerHistoryData =
-      await this.riotRequest.requestRiotSummonerHistoryApi(
-        summonerName,
-        createSummonerData.summonerPuuId,
-      );
-    // await this.summonerRepository.createSummonerHistory(
-    //   createSummonerHistoryData,
-    // );
+    const createSummonerHistoryData = await this.riotRequest.requestRiotSummonerHistoryApi(
+      summonerName,
+      createSummonerData.summonerPuuId,
+    );
+    await this.summonerRepository.createSummonerHistory(createSummonerHistoryData);
   }
 
   // async refreshSummonerData(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
@@ -92,19 +107,10 @@ export class SummonerService {
 
       const detailData = detailResponse.data;
 
-      let win: number,
-        lose: number,
-        winRate: number,
-        tier: string,
-        rank: string,
-        lp: number;
+      let win: number, lose: number, winRate: number, tier: string, rank: string, lp: number;
 
-      const soloRankInfo = detailData.find(
-        (ele) => ele.queueType === 'RANKED_SOLO_5x5',
-      );
-      const flexRankInfo = detailData.find(
-        (ele) => ele.queueType === 'RANKED_FLEX_SR',
-      );
+      const soloRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_SOLO_5x5');
+      const flexRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_FLEX_SR');
 
       if (soloRankInfo) {
         win = soloRankInfo.wins;
@@ -129,11 +135,7 @@ export class SummonerService {
         lp = 0;
       }
 
-      if (!detailData)
-        throw new HttpException(
-          '언랭크 소환사 입니다.',
-          HttpStatus.BAD_REQUEST,
-        );
+      if (!detailData) throw new HttpException('언랭크 소환사 입니다.', HttpStatus.BAD_REQUEST);
 
       let tierImg: string;
       switch (tier) {
@@ -190,8 +192,7 @@ export class SummonerService {
       );
 
       //유저 최근 전적 요청 부분
-      const getSummonerHistory =
-        await this.summonerRepository.getSummonerHistory(summonerName);
+      // const getSummonerHistory = await this.summonerRepository.getSummonerHistory(summonerName);
 
       // if (getSummonerHistory) {
       //   await this.summonerRepository.deleteSummonerHistory(summonerName);
@@ -250,10 +251,7 @@ export class SummonerService {
     } catch (err) {
       console.log(err);
       if (err.response.status === 429) {
-        throw new HttpException(
-          '라이엇API 요청 과도화',
-          HttpStatus.TOO_MANY_REQUESTS,
-        );
+        throw new HttpException('라이엇API 요청 과도화', HttpStatus.TOO_MANY_REQUESTS);
       } else if (err.response.status === 403) {
         throw new HttpException('라이엇API 키 만료', HttpStatus.FORBIDDEN);
       } else if (err.status === 400) {

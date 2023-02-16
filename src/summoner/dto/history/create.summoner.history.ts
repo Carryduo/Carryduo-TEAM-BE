@@ -1,4 +1,5 @@
 import { Transform } from 'class-transformer';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 
 const positionInfo = {
@@ -15,11 +16,9 @@ export class CreateSummonerHistoryDto {
   private readonly kill: number;
   private readonly death: number;
   private readonly assist: number;
-  private readonly champId: number;
+  private readonly champId: ChampEntity;
   @Transform(({ value }) =>
-    Number(
-      Object.keys(positionInfo).find((key) => positionInfo[key] === value),
-    ),
+    Number(Object.keys(positionInfo).find((key) => positionInfo[key] === value)),
   )
   private readonly position: number;
   private readonly summonerName: string;
