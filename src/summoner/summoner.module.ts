@@ -7,11 +7,18 @@ import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { SummonerController } from './summoner.controller';
 import { SummonerRepository } from './summoner.repository';
+import { SummonerRiotRequest } from './summoner.riot.request';
 import { SummonerService } from './summoner.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SummonerHistoryEntity, SummonerEntity, ChampEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      SummonerHistoryEntity,
+      SummonerEntity,
+      ChampEntity,
+    ]),
+  ],
   controllers: [SummonerController],
-  providers: [SummonerService, SummonerRepository, summonerResponseCleansing, SummonerHistoryDataCleansing],
+  providers: [SummonerService, SummonerRepository, SummonerRiotRequest],
 })
 export class SummonerModule {}
