@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 
 export class ChampCommonDTO {
   @ApiProperty({
@@ -35,4 +36,8 @@ export class ChampCommonDTO {
     required: true,
   })
   readonly champImg: string;
+
+  constructor(partial: Partial<ChampEntity>) {
+    Object.assign(this, partial);
+  }
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 export class PreferChampUsersResDTO {
   @ApiProperty({
@@ -28,4 +29,8 @@ export class PreferChampUsersResDTO {
     required: true,
   })
   readonly tier: number;
+
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

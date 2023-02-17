@@ -84,5 +84,5 @@ export class TargetChampionResDto {
     isArray: true,
     type: ChampSkillCommonDTO,
   })
-  readonly skill: ChampSkillCommonDTO[];
+  skill: ChampSkillCommonDTO[];
 }
