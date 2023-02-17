@@ -1,150 +1,93 @@
 import { CommentRepository } from './comments.repository';
-import { PostCommentDTO } from './dto/comment.request.dto';
+import { DeleteCommentRequestDto, GetCommentRequestDto, PostCommentRequestDto, UpdateCommentRequestDto, UpdateReportNumRequestDto } from './dto/comment.request.dto';
 import { Injectable, HttpException } from '@nestjs/common';
-import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
-import { CommentGetResponseDTO } from './dto/comment.response.dto';
+import { CommentGetResponseDto } from './dto/comment.response.dto';
 import { Brackets } from 'typeorm';
 
 @Injectable()
 export class CommentsService {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  async getComments(category: string, target: string): Promise<CommentGetResponseDTO[]> {
-    let option;
-    if (category === 'champ') {
-      option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
-      });
-    } else {
-      option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-          summonerName: target,
-        });
-      });
-    }
-    const data = await this.commentRepository.getComments(option);
-    return data;
-  }
-
-  // TODO: user dto
-  postComment(category: string, target: string, user: { userId: string; nickname: string; profileImg: string }, data: PostCommentDTO) {
-    let value, option;
-    if (category === 'champ') {
-      value = {
-        userId: user.userId,
-        category,
-        champId: target,
-        content: data.content,
-      };
-      option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
-      });
-    } else {
-      value = {
-        userId: user.userId,
-        category,
-        summonerName: target,
-        content: data.content,
-      };
-      option = new Brackets((qb) => {
-        qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-          summonerName: target,
-        });
-      });
-    }
-    return this.commentRepository.postComment(value, option, target);
-  }
-
-  async updateReportNum(id: string) {
+  async getComments(requestOption: GetCommentRequestDto): Promise<CommentGetResponseDto[]> {
     try {
-      const data = await this.commentRepository.updateReportNum(id);
+      const whereOption = this.commentRepository.createSelectOption(requestOption.toEntity());
+      const data = await this.commentRepository.getComments(whereOption);
+      return data.map((value) => {
+        return new CommentGetResponseDto(value);
+      });
+    } catch (err) {
+      console.log(err);
+      throw new HttpException('평판 조회 실패하였습니다', 400);
+    }
+  }
+
+  async postComment(requestOption: PostCommentRequestDto) {
+    try {
+      const whereOption = this.commentRepository.createSelectOption(requestOption.toEntity());
+      await this.commentRepository.postComment(requestOption.toEntity());
+      await this.commentRepository.setCommentCache(requestOption.category, requestOption.target, whereOption);
+      return;
+    } catch (err) {
+      console.log(err);
+      throw new HttpException('평판 등록 실패하였습니다', 400);
+    }
+  }
+
+  async updateContent(requestOption: UpdateCommentRequestDto) {
+    try {
+      const data = await this.commentRepository.updateContent(requestOption.toEntity());
       const category = data.category;
-      let target, option;
-      if (!data.champId) {
-        // interceptor를 통한 캐싱과 한글 인코딩 통일
-        target = encodeURI(String(data.summonerName.summonerName));
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-            summonerName: data.summonerName.summonerName,
-          });
-        });
-      } else {
+      let target: string;
+      // TODO: 테스트코드 반영
+      if (data.champId) {
         target = data.champId.id;
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
-        });
+      } else {
+        target = data.summonerName.summonerName;
       }
-      // 캐싱 적용
-      await this.commentRepository.setCommentCache(category, target, option);
-      return {
-        message: '평판 신고 완료되었습니다',
-        success: true,
-      };
+      const whereOption = this.commentRepository.createSelectOption(data);
+      await this.commentRepository.setCommentCache(category, target, whereOption);
+      return;
+    } catch (err) {
+      console.error(err);
+      throw new HttpException('평판 수정 실패하였습니다', 400);
+    }
+  }
+
+  async updateReportNum(requestOption: UpdateReportNumRequestDto) {
+    try {
+      const data = await this.commentRepository.updateReportNum(requestOption.toEntity());
+      const category = data.category;
+      let target: string;
+      // TODO: 테스트코드 반영
+      if (data.champId) {
+        target = data.champId.id;
+      } else {
+        target = data.summonerName.summonerName;
+      }
+      const whereOption = this.commentRepository.createSelectOption(data);
+      await this.commentRepository.setCommentCache(category, target, whereOption);
+      return;
     } catch (error) {
       throw new HttpException('평판 신고 실패하였습니다', 400);
     }
   }
 
-  async deleteComment(id: string, userId: string) {
+  async deleteComment(requestOption: DeleteCommentRequestDto) {
     try {
-      const data = await this.commentRepository.deleteComment(id, userId);
+      const data = await this.commentRepository.deleteComment(requestOption.toEntity());
       const category = data.category;
-      let target, option;
-      if (!data.champId) {
-        // interceptor를 통한 캐싱과 한글 인코딩 통일
-        target = encodeURI(String(data.summonerName.summonerName));
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-            summonerName: data.summonerName.summonerName,
-          });
-        });
-      } else {
+      let target: string;
+      // TODO: 테스트코드 반영
+      if (data.champId) {
         target = data.champId.id;
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
-        });
+      } else {
+        target = data.summonerName.summonerName;
       }
-
-      // 캐싱 적용
-      await this.commentRepository.setCommentCache(category, target, option);
-
-      return {
-        success: true,
-        message: '평판 삭제 완료되었습니다',
-      };
+      const whereOption = this.commentRepository.createSelectOption(data);
+      await this.commentRepository.setCommentCache(category, target, whereOption);
+      return;
     } catch (error) {
       throw new HttpException('평판 삭제 실패하였습니다', 400);
-    }
-  }
-
-  async updateContent(id: string, userId: string, content: string) {
-    try {
-      const data = await this.commentRepository.updateContent(id, userId, content);
-      const category = data.category;
-      let target, option;
-      if (!data.champId) {
-        // interceptor를 통한 캐싱과 한글 인코딩 통일
-        target = encodeURI(String(data.summonerName.summonerName));
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-            summonerName: data.summonerName.summonerName,
-          });
-        });
-      } else {
-        target = data.champId.id;
-        option = new Brackets((qb) => {
-          qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: target });
-        });
-      }
-      // 캐싱 적용
-      await this.commentRepository.setCommentCache(category, target, option);
-      return {
-        success: true,
-        message: '평판 수정 완료되었습니다',
-      };
-    } catch (err) {
-      console.error(err);
-      throw new HttpException('평판 수정 실패하였습니다', 400);
     }
   }
 }

@@ -78,17 +78,19 @@ export class SummonerEntity extends CommonEntity {
   ])
   mostChamp3: ChampEntity;
 
-  @OneToMany(
-    () => SubscriptionEntity,
-    (subscription: SubscriptionEntity) => subscription.summonerName,
-    {
-      cascade: true,
-    },
-  )
+  @OneToMany(() => SubscriptionEntity, (subscription: SubscriptionEntity) => subscription.summonerName, {
+    cascade: true,
+  })
   subscription: SubscriptionEntity;
 
   @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {
     cascade: true,
   })
   comment: CommentEntity;
+
+  static createSummonerNameOption(summonerName: string) {
+    const summoner = new SummonerEntity();
+    summoner.summonerName = summonerName;
+    return summoner;
+  }
 }

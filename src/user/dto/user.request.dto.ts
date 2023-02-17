@@ -1,7 +1,7 @@
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../..//user/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { ChampEntity } from '../..//champ/entities/champ.entity';
 import { IsBoolean, IsNumber, IsString, IsOptional, IsUUID, IsNotEmpty } from 'class-validator';
 
 export class GetOtherUserInfoRequestDto {
@@ -151,13 +151,10 @@ export class UpdateUserOptionRequestDto {
     return new UpdateUserOptionRequestDto(userId, body);
   }
 
-  toEntity() {
-    const champ1 = new ChampEntity();
-    const champ2 = new ChampEntity();
-    const champ3 = new ChampEntity();
-    champ1.id = this._preferChamp1;
-    champ2.id = this._preferChamp2;
-    champ3.id = this._preferChamp3;
+  toEntity(): UserEntity {
+    const champ1 = ChampEntity.createChampIdOption(this._preferChamp1);
+    const champ2 = ChampEntity.createChampIdOption(this._preferChamp2);
+    const champ3 = ChampEntity.createChampIdOption(this._preferChamp3);
     return UserEntity.createUpdateOption({
       userId: this._userId,
       nickname: this._nickname,
