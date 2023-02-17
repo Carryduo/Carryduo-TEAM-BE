@@ -27,7 +27,7 @@ export class CommonResponseDto {
     description: 'API 요청 응답 메시지',
   })
   @Expose()
-  getmessage() {
+  get message() {
     return this._message;
   }
 }
