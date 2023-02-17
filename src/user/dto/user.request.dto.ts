@@ -78,7 +78,7 @@ export class UpdateUserOptionRequestBodyDto {
     description: '선호챔피언1',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
   preferChamp1?: string | null;
 
@@ -87,7 +87,7 @@ export class UpdateUserOptionRequestBodyDto {
     description: '선호챔피언1',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
   preferChamp2?: string | null;
 
@@ -96,7 +96,7 @@ export class UpdateUserOptionRequestBodyDto {
     description: '선호챔피언1',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
   preferChamp3?: string | null;
 }
