@@ -15,20 +15,13 @@ const spellInfo = {
 };
 
 export class GetChampRateDto {
-  winRate: string = null;
-  pickRate: string = null;
-  spell1: number = null;
-  spell2: number = null;
-  version: string = null;
-  static transformDto(data: GetChampRateDto | null) {
-    const champRate = new GetChampRateDto();
-    if (!data) return champRate;
-    champRate.winRate = data.winRate;
-    champRate.pickRate = data.pickRate;
-    champRate.spell1 = data.spell1;
-    champRate.spell2 = data.spell2;
-    champRate.version = data.version;
-    return champRate;
+  readonly winRate: string = null;
+  readonly pickRate: string = null;
+  readonly spell1: number = null;
+  readonly spell2: number = null;
+  readonly version: string = null;
+  constructor(partial: Partial<GetChampRateDto>) {
+    if (partial) Object.assign(this, partial);
   }
 }
 
