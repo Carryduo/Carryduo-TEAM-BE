@@ -11,12 +11,10 @@ import * as responseData from './data/champ.target.response';
 import * as champData from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { ChampRateDataDto, GetChampRateDto } from '../dto/champ-rate/champ.rate.dto';
-import { ChampSkillCommonDTO } from '../dto/champ-skill/champ.skill.common.dto';
+import { GetChampRateDto } from '../dto/champ-rate/champ.rate.dto';
 import { plainToInstance } from 'class-transformer';
-import { ChampBanRateDto } from '../dto/champ-ban/champ.ban.common.dto';
-import { TargetChampionResDto } from '../dto/target-champion/target.response.dto';
 import { GetMostPositionDto } from '../dto/champ-position/champ.most.position.dto';
+import { champDtoFactory } from '../champ.dto.factory';
 
 class MockRepository {
   getChampList() {
@@ -45,9 +43,7 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [
-      champPositionInfo.find((v) => v.champId === champId && v.version === version),
-    ];
+    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
     return mostPosition;
   }
 
@@ -77,12 +73,14 @@ class MockChache {}
 describe('ChampService', () => {
   let service: ChampService;
   let repository: ChampRepository;
+  let dto: champDtoFactory;
   const env = process.env;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChampService,
+        champDtoFactory,
         { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
@@ -97,6 +95,7 @@ describe('ChampService', () => {
 
     service = module.get<ChampService>(ChampService);
     repository = module.get<ChampRepository>(ChampRepository);
+    dto = module.get<champDtoFactory>(champDtoFactory);
     jest.resetModules();
     process.env = { ...env, S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img` };
   });
@@ -154,22 +153,16 @@ describe('ChampService', () => {
       default: 'default position',
     };
 
-    let getMostPosition = jest
-      .spyOn(repository, 'getMostPosition')
-      .mockImplementation(async (champId: string, version: string) => {
-        const positionInfo = [
-          { champId: '1', position: 'JUNGLE', version: '13.1.' },
-          { champId: '1', position: 'TOP', version: '12.1' },
-        ];
-        const MostPosition = [
-          positionInfo.find((v) => v.champId === champId && v.version === version),
-        ];
-        return MostPosition;
-      });
+    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
+      const positionInfo = [
+        { champId: '1', position: 'JUNGLE', version: '13.1.' },
+        { champId: '1', position: 'TOP', version: '12.1' },
+      ];
+      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
+      return MostPosition;
+    });
     let positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    let getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    let getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
     expect(getMostPosition).toBeCalledTimes(1);
     expect(getPosition[0].position).toBe('JUNGLE');
 
@@ -177,9 +170,7 @@ describe('ChampService', () => {
     const Param2 = Param;
     Param2.position = 'mid';
     positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -203,23 +194,19 @@ describe('ChampService', () => {
     });
 
     const champRate: GetChampRateDto[] = champData.JUNGLE;
-
-    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const champRateDto = await dto.createChampRate(champRate);
 
     const champDefaultData = champData.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const skillInfo = champData.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+    const banInfo = { banRate: '0.2' };
+    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
+    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
+
     const result = await service.getTargetChampion(param);
 
     expect(result).toEqual(response);
@@ -230,26 +217,24 @@ describe('ChampService', () => {
       champId: '1',
       position: 'mid',
     };
-    const { position } = plainToInstance(GetMostPositionDto, { position: 'MIDDLE' });
+
+    const champPosition = 'MIDDLE';
+
+    const { position } = await dto.createChampMostPosition(champPosition);
 
     const champRate: GetChampRateDto[] = champData.MIDDLE;
-
-    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const champRateDto = await dto.createChampRate(champRate);
 
     const champDefaultData = champData.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const skillInfo = champData.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+    const banInfo = { banRate: '0.2' };
+    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
+    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
   });
@@ -259,32 +244,25 @@ describe('ChampService', () => {
       champId: '2',
       position: 'default',
     };
-    const { position } = plainToInstance(GetMostPositionDto, { position: null });
+    const champPosition = null;
+
+    const { position } = await dto.createChampMostPosition(champPosition);
 
     const champRate: GetChampRateDto[] = champData.DEFAULT;
-
-    const createChampRateDto =
-      champRate.length === 0
-        ? [GetChampRateDto.transformDto(null)]
-        : champRate.map((v) => GetChampRateDto.transformDto(v));
-
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const champRateDto = await dto.createChampRate(champRate);
 
     const champDefaultData = champData.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const skillInfo = champData.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+    const banInfo = { banRate: '0.2' };
+    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
-
+    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
     const result = await service.getTargetChampion(Param);
+
     expect(result).toEqual(response);
   });
 });
