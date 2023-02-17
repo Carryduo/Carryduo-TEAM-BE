@@ -1,13 +1,15 @@
 import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete, Patch, ParseUUIDPipe, HttpException, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
+import { HttpCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
 import { User } from '../common/decorators/user.decorator';
-import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { CommentsService } from './comments.service';
-import { PostCommentDTO } from './dto/comment.request.dto';
-import { CommentGetResponseDTO } from './dto/comment.response.dto';
-import { CommentCategoryPipe } from './pipes/comment.param.validation.pipe';
+import { CommentParamDto, CommentBodyDto } from './dto/comment.request.dto';
+import { CommentGetResponseDto } from './dto/comment.response.dto';
+import { CommentParamPipe } from './pipes/comment.param.validation.pipe';
 
 @Controller('comments')
 @ApiTags('comment')
@@ -31,20 +33,12 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 조회 응답 예시',
-    type: CommentGetResponseDTO,
+    type: CommentGetResponseDto,
   })
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(HttpCacheInterceptor)
   @Get('/:category/:target')
-  getComments(@Param('category', CommentCategoryPipe) category: string, @Param('target') target: string) {
-    if (isNaN(Number(target))) {
-      if (category === 'champ') {
-        throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
-      }
-    } else if (category === 'summoner') {
-      throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
-    }
-
-    return this.commentService.getComments(category, target);
+  getComments(@Param(CommentParamPipe) param: CommentParamDto): Promise<CommentGetResponseDto[]> {
+    return this.commentService.getComments(param.toGetCommentRequestDto());
   }
 
   @ApiOperation({ summary: '평판 등록' })
@@ -64,37 +58,13 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 등록 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Post('/:category/:target')
   @UseGuards(jwtGuard)
-  postComment(@Param('category', CommentCategoryPipe) category: string, @Param('target') target: string, @User() user, @Body() body: PostCommentDTO) {
-    if (isNaN(Number(target))) {
-      if (category === 'champ') {
-        throw new HttpException(`${target}은 챔피언 평판 타겟이 아닙니다`, 400);
-      }
-    } else if (category === 'summoner') {
-      throw new HttpException(`${target}은 소환사 평판 타겟이 아닙니다`, 400);
-    }
-    return this.commentService.postComment(category, target, user, body);
-  }
-
-  @ApiOperation({ summary: '평판 신고' })
-  @ApiParam({
-    name: 'id',
-    required: true,
-    description: '평판 고유 ID',
-  })
-  @ApiBearerAuth('authorization')
-  @ApiResponse({
-    status: 200,
-    description: '평판 신고 성공',
-    type: CommonResponseDTO,
-  })
-  @Patch('/report/:id')
-  @UseGuards(jwtGuard)
-  updateReportNum(@Param('id', ParseUUIDPipe) id) {
-    return this.commentService.updateReportNum(id);
+  async postComment(@Param(CommentParamPipe) param: CommentParamDto, @User() user: LoginResponseDto, @Body() body: CommentBodyDto) {
+    await this.commentService.postComment(user.toPostCommentRequestDto(param.category, param.target, body.content));
+    return new CommonResponseDto(true, '평판 업로드 완료했습니다');
   }
 
   @ApiOperation({ summary: '평판 수정' })
@@ -107,13 +77,32 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 수정 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
-  updateContent(@Param('id', ParseUUIDPipe) id, @User() user, @Body() body: PostCommentDTO) {
-    const userId = user.userId;
-    return this.commentService.updateContent(id, userId, body.content);
+  async updateContent(@Param('id', ParseUUIDPipe) id, @User() user: LoginResponseDto, @Body() body: CommentBodyDto) {
+    await this.commentService.updateContent(user.toUpdateCommentRequestDto(id, body.content));
+    return new CommonResponseDto(true, '평판 수정 완료되었습니다');
+  }
+
+  @ApiOperation({ summary: '평판 신고' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: '평판 고유 ID',
+  })
+  @ApiBearerAuth('authorization')
+  @ApiResponse({
+    status: 200,
+    description: '평판 신고 성공',
+    type: CommonResponseDto,
+  })
+  @Patch('/report/:id')
+  @UseGuards(jwtGuard)
+  async updateReportNum(@Param('id', ParseUUIDPipe) commentId: string, @User() user: LoginResponseDto): Promise<CommonResponseDto> {
+    await this.commentService.updateReportNum(user.toUpdateCommentReportNumRequestDto(commentId));
+    return new CommonResponseDto(true, '평판 신고 완료되었습니다');
   }
 
   @ApiOperation({ summary: '평판 삭제' })
@@ -126,12 +115,12 @@ export class CommentsController {
   @ApiResponse({
     status: 200,
     description: '평판 삭제 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)
-  deleteComment(@Param('id', ParseUUIDPipe) id, @User() user) {
-    const userId = user.userId;
-    return this.commentService.deleteComment(id, userId);
+  async deleteComment(@Param('id', ParseUUIDPipe) commentId: string, @User() user: LoginResponseDto): Promise<CommonResponseDto> {
+    await this.commentService.deleteComment(user.toDeleteCommentRequestDto(commentId));
+    return new CommonResponseDto(true, '평판 삭제 완료되었습니다');
   }
 }

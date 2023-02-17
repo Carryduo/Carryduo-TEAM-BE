@@ -1,10 +1,9 @@
+import { PickType } from '@nestjs/swagger';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entities/user.entity';
-import { kakaoPayload } from './dto/kakao.payload';
 import { CommentEntity } from '../comments/entities/comments.entity';
-import { UserRepositoryBasicInfoResponseDto, UserRepositoryFirstLoginInfoResponseDto } from 'src/user/dto/user.repository.dto';
 
 // TODO: SELECT의 경우, RETURN 값을 보내주기
 @Injectable()
@@ -17,37 +16,28 @@ export class AdminRepository {
     private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
-  async checkUser(data: kakaoPayload): Promise<UserRepositoryFirstLoginInfoResponseDto> {
+  async checkUser(data: UserEntity): Promise<{ userId: string; nickname: string }> {
     const { socialId, social } = data;
-    const user = await this.usersRepository.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
-    if (user === null) return null;
-    return new UserRepositoryFirstLoginInfoResponseDto(user);
+    return await this.usersRepository.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
   }
 
-  async createUser(data: kakaoPayload): Promise<UserRepositoryFirstLoginInfoResponseDto> {
-    const { socialId, social } = data;
-    let newUser;
+  async createUser(data: UserEntity): Promise<{ userId: string; nickname: string }> {
+    const { social, socialId } = data;
+    let newUser: UserEntity;
     await this.usersRepository.manager.transaction(async (transactionalEntityManager) => {
-      await this.usersRepository
-        .createQueryBuilder()
-        .insert()
-        .into(UserEntity)
-        .values({
-          ...data,
-        })
-        .execute();
+      await this.usersRepository.createQueryBuilder().insert().into(UserEntity).values(data).execute();
       newUser = await transactionalEntityManager.createQueryBuilder().select(['USER.userId', 'USER.nickname']).from(UserEntity, 'USER').where('USER.socialId = :socialId', { socialId }).andWhere('USER.social = :social', { social }).getOne();
     });
 
-    return new UserRepositoryFirstLoginInfoResponseDto(newUser);
+    return newUser;
   }
 
-  async findById(userId: string): Promise<UserRepositoryBasicInfoResponseDto> {
-    return new UserRepositoryBasicInfoResponseDto(await this.usersRepository.createQueryBuilder('user').select(['user.userId', 'user.nickname', 'user.profileImg']).where('user.userId = :userId', { userId }).getOne());
+  async findById(userId: string): Promise<UserEntity> {
+    return await this.usersRepository.createQueryBuilder('user').select(['user.userId', 'user.nickname', 'user.profileImg']).where('user.userId = :userId', { userId }).getOne();
   }
 
-  async deleteUser(userId: string) {
-    await this.usersRepository.createQueryBuilder().delete().from(UserEntity).where('userId = :userId', { userId }).execute();
+  async deleteUser(option: UserEntity) {
+    await this.usersRepository.createQueryBuilder().delete().from(UserEntity).where('userId = :userId', option).execute();
     return;
   }
 

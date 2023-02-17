@@ -4,13 +4,12 @@ import { ChampEntity } from '../../champ/entities/champ.entity';
 import { SubscriptionEntity } from '../../subscription/entities/subscription.entity';
 import { CommentEntity } from '../../comments/entities/comments.entity';
 import { SummonerHistoryEntity } from './summoner.history.entity';
-import { OmitType } from '@nestjs/swagger';
 
 @Entity({
   name: 'SUMMONER',
 })
-export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
-  @PrimaryColumn({ name: 'summonerName', type: 'varchar' })
+export class SummonerEntity extends CommonEntity {
+  @Column({ name: 'summonerName', unique: true, type: 'varchar' })
   summonerName: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -39,6 +38,9 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
 
   @Column({ type: 'int', nullable: false })
   winRate: number;
+
+  @OneToMany(() => SummonerHistoryEntity, (history: SummonerHistoryEntity) => history.summonerName)
+  history: SummonerHistoryEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -85,4 +87,10 @@ export class SummonerEntity extends OmitType(CommonEntity, ['id'] as const) {
     cascade: true,
   })
   comment: CommentEntity;
+
+  static createSummonerNameOption(summonerName: string) {
+    const summoner = new SummonerEntity();
+    summoner.summonerName = summonerName;
+    return summoner;
+  }
 }

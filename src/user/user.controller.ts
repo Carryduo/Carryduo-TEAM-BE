@@ -4,10 +4,11 @@ import { Get, UseGuards, UseFilters, Param, Body, ParseUUIDPipe } from '@nestjs/
 import { jwtGuard } from '../admin/jwt/jwt.guard';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
-import { UserBasicInfoResponseDTO, UserSpecificInfoResponseDTO } from './dto/user.response.dto';
-import { OptionRequestDTO } from './dto/user.request.dto';
-import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { GetOtherUserInfoRequestDto, GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto } from './dto/user.request.dto';
+import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
+import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
+import { UserInfoResponseDto } from './dto/user.response.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -20,17 +21,17 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '유저 기본 정보 조회',
-    type: UserBasicInfoResponseDTO,
+    type: UserInfoResponseDto,
   })
   @ApiResponse({
     status: 404,
     description: '유저 정보를 불러오지 못했습니다.',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Get()
   @UseGuards(jwtGuard)
-  async getLoginUserInfo(@User() user): Promise<UserBasicInfoResponseDTO> {
-    return this.userService.getUserInfo('login', user.userId);
+  async getLoginUserInfo(@User() user: LoginResponseDto): Promise<UserInfoResponseDto> {
+    return this.userService.getUserInfo(user.toGetOwnInfoRequestDto('login'));
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 조회' })
@@ -38,12 +39,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '설정 페이지 데이터 조회',
-    type: UserSpecificInfoResponseDTO,
+    type: UserInfoResponseDto,
   })
   @Get('/option')
   @UseGuards(jwtGuard)
-  async getLoginUserOptionInfo(@User() user): Promise<UserSpecificInfoResponseDTO> {
-    return this.userService.getUserInfo('option', user.userId);
+  async getLoginUserOptionInfo(@User() user: LoginResponseDto): Promise<UserInfoResponseDto> {
+    return this.userService.getUserInfo(user.toGetOwnInfoRequestDto('option'));
   }
 
   @ApiOperation({ summary: '설정 페이지 데이터 업데이트' })
@@ -51,12 +52,13 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '설정 페이지 데이터 업데이트 성공',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Post('/option')
   @UseGuards(jwtGuard)
-  async updateUserOptionInfo(@User() user, @Body() body: OptionRequestDTO): Promise<CommonResponseDTO> {
-    return this.userService.updateUserOptionInfo(user.userId, body);
+  async updateUserOptionInfo(@User() user: LoginResponseDto, @Body() body: UpdateUserOptionRequestBodyDto): Promise<CommonResponseDto> {
+    await this.userService.updateUserOptionInfo(user.toUpdateOptionRequestDto(body));
+    return new CommonResponseDto(true, '설정 변경 완료되었습니다');
   }
 
   @ApiOperation({ summary: '특정 유저 정보 조회' })
@@ -68,10 +70,10 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '유저 상세 정보 조회',
-    type: UserSpecificInfoResponseDTO,
+    type: UserInfoResponseDto,
   })
   @Get('/:id')
-  async getIndividualUserInfo(@Param('id', ParseUUIDPipe) param: string): Promise<UserSpecificInfoResponseDTO> {
-    return this.userService.getUserInfo('individual', param);
+  async getIndividualUserInfo(@Param() user: GetOtherUserInfoRequestDto): Promise<UserInfoResponseDto> {
+    return this.userService.getUserInfo(user.toGetUserInfoRequestDto('individual'));
   }
 }

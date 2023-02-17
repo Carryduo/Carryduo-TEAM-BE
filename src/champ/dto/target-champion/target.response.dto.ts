@@ -1,50 +1,88 @@
-import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { UpdateChampRateCommonDTO } from '../champ-rate/champ.rate.common.dto';
-import { ChampSkillDTO } from '../champ-skill/champ.skill.common.dto';
-import { ChampDto } from '../champ/champ.common.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { ChampSkillCommonDTO } from '../champ-skill/champ.skill.common.dto';
 
-export class TargetChampionResDto extends IntersectionType(OmitType(ChampDto, ['champMainImg'] as const), PickType(UpdateChampRateCommonDTO, ['position', 'version'] as const)) {
+export class TargetChampionResDto {
   @ApiProperty({
-    example: '30.77',
-    description: '챔피언 승률',
+    example: 86,
+    description: '챔피언 고유 ID',
     required: true,
   })
-  @Expose()
-  winRate: number;
+  readonly id: string;
 
   @ApiProperty({
-    example: '0.25',
-    description: '챔피언 밴률',
+    example: '가렌',
+    description: '챔피언 한글 이름',
     required: true,
   })
-  banRate: number;
+  readonly champNameKo: string;
 
   @ApiProperty({
-    example: '3.27',
-    description: '챔피언 픽률',
+    example: 'Garen',
+    description: '챔피언 영문 이름',
     required: true,
   })
-  pickRate: number;
+  readonly champNameEn: string;
 
   @ApiProperty({
     example: 'example.png',
-    description: '스펠 1 이미지',
+    description: '챔피언 이미지 url',
     required: true,
   })
-  spell1Img: string;
+  readonly champImg: string;
 
   @ApiProperty({
-    example: 'example.png',
-    description: '스펠 2 이미지',
+    example: 48.45,
+    description: '승률',
     required: true,
   })
-  spell2Img: string;
+  readonly winRate: number;
+
+  @ApiProperty({
+    example: 13.2,
+    description: '밴 비율',
+    required: true,
+  })
+  readonly banRate: number;
+
+  @ApiProperty({
+    example: 8.19,
+    description: '픽률',
+    required: true,
+  })
+  readonly pickRate: number;
+
+  @ApiProperty({
+    example: 'spell1 image.png',
+    description: '첫번째 스펠이미지',
+    required: true,
+  })
+  readonly spell1Img: string;
+
+  @ApiProperty({
+    example: 'spell2 image.png',
+    description: '두번째 스펠이미지',
+    required: true,
+  })
+  readonly spell2Img: string;
+
+  @ApiProperty({
+    example: '13.3.',
+    description: '버전 정보',
+    required: true,
+  })
+  readonly version: string;
+
+  @ApiProperty({
+    example: 'BOTTOM',
+    description: '포지션',
+    required: true,
+  })
+  readonly position: string;
 
   @ApiProperty({
     description: '챔피언 스킬 정보',
     isArray: true,
-    type: ChampSkillDTO,
+    type: ChampSkillCommonDTO,
   })
-  skill: ChampSkillDTO[];
+  readonly skill: ChampSkillCommonDTO[];
 }

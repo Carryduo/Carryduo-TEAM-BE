@@ -1,4 +1,4 @@
-import { UserRepositoryFirstLoginInfoResponseDto } from 'src/user/dto/user.repository.dto';
+import { FirstLoginRequestDto, DeleteUserReqeustDto } from './../dto/admin.request.dto';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from 'src/user/user.repository';
@@ -99,10 +99,10 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'checkUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
+          resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(loginData);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);
@@ -118,10 +118,10 @@ describe('AdminService', () => {
     jest.spyOn(adminRepository, 'createUser').mockImplementation(
       (data) =>
         new Promise((resolve) => {
-          resolve(new UserRepositoryFirstLoginInfoResponseDto({ userId: 'sampleId', nickname: data.nickname }));
+          resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(loginData);
+    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);
@@ -166,13 +166,13 @@ describe('AdminService', () => {
     const preferChamp1 = 1;
     const preferChamp2 = 2;
     const preferChamp3 = 3;
-    jest.spyOn(userRepository, 'findPreferchamps').mockImplementation(
-      (userId) =>
-        new Promise((resolve) => {
-          resolve({ preferChamp1, preferChamp2, preferChamp3 });
-        }),
-    );
-
+    userRepository.findPreferchamps = jest.fn().mockImplementation((userId) => {
+      return {
+        preferChamp1,
+        preferChamp2,
+        preferChamp3,
+      };
+    });
     // user의 preferChamp 목록 캐싱 제거
     jest.spyOn(champRepository, 'delPreferChampCache').mockImplementation(
       (pcl) =>
@@ -197,12 +197,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserReqeustDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserReqeustDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -220,12 +220,13 @@ describe('AdminService', () => {
     const preferChamp1 = 1;
     const preferChamp2 = 2;
     const preferChamp3 = 3;
-    jest.spyOn(userRepository, 'findPreferchamps').mockImplementation(
-      (userId) =>
-        new Promise((resolve) => {
-          resolve({ preferChamp1, preferChamp2, preferChamp3 });
-        }),
-    );
+    userRepository.findPreferchamps = jest.fn().mockImplementation((userId) => {
+      return {
+        preferChamp1,
+        preferChamp2,
+        preferChamp3,
+      };
+    });
 
     // user의 preferChamp 목록 캐싱 제거
     jest.spyOn(champRepository, 'delPreferChampCache').mockImplementation(
@@ -251,12 +252,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserReqeustDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserReqeustDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -298,16 +299,13 @@ describe('AdminService', () => {
     );
 
     // user의 preferChamp 가져오기
-    jest.spyOn(userRepository, 'findPreferchamps').mockImplementation(
-      (userId) =>
-        new Promise((resolve) => {
-          resolve({
-            preferChamp1: null,
-            preferChamp2: null,
-            preferChamp3: null,
-          });
-        }),
-    );
+    userRepository.findPreferchamps = jest.fn().mockImplementation((userId) => {
+      return {
+        preferChamp1: null,
+        preferChamp2: null,
+        preferChamp3: null,
+      };
+    });
 
     // 유저 삭제
     jest.spyOn(adminRepository, 'deleteUser').mockImplementation(
@@ -325,12 +323,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserReqeustDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserReqeustDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
@@ -347,16 +345,13 @@ describe('AdminService', () => {
     );
 
     // user의 preferChamp 가져오기
-    jest.spyOn(userRepository, 'findPreferchamps').mockImplementation(
-      (userId) =>
-        new Promise((resolve) => {
-          resolve({
-            preferChamp1: null,
-            preferChamp2: null,
-            preferChamp3: null,
-          });
-        }),
-    );
+    userRepository.findPreferchamps = jest.fn().mockImplementation((userId) => {
+      return {
+        preferChamp1: null,
+        preferChamp2: null,
+        preferChamp3: null,
+      };
+    });
 
     // 유저 삭제
     jest.spyOn(adminRepository, 'deleteUser').mockImplementation(
@@ -366,12 +361,12 @@ describe('AdminService', () => {
         }),
     );
 
-    expect(await service.deleteUser(userId)).toEqual({
+    expect(await service.deleteUser(new DeleteUserReqeustDto(userId))).toEqual({
       success: true,
       message: '회원 탈퇴 완료되었습니다',
     });
     try {
-      await service.deleteUser(userId);
+      await service.deleteUser(new DeleteUserReqeustDto(userId));
     } catch (error) {
       expect(error.message).toEqual('회원 탈퇴에 실패했습니다.');
     }
