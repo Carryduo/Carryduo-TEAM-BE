@@ -1,31 +1,28 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import { champDtoFactory } from './champ.dto.factory';
 import { ChampRepository } from './champ.repository';
-import { ChampBanRateDto } from './dto/champ-ban/champ.ban.common.dto';
-import { GetMostPositionDto, positionList } from './dto/champ-position/champ.most.position.dto';
-import { ChampRateDataDto, GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
-import { ChampSkillCommonDTO, SkillSet } from './dto/champ-skill/champ.skill.common.dto';
+import { positionList } from './dto/champ-position/champ.most.position.dto';
+import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
-import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
 @Injectable()
 export class ChampService {
-  constructor(private readonly champRepository: ChampRepository) {}
+  constructor(private readonly champRepository: ChampRepository, private readonly champDto: champDtoFactory) {}
 
   async getChampList(): Promise<ChampCommonDTO[]> {
     const champList = await this.champRepository.getChampList();
-    return plainToInstance(ChampCommonDTO, champList);
+    return await this.champDto.createChampList(champList);
   }
 
   async getPreferChampUsers(champId: string): Promise<PreferChampUsersResDTO[] | []> {
     const users = await this.champRepository.findPreferChampUsers(champId);
-    return plainToInstance(PreferChampUsersResDTO, users);
+    return await this.champDto.createPreferChampUserList(users);
   }
 
   //TODO: 스펠 이미지 추가
-  async getTargetChampion(param: TargetChampionReqDTO): Promise<TargetChampionResDto> {
+  async getTargetChampion(param: TargetChampionReqDTO) {
     const existChamp = await this.champRepository.existChamp(param.champId);
     if (!existChamp) {
       throw new HttpException('해당하는 챔피언 정보가 없습니다.', HttpStatus.BAD_REQUEST);
@@ -42,23 +39,21 @@ export class ChampService {
 
     //default 파라미터인 경우 모스트 포지션 값 할당 or DB에 있는 포지션명 할당
     const champPosition = !positionDbName ? getPosition[0]?.position : getPosition;
-    const { position } = plainToInstance(GetMostPositionDto, { position: champPosition });
+    const { position } = await this.champDto.createChampMostPosition(champPosition);
 
     const champRate: GetChampRateDto[] | [] = await this.champRepository.getChampRate(param.champId, champPosition, rateLatestVersions[0]);
+    const champRateDto = await this.champDto.createChampRate(champRate);
 
-    //배열 형식으로 dto return
-    const createChampRateDto = champRate.length === 0 ? [GetChampRateDto.transformDto(null)] : champRate.map((v) => GetChampRateDto.transformDto(v));
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const champData = await this.champRepository.getChampDefaultData(param.champId);
+    const champDataDto = await this.champDto.createChampData(champData);
 
-    const champDefaultData: ChampCommonDTO = await this.champRepository.getChampDefaultData(param.champId);
-
-    const skillInfo: SkillSet[] = await this.champRepository.getSkillData(param.champId);
-    const skill = skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const skillInfo = await this.champRepository.getSkillData(param.champId);
+    const skill = await this.champDto.createSkill(skillInfo);
 
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: banInfo?.banRate });
+    const { banRate } = await this.champDto.createBanRate(banInfo?.banRate);
 
-    return plainToInstance(TargetChampionResDto, { ...champDefaultData, skill, position, banRate, ...champRateData[0] });
+    return await this.champDto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {
