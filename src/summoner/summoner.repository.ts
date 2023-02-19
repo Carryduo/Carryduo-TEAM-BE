@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { Cache } from 'cache-manager';
+import { SummonerRecordSumData } from './dto/summoner/history/history.rate.dto';
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
-import { SummonerAllDataDTO, SummonerDataDTO } from './dto/summoner/summoner.data.dto';
-import { SummonerRecordSumData } from './dto/history/summoner.record.dto';
+import { RecentChampDto } from './dto/summoner/history/history.recent.champ.dto';
+import { SummonerPositionDto } from './dto/summoner/history/history.position.dto';
 
 export class SummonerRepository {
   constructor(
@@ -21,12 +22,19 @@ export class SummonerRepository {
     private cacheManager: Cache,
   ) {}
 
-  async cacheSummoner(summonerName: string, data: SummonerAllDataDTO | SummonerDataDTO) {
-    await this.cacheManager.set(`/summoner/${summonerName}`, data);
+  // async cacheSummoner(summonerName: string, data: SummonerAllDataDTO | SummonerDataDTO) {
+  //   await this.cacheManager.set(`/summoner/${summonerName}`, data);
+  // }
+
+  async existSummoner(summonerName: string): Promise<SummonerEntity> {
+    return await this.summonerRepository
+      .createQueryBuilder()
+      .where('summonerName = :summonerName', { summonerName })
+      .getRawOne();
   }
 
-  async getSummoner(summonerName: string) {
-    const summoner = await this.summonerRepository
+  async getSummoner(summonerName: string): Promise<SummonerEntity> {
+    return await this.summonerRepository
       .createQueryBuilder('summoner')
       .leftJoinAndSelect('summoner.mostChamp1', 'most1')
       .leftJoinAndSelect('summoner.mostChamp2', 'most2')
@@ -56,7 +64,6 @@ export class SummonerRepository {
       ])
       .where('summoner.summonerName = :summonerName', { summonerName })
       .getOne();
-    return summoner;
   }
 
   async getSummonerRecordSum(summonerName: string): Promise<SummonerRecordSumData> {
@@ -72,7 +79,7 @@ export class SummonerRepository {
       .getRawOne();
   }
 
-  async getSummonerPositionRecord(summonerName: string) {
+  async getSummonerPositionRecord(summonerName: string): Promise<SummonerPositionDto[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerName = :summonerName', { summonerName })
@@ -83,7 +90,7 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChamp(summonerName: string) {
+  async getRecentChamp(summonerName: string): Promise<{ count: string; champId: string }[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerName = :summonerName', { summonerName })
@@ -94,20 +101,35 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChampInfo(champId: string, total: string) {
+  async getRecentChampRate(champId: string, summonerName: string): Promise<RecentChampDto> {
     return await this.historyRepository
       .createQueryBuilder('history')
       .leftJoinAndSelect('history.champId', 'champ')
-      .select(['SUM(win) recentChampWin', 'champ.id', 'champ.champNameKo', 'champ.champImg'])
-      .where('history.champId = :champId', { champId })
-      .getRawMany();
+      .select([
+        'champ.id recentChampId',
+        'champ.champNameKo recentChampName',
+        'champ.champImg recentChampImg',
+      ])
+      .addSelect('SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END)', 'recentChampWin')
+      .addSelect('SUM(CASE WHEN history.win = 0 THEN 1 ELSE 0 END)', 'recentChampLose')
+      .addSelect(
+        'SUM(CASE WHEN history.win = 0 THEN 1 WHEN history.win = 1 THEN 1 ELSE 0 END)',
+        'recentChampTotal',
+      )
+      .addSelect(
+        'SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END) / SUM(CASE WHEN history.win = 0 THEN 1 WHEN history.win = 1 THEN 1 ELSE 0 END) * 100',
+        'recentChampRate',
+      )
+      .where('history.summonerName = :summonerName', { summonerName })
+      .andWhere('history.champId = :champId', { champId })
+      .getRawOne();
   }
 
   async createSummoner(summoner: SummonerEntity) {
     await this.summonerRepository.createQueryBuilder().insert().values(summoner).execute();
   }
-  async createSummonerHistory(data: SummonerHistoryEntity[]) {
-    return this.historyRepository.createQueryBuilder().insert().values(data).execute();
+  async createSummonerHistory(history: SummonerHistoryEntity[]) {
+    return this.historyRepository.createQueryBuilder().insert().values(history).execute();
   }
 
   async updateSummoner(summonerInfo: SummonerRequestDTO) {
@@ -121,109 +143,7 @@ export class SummonerRepository {
       .execute();
   }
 
-  //-------------------------------------------------------------------------------//
-
-  //summoner 최근 전적 쿼리
-
-  async sumWin(summonerName: string) {
-    const totalCnt = await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .getCount();
-
-    const { winCnt } = await this.historyRepository
-      .createQueryBuilder('history')
-      .select('SUM(history.win)', 'winCnt')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .getRawOne();
-    return { totalCnt, winCnt };
-  }
-
-  async recentChamp(summonerName: string) {
-    return await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .select('history.champId')
-      .addSelect('COUNT(*) AS champCnt')
-      .groupBy('history.champId')
-      .having('COUNT(*) > :count', { count: 0 })
-      .orderBy('champCnt', 'DESC')
-      .limit(3)
-      .getRawMany();
-  }
-
-  async recentChampRate(summonerName: string, champId: number) {
-    const win = await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.champId = :champId', {
-        champId,
-      })
-      .select('history.champId')
-      .addSelect('COUNT(*) AS winCnt')
-      .andWhere('history.win  = :win', { win: 1 })
-      .getRawOne();
-
-    const lose = await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.champId = :champId', {
-        champId,
-      })
-      .select('history.champId')
-      .addSelect('COUNT(*) AS loseCnt')
-      .andWhere('history.win = :lose', { lose: 0 })
-      .getRawOne();
-
-    return { win, lose };
-  }
-
-  async position(summonerName: string, positionId) {
-    return await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .andWhere('history.position = :positionId', { positionId })
-      .select('history.position')
-      .addSelect('COUNT(*) AS positionCnt')
-      .groupBy('history.position')
-      .having('COUNT(*) > :count', { count: 0 })
-      .orderBy('positionCnt', 'DESC')
-      .getRawOne();
-  }
-
-  async recentChampInfo(champId: number) {
-    return await this.champRepository
-      .createQueryBuilder('champ')
-      .where('champ.id = :champId', { champId })
-      .select(['champ.champImg', 'champ.champNameKo'])
-      .getRawOne();
-  }
-
-  async beforeMatchId(summonerId: string) {
-    return this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerId = :summonerId', { summonerId })
-      .getRawMany();
-  }
-
-  async kdaAverage(summonerName: string) {
-    return await this.historyRepository
-      .createQueryBuilder('history')
-      .where('history.summonerName = :summonerName', { summonerName })
-      .select('SUM(history.kill)', 'killSum')
-      .addSelect('SUM(history.death)', 'deathSum')
-      .addSelect('SUM(history.assist)', 'assistSum')
-      .getRawOne();
-  }
-
-  // async getSummonerHistory(summonerName) {
-  //   return await this.historyRepository
-  //     .createQueryBuilder('history')
-  //     .where('history.summonerName = :summonerName', { summonerName })
-  //     .getRawOne();
-  // }
-
-  async deleteSummonerHistory(summonerName) {
+  async deleteSummonerHistory(summonerName: string) {
     return this.historyRepository
       .createQueryBuilder()
       .delete()
