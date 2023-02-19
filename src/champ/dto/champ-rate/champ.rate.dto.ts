@@ -45,13 +45,13 @@ export class ChampRateDataDto {
 
   @Expose({ name: 'spell1' })
   @Transform(({ value }) => {
-    return value ? spellInfo[value] : spellInfo.default;
+    return value ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[value]}.png` : spellInfo.default;
   })
   readonly spell1Img: string;
 
   @Expose({ name: 'spell2' })
   @Transform(({ value }) => {
-    return value ? spellInfo[value] : spellInfo.default;
+    return value ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[value]}.png` : spellInfo.default;
   })
   readonly spell2Img: string;
 
