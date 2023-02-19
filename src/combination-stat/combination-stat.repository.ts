@@ -1,7 +1,7 @@
-import { CombinationStatRepositoryRawQueryDto, CombinationStatRepositoryVersionResponseDto } from './dtos/combination-stat.repository.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
+import { RawQueryResponseDto } from './dtos/combination-stat.repository.dto';
 import { CombinationStatEntity } from './entities/combination-stat.entity';
 
 @Injectable()
@@ -12,16 +12,13 @@ export class CombinationStatRepository {
     private readonly combinationStatRepository: Repository<CombinationStatEntity>,
   ) {}
 
-  async getVersions(): Promise<CombinationStatRepositoryVersionResponseDto[]> {
-    const data = await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select(['DISTINCT COMBINATION_STAT.version']).getRawMany();
-    return data.map((value) => {
-      return new CombinationStatRepositoryVersionResponseDto(value);
-    });
+  async getVersions(): Promise<{ version: string }[]> {
+    return await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select(['DISTINCT COMBINATION_STAT.version']).getRawMany();
   }
   //   mainPage 티어리스트
-  async getTierList(requestOption: { category: number; version: string }): Promise<CombinationStatRepositoryRawQueryDto[]> {
+  async getTierList(requestOption: CombinationStatEntity): Promise<RawQueryResponseDto[]> {
     const { category, version } = requestOption;
-    const data = await this.combinationStatRepository
+    return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
       .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
@@ -49,15 +46,13 @@ export class CombinationStatRepository {
       .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
       .limit(30)
       .getRawMany();
-    return data.map((value) => {
-      return new CombinationStatRepositoryRawQueryDto(value);
-    });
   }
 
-  async getIndividualChampData(requestOption: { option: { category: Brackets; champ: Brackets }; version: string }): Promise<CombinationStatRepositoryRawQueryDto[]> {
+  async getIndividualChampData(whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: CombinationStatEntity): Promise<RawQueryResponseDto[]> {
     // 탑, 미드, 원딜
-    const { option, version } = requestOption;
-    const data = await this.combinationStatRepository
+    const { option } = whereOption;
+    const { version } = requestOption;
+    return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
       .leftJoinAndSelect('COMBINATION_STAT.mainChampId', 'champ1')
       .leftJoinAndSelect('COMBINATION_STAT.subChampId', 'champ2')
@@ -86,11 +81,6 @@ export class CombinationStatRepository {
       .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
       .limit(5)
       .getRawMany();
-
-    return data.map((value) => {
-      value = new CombinationStatRepositoryRawQueryDto(value);
-      return value;
-    });
   }
 
   getMainpageData = async (version: string): Promise<{ category0: number; category1: number; category2: number }> => {
@@ -131,4 +121,87 @@ export class CombinationStatRepository {
       return;
     }
   };
+
+  createIndividualRequestOption(requestOption: { champId: string; position: string }): { option: { category: Brackets; champ: Brackets } } {
+    const { champId, position } = requestOption;
+    let option: { category: Brackets; champ: Brackets };
+    switch (position) {
+      case 'top':
+        option = {
+          category: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.category = :category', {
+              category: 0,
+            });
+          }),
+          champ: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
+              mainChampId: champId,
+            });
+          }),
+        };
+        break;
+      case 'jungle':
+        option = {
+          category: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.category = :category', {
+              category: 0,
+            }).orWhere('COMBINATION_STAT.category = :category2', {
+              category2: 1,
+            });
+          }),
+          champ: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
+              subChampId: champId,
+            });
+          }),
+        };
+        break;
+
+      case 'mid':
+        option = {
+          category: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.category = :category', {
+              category: 1,
+            });
+          }),
+          champ: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
+              mainChampId: champId,
+            });
+          }),
+        };
+        break;
+
+      case 'ad':
+        option = {
+          category: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.category = :category', {
+              category: 2,
+            });
+          }),
+          champ: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
+              mainChampId: champId,
+            });
+          }),
+        };
+        break;
+
+      case 'support':
+        option = {
+          category: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.category = :category', {
+              category: 2,
+            });
+          }),
+          champ: new Brackets((qb) => {
+            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
+              subChampId: champId,
+            });
+          }),
+        };
+        break;
+    }
+    return { option };
+  }
 }

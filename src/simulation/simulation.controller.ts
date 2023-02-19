@@ -1,4 +1,4 @@
-import { TierListParamPipe } from './../combination-stat/pipes/combination-stat.param.validator.pipe';
+import { CategoryParamPipe } from './../combination-stat/pipes/combination-stat.param.validator.pipe';
 import { SimulationService } from './simulation.service';
 import { Controller, Get, Param, Query, UseFilters, HttpException } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -48,7 +48,7 @@ export class SimulationController {
     example: '56',
   })
   @Get('/:category')
-  async getSimulationData(@Param('category', TierListParamPipe) category: string, @Query('champ1Id') champ1Id: string, @Query('champ2Id') champ2Id: string, @Query('champ3Id') champ3Id: string, @Query('champ4Id') champ4Id: string): Promise<simulationResponseDto> {
+  async getSimulationData(@Param('category', CategoryParamPipe) category: string, @Query('champ1Id') champ1Id: string, @Query('champ2Id') champ2Id: string, @Query('champ3Id') champ3Id: string, @Query('champ4Id') champ4Id: string): Promise<simulationResponseDto> {
     if (isNaN(Number(champ1Id)) || isNaN(Number(champ2Id)) || isNaN(Number(champ3Id)) || isNaN(Number(champ4Id))) {
       throw new HttpException(`champId는 숫자형태여야 합니다.`, 400);
     }
