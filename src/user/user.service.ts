@@ -10,8 +10,8 @@ export class UserService {
 
   async getUserInfo(data: GetUserInfoRequestDto) {
     try {
-      const option = await this.userRepository.createSelectOption(data.category, data.userId);
-      const result = await this.userRepository.getUserInfo(option.select, option.where);
+      const selectOption = await this.userRepository.createSelectOption(data.category);
+      const result = await this.userRepository.getUserInfo(selectOption, data.toEntity());
       return new UserInfoResponseDto(result);
     } catch (error) {
       throw new HttpException('카테고리가 잘못되었습니다', 400);

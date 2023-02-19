@@ -44,4 +44,11 @@ export class CombinationStatEntity extends CommonEntity {
     },
   ])
   subChampId: ChampEntity;
+
+  static createSelectOption(data: { category?: number; version?: string }) {
+    const combiantionStat = new CombinationStatEntity();
+    combiantionStat.category = data.category;
+    combiantionStat.version = data.version;
+    return combiantionStat;
+  }
 }

@@ -1,12 +1,13 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
-import { IndiviudalChampResponseDto, TierListDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import { IndividualChampRequestDto, TierListRequestDto } from './dtos/combination-stat.request.dto';
+import { IndividualChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
 
 @Injectable()
 export class CombinationStatService {
   constructor(private readonly combinationStatRepository: CombinationStatRepository) {}
 
-  async getTierList(category: string): Promise<TierListDto[]> {
+  async getTierList(requestOption: TierListRequestDto): Promise<TierListResponseDto[]> {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
     // 최신 패치버전 조회
@@ -17,15 +18,15 @@ export class CombinationStatService {
     } else {
       version = versionList[1];
     }
-    const requestOption = TierListDto.createRequestOption(category, version);
-    const answer = await this.combinationStatRepository.getTierList(requestOption);
+    // requestOption -> toEntity 책임은 누구에게?
+    const answer = await this.combinationStatRepository.getTierList(requestOption.toEntity(version));
     const data = answer.map((value, index: number) => {
-      return new TierListDto(value, index);
+      return new TierListResponseDto(value, index);
     });
     return data;
   }
 
-  async getIndiviualChampData(champId: string, position: string): Promise<IndiviudalChampResponseDto[] | { result: any[]; message: string }> {
+  async getIndiviualChampData(requestOption: IndividualChampRequestDto): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
 
@@ -36,13 +37,13 @@ export class CombinationStatService {
     } else {
       version = versionList[1];
     }
-    const requestOption = IndiviudalChampResponseDto.createRequestOption(position, champId, version);
-    const answer = await this.combinationStatRepository.getIndividualChampData(requestOption);
+    const whereOption = this.combinationStatRepository.createIndividualRequestOption(requestOption);
+    const answer = await this.combinationStatRepository.getIndividualChampData(whereOption, requestOption.toEntity(version));
 
-    let result: IndiviudalChampResponseDto[] = [];
+    let result: IndividualChampResponseDto[] = [];
     if (answer.length !== 0) {
       result = answer.map((value) => {
-        return new IndiviudalChampResponseDto(value, position);
+        return new IndividualChampResponseDto(value, requestOption.position);
       });
     } else {
       return { result, message: '유효한 데이터(표본 5 이상)가 없습니다' };

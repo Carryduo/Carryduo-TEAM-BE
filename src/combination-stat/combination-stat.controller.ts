@@ -1,8 +1,9 @@
 import { CombinationStatService } from './combination-stat.service';
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { IndividualChampDataParamPipe, TierListParamPipe } from './pipes/combination-stat.param.validator.pipe';
+import { Controller, Get, Param } from '@nestjs/common';
+import { IndividualChampParamPipe, CategoryParamPipe } from './pipes/combination-stat.param.validator.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IndiviudalChampResponseDto, TierListDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import { CategoryParamDto, IndividualChampParamDto } from './dtos/combination-stat.request.dto';
+import { IndividualChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
 
 @ApiTags('Combination-stat')
 @Controller('combination-stat')
@@ -30,11 +31,11 @@ export class CombinationStatController {
   @ApiResponse({
     status: 200,
     description: '개인 챔피언의 조합승률 TOP 5 조회 성공',
-    type: TierListDto,
+    type: TierListResponseDto,
   })
   @Get('/:category')
-  async getTierList(@Param('category', TierListParamPipe) category: string): Promise<TierListDto[]> {
-    return this.combinationStatService.getTierList(category);
+  async getTierList(@Param(CategoryParamPipe) param: CategoryParamDto): Promise<TierListResponseDto[]> {
+    return this.combinationStatService.getTierList(param.toTierListRequestDto());
   }
 
   @ApiOperation({ summary: '개인 챔피언의 조합승률 TOP 5 조회' })
@@ -53,10 +54,10 @@ export class CombinationStatController {
   @ApiResponse({
     status: 200,
     description: '개인 챔피언의 조합승률 TOP 5 조회 성공',
-    type: IndiviudalChampResponseDto,
+    type: IndividualChampResponseDto,
   })
   @Get('/champ/:category/:position')
-  async getIndividualChampData(@Param('category', ParseIntPipe) category: string, @Param('position', IndividualChampDataParamPipe) position: string): Promise<IndiviudalChampResponseDto[] | { result: any[]; message: string }> {
-    return this.combinationStatService.getIndiviualChampData(category, position);
+  async getIndividualChampData(@Param(IndividualChampParamPipe) param: IndividualChampParamDto): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
+    return this.combinationStatService.getIndiviualChampData(param.toIndividualChampRequestDto());
   }
 }
