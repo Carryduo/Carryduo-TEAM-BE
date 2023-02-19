@@ -8,9 +8,7 @@ import { UpdateChampRateEntity } from './entities/update.champ.rate.entity';
 import { GameInfoEntity } from './entities/game.info.entity';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { SkillSet } from './dto/champ-skill/champ.skill.common.dto';
-import { plainToInstance } from 'class-transformer';
-import { GetMostPositionDto } from './dto/champ-position/champ.most.position.dto';
-import { GetChampRateDto } from './dto/champ-rate/champ.rate.dto';
+import { GetChampRate } from './dto/champ-rate/champ.rate.dto';
 
 export class ChampRepository {
   constructor(
@@ -73,7 +71,7 @@ export class ChampRepository {
       .getRawMany();
   }
 
-  async getMostPosition(champId: string, version: string): Promise<GetMostPositionDto[]> {
+  async getMostPosition(champId: string, version: string): Promise<{ position: string }[]> {
     return await this.champRateRepository
       .createQueryBuilder()
       .where('champId = :champId', { champId })
@@ -93,7 +91,6 @@ export class ChampRepository {
   }
 
   async getSkillData(champId: string): Promise<SkillSet[]> {
-
     return await this.champRepository
       .createQueryBuilder('champ')
       .leftJoinAndSelect('champ.champSkillInfo', 'skill')
@@ -122,11 +119,7 @@ export class ChampRepository {
       .getRawOne();
   }
 
-  async getChampRate(
-    champId: string,
-    position: string,
-    version: string,
-  ): Promise<GetChampRateDto[]> {
+  async getChampRate(champId: string, position: string, version: string): Promise<GetChampRate[]> {
     try {
       const { gameCount } = await this.getGameTotalCount(version);
 

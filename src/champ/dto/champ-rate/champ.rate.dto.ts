@@ -1,53 +1,71 @@
-import { Expose, Transform } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
-const spellInfo = {
-  21: 'SummonerBarrier',
-  1: 'SummonerBoost',
-  14: 'SummonerDot',
-  3: 'SummonerExhaust',
-  4: 'SummonerFlash',
-  6: 'SummonerHaste',
-  7: 'SummonerHeal',
-  13: 'SummonerMana',
-  11: 'SummonerSmite',
-  12: 'SummonerTeleport',
-  default: 'default spell Image',
-};
-
-export class GetChampRateDto {
-  readonly winRate: string = null;
-  readonly pickRate: string = null;
-  readonly spell1: number = null;
-  readonly spell2: number = null;
-  readonly version: string = null;
-  constructor(partial: Partial<GetChampRateDto>) {
+export class GetChampRate {
+  readonly winRate: string | number = 0;
+  readonly pickRate: string | number = 0;
+  readonly spell1: number = 0;
+  readonly spell2: number = 0;
+  readonly version: string | number = 0;
+  constructor(partial: Partial<GetChampRate>) {
     if (partial) Object.assign(this, partial);
   }
 }
 
 export class ChampRateDataDto {
+  @ApiProperty({
+    example: 48.45,
+    description: '승률',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? Number(Number(value).toFixed(2)) : 0;
   })
   readonly winRate: number;
 
+  @ApiProperty({
+    example: 13.2,
+    description: '밴 비율',
+    required: true,
+  })
+  banRate: number;
+
+  @ApiProperty({
+    example: 8.19,
+    description: '픽률',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? Number(Number(value).toFixed(2)) : 0;
   })
   readonly pickRate: number;
 
-  @Expose({ name: 'spell1' })
-  @Transform(({ value }) => {
-    return value ? spellInfo[value] : spellInfo.default;
+  @ApiProperty({
+    example: 'BOTTOM',
+    description: '포지션',
+    required: true,
+  })
+  position: string;
+
+  @ApiProperty({
+    example: 'spell1 image.png',
+    description: '첫번째 스펠이미지',
+    required: true,
   })
   readonly spell1Img: string;
 
-  @Expose({ name: 'spell2' })
-  @Transform(({ value }) => {
-    return value ? spellInfo[value] : spellInfo.default;
+  @ApiProperty({
+    example: 'spell2 image.png',
+    description: '두번째 스펠이미지',
+    required: true,
   })
   readonly spell2Img: string;
 
+  @ApiProperty({
+    example: '13.3.',
+    description: '버전 정보',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? value : 'default version';
   })
