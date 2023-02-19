@@ -36,8 +36,4 @@ export class ChampCommonDTO {
     required: true,
   })
   readonly champImg: string;
-
-  constructor(partial: Partial<ChampEntity>) {
-    Object.assign(this, partial);
-  }
 }

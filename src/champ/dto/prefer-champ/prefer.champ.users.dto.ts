@@ -29,8 +29,4 @@ export class PreferChampUsersResDTO {
     required: true,
   })
   readonly tier: number;
-
-  constructor(partial: Partial<UserEntity>) {
-    Object.assign(this, partial);
-  }
 }

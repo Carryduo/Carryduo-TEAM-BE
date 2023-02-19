@@ -43,11 +43,4 @@ export class ChampSkillCommonDTO {
     name: 'image',
   })
   readonly image: string;
-  constructor(skill: SkillSet) {
-    this.id = skill.skillId;
-    this.name = skill.skillId;
-    this.desc = skill.skillDesc;
-    this.toolTip = skill.skillToolTip;
-    this.image = skill.skillImg;
-  }
 }
