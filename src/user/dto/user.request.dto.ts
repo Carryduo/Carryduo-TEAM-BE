@@ -120,6 +120,10 @@ export class GetUserInfoRequestDto {
   static createDto(category: string, userId: string) {
     return new GetUserInfoRequestDto(category, userId);
   }
+
+  toEntity() {
+    return UserEntity.createSelectOption(this._userId);
+  }
 }
 
 export class UpdateUserOptionRequestDto {

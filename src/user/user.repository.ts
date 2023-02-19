@@ -42,13 +42,13 @@ export class UserRepository {
     return await this.usersRepository.createQueryBuilder('user').select(['user.preferChamp1', 'user.preferChamp2', 'user.preferChamp3']).where('user.userId = :userId', { userId }).getRawOne();
   }
 
-  createSelectOption(category: string, userId: string): { select: string[]; where: UserEntity } {
+  createSelectOption(category: string): string[] {
     let select: string[];
     if (category === 'login') {
       select = ['user.userId', 'user.nickname', 'user.profileImg'];
     } else if (category === 'option' || category === 'individual') {
       select = ['user.userId', 'user.nickname', 'user.tier', 'user.bio', 'user.profileImg', 'user.preferPosition', 'user.preferChamp1', 'preferChamp1.id', 'preferChamp1.champNameKo', 'preferChamp1.champNameEn', 'preferChamp1.champImg', 'user.preferChamp2', 'preferChamp2.id', 'preferChamp2.champNameKo', 'preferChamp2.champNameEn', 'preferChamp2.champImg', 'user.preferChamp3', 'preferChamp3.id', 'preferChamp3.champNameKo', 'preferChamp3.champNameEn', 'preferChamp3.champImg'];
     }
-    return { select, where: UserEntity.createSelectOption(userId) };
+    return select;
   }
 }
