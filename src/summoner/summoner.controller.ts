@@ -1,16 +1,10 @@
-import {
-  Controller,
-  Get,
-  Param,
-  UseFilters,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Param, UseFilters, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpCacheInterceptor } from '../common/interceptors/cache.interceptor';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { TypeOrmFilter } from '../common/exception/typeorm-exception.filter';
-import { SummonerAllDataDTO } from './dto/summoner/summoner.data.dto';
 import { SummonerService } from './summoner.service';
+import { SummonerHistoryResponseDto } from './dto/summoner/history/history.response.dto';
 
 @Controller('summoner')
 @ApiTags('Summoner')
@@ -38,7 +32,7 @@ export class SummonerController {
   @ApiResponse({
     status: 200,
     description: '소환사 전적 정보 조회',
-    type: SummonerAllDataDTO,
+    type: SummonerHistoryResponseDto,
   })
   @ApiParam({
     name: 'summonerName',
