@@ -84,10 +84,18 @@ export class SummonerEntity extends CommonEntity {
   @OneToMany(() => SubscriptionEntity, (subscription: SubscriptionEntity) => subscription.summonerName, {
     cascade: true,
   })
-  subscription?: SubscriptionEntity;
+
+  subscription: SubscriptionEntity;
 
   @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {
     cascade: true,
   })
-  comment?: CommentEntity;
+
+  comment: CommentEntity;
+
+  static createSummonerNameOption(summonerName: string) {
+    const summoner = new SummonerEntity();
+    summoner.summonerName = summonerName;
+    return summoner;
+  }
 }

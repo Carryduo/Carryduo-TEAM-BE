@@ -1,5 +1,8 @@
+import { UpdateReportNumRequestDto, DeleteCommentRequestDto } from './../../comments/dto/comment.request.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
+import { PostCommentRequestDto, UpdateCommentRequestDto } from 'src/comments/dto/comment.request.dto';
+import { GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto, UpdateUserOptionRequestDto } from 'src/user/dto/user.request.dto';
 
 // TODO: 얘는 RESPONSE DTO
 
@@ -66,5 +69,28 @@ export class LoginResponseDto {
   @Expose()
   get profileImg() {
     return this._profileImg;
+  }
+
+  toGetOwnInfoRequestDto(category: string) {
+    return GetUserInfoRequestDto.createDto(category, this._userId);
+  }
+
+  toUpdateOptionRequestDto(body: UpdateUserOptionRequestBodyDto) {
+    return UpdateUserOptionRequestDto.createDto(this._userId, body);
+  }
+
+  toPostCommentRequestDto(category: 'summoner' | 'champ', target: string, content: string) {
+    return PostCommentRequestDto.createDto(this._userId, category, target, content);
+  }
+
+  toUpdateCommentRequestDto(commentId: string, content: string) {
+    return UpdateCommentRequestDto.createDto(commentId, this._userId, content);
+  }
+
+  toUpdateCommentReportNumRequestDto(commentId: string) {
+    return UpdateReportNumRequestDto.createDto(commentId);
+  }
+  toDeleteCommentRequestDto(commentId: string) {
+    return DeleteCommentRequestDto.createDto(commentId, this._userId);
   }
 }

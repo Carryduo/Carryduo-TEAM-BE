@@ -2,7 +2,7 @@ import { Exclude } from 'class-transformer';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { kakaoPayload } from './kakao.payload';
 
-export class DeleteUserDto {
+export class DeleteUserReqeustDto {
   @Exclude() private readonly _userId: string;
   constructor(userId: string) {
     this._userId = userId;
@@ -12,11 +12,11 @@ export class DeleteUserDto {
   }
 
   static creatDeleteUserDto(userId: string) {
-    return new DeleteUserDto(userId);
+    return new DeleteUserReqeustDto(userId);
   }
 
   toEntity() {
-    return UserEntity.deleteUserOption(this._userId);
+    return UserEntity.createSelectOption(this._userId);
   }
 }
 export class FirstLoginRequestDto {

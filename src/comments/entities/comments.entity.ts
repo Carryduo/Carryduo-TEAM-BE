@@ -53,4 +53,57 @@ export class CommentEntity extends CommonEntity {
     },
   ])
   summonerName: SummonerEntity;
+
+  static createGetChampComentOption(category: string, target: ChampEntity) {
+    const comment = new CommentEntity();
+    comment.category = category;
+    comment.champId = target;
+    return comment;
+  }
+
+  static createGetSummonerCommentOption(category: string, target: SummonerEntity) {
+    const comment = new CommentEntity();
+    comment.category = category;
+    comment.summonerName = target;
+    return comment;
+  }
+
+  static createPostChampCommentOption(category: string, target: ChampEntity, content: string, userId: UserEntity): CommentEntity {
+    const comment = new CommentEntity();
+    comment.category = category;
+    comment.champId = target;
+    comment.content = content;
+    comment.userId = userId;
+    return comment;
+  }
+
+  static createPostSummonerCommentOption(category: string, target: SummonerEntity, content: string, userId: UserEntity): CommentEntity {
+    const comment = new CommentEntity();
+    comment.category = category;
+    comment.summonerName = target;
+    comment.content = content;
+    comment.userId = userId;
+    return comment;
+  }
+
+  static createUpdateCommentOption(id: string, userId: UserEntity, content: string) {
+    const comment = new CommentEntity();
+    comment.id = id;
+    comment.userId = userId;
+    comment.content = content;
+    return comment;
+  }
+
+  static createUpdateReportNumOption(id: string) {
+    const comment = new CommentEntity();
+    comment.id = id;
+    return comment;
+  }
+
+  static createDeleteCommentOption(id: string, userId: UserEntity) {
+    const comment = new CommentEntity();
+    comment.id = id;
+    comment.userId = userId;
+    return comment;
+  }
 }

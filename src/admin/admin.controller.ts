@@ -5,11 +5,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { jwtGuard } from './jwt/jwt.guard';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CommonResponseDTO } from '../common/dto/common.response.dto';
+import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
 import { kakaoPayload } from './dto/kakao.payload';
 import { FirstLoginResponseDto, LoginResponseDto } from './dto/admin.response.dto';
-import { DeleteUserDto, FirstLoginRequestDto } from './dto/admin.request.dto';
+import { DeleteUserReqeustDto, FirstLoginRequestDto } from './dto/admin.request.dto';
 @Controller('admin')
 @ApiTags('admin')
 @UseFilters(HttpExceptionFilter)
@@ -23,18 +23,18 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: '회원 탈퇴 성공하였습니다',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @ApiResponse({
     status: 400,
     description: '회원 탈퇴 실패했습니다',
-    type: CommonResponseDTO,
+    type: CommonResponseDto,
   })
   @Delete()
   @UseGuards(jwtGuard)
   // TODO: LoginResponseDto 바꾸기
   async deleteUser(@User() user: LoginResponseDto) {
-    return this.adminService.deleteUser(DeleteUserDto.creatDeleteUserDto(user.userId));
+    return this.adminService.deleteUser(DeleteUserReqeustDto.creatDeleteUserDto(user.userId));
   }
 
   // 로컬용 로그인

@@ -81,4 +81,10 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     cascade: true,
   })
   simulation: SimulationEntity;
+
+  static createChampIdOption(champId: string) {
+    const champ = new ChampEntity();
+    champ.id = champId;
+    return champ;
+  }
 }
