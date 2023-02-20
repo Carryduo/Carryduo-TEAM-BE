@@ -43,7 +43,7 @@ export class SummonerHistoryCommonDto {
     description: '소환사 id',
     required: true,
   })
-  readonly summonerId: string;
+  readonly summonerId: SummonerEntity;
 
   @ApiProperty({
     example: 'uuid',
@@ -57,7 +57,7 @@ export class SummonerHistoryCommonDto {
     description: '소환사 이름',
     required: true,
   })
-  readonly summonerName: SummonerEntity;
+  readonly summonerName: string;
 
   @ApiProperty({
     example: '1',

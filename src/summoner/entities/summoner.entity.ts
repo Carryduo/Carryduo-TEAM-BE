@@ -12,7 +12,7 @@ export class SummonerEntity extends CommonEntity {
   @Column({ name: 'summonerName', unique: true, type: 'varchar' })
   summonerName: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ name: 'summonerId', unique: true, nullable: false, type: 'varchar' })
   summonerId: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -81,9 +81,13 @@ export class SummonerEntity extends CommonEntity {
   ])
   mostChamp3: ChampEntity;
 
-  @OneToMany(() => SubscriptionEntity, (subscription: SubscriptionEntity) => subscription.summonerName, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => SubscriptionEntity,
+    (subscription: SubscriptionEntity) => subscription.summonerName,
+    {
+      cascade: true,
+    },
+  )
   subscription?: SubscriptionEntity;
 
   @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {

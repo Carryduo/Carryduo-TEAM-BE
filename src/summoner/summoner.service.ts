@@ -27,21 +27,21 @@ export class SummonerService {
   private async summonerHistoryCalculation(summoner: SummonerEntity) {
     const summonerDefaultDataDto = await this.summonerDto.createSummonerDefaultData(summoner);
 
-    const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerName);
+    const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerId);
     const positions = await this.summonerDto.createPosition(position);
 
     const recentChampInfoList = [];
-    const recentChamp = await this.summonerRepository.getRecentChamp(summoner.summonerName);
+    const recentChamp = await this.summonerRepository.getRecentChamp(summoner.summonerId);
     for (let r of recentChamp) {
       const recentChampRate = await this.summonerRepository.getRecentChampRate(
         r.champId,
-        summoner.summonerName,
+        summoner.summonerId,
       );
       recentChampInfoList.push({ ...recentChampRate });
     }
-
     const recentChampDto = await this.summonerDto.createRecentChamp(recentChampInfoList);
-    const recordSum = await this.summonerRepository.getSummonerRecordSum(summoner.summonerName);
+
+    const recordSum = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
 
     const historyRateDto = await this.summonerDto.createHistoryRate(
       recordSum,
@@ -76,9 +76,10 @@ export class SummonerService {
       const updateSummoner = await this.requestRiotSummonerApi(summonerName);
       await this.summonerRepository.updateSummoner(updateSummoner);
     }
-    await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerName);
+    await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerId);
 
     const newHistory = await this.requestRiotSummonerHistoryApi(existSummoner.summonerPuuId);
+
     await this.summonerRepository.createSummonerHistory(newHistory);
 
     const summoner = await this.summonerRepository.getSummoner(summonerName);
