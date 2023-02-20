@@ -7,13 +7,9 @@ import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
 import { champListData } from './data/champ.list';
 import { preferChampUserData } from './data/prefer.champ.user.list';
-import * as responseData from './data/champ.target.response';
-import * as champData from './data/champ.info';
+import * as champInfo from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { GetChampRateDto } from '../dto/champ-rate/champ.rate.dto';
-import { plainToInstance } from 'class-transformer';
-import { GetMostPositionDto } from '../dto/champ-position/champ.most.position.dto';
 import { champDtoFactory } from '../champ.dto.factory';
 
 class MockRepository {
@@ -33,6 +29,7 @@ class MockRepository {
   rateVersion() {
     return [{ version: '12.23' }, { version: '13.1.' }];
   }
+
   getMostPosition(champId: string, version: string) {
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') return [];
@@ -43,25 +40,27 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
+    const mostPosition = [
+      champPositionInfo.find((v) => v.champId === champId && v.version === version),
+    ];
     return mostPosition;
   }
 
   getSkillData(champId: string) {
-    return champData.skillInfo;
+    return champInfo.skillInfo;
   }
 
   getChampDefaultData(champId: string) {
-    return champData.champDefaultData;
+    return champInfo.champDefaultData;
   }
 
   getChampRate(champId: string, position: string, version: string) {
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') {
-      return champData.DEFAULT;
+      return champInfo.DEFAULT;
     }
 
-    return champData[position];
+    return champInfo[position];
   }
   getBanRate() {
     return { banRate: 0.2 };
@@ -83,8 +82,14 @@ describe('ChampService', () => {
         champDtoFactory,
         { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },
+        {
+          provide: getRepositoryToken(GameInfoEntity),
+          useClass: MockRepository,
+        },
+        {
+          provide: getRepositoryToken(UpdateChampRateEntity),
+          useClass: MockRepository,
+        },
         {
           provide: getRepositoryToken(UserEntity),
           useClass: MockRepository,
@@ -97,7 +102,10 @@ describe('ChampService', () => {
     repository = module.get<ChampRepository>(ChampRepository);
     dto = module.get<champDtoFactory>(champDtoFactory);
     jest.resetModules();
-    process.env = { ...env, S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img` };
+    process.env = {
+      ...env,
+      S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img`,
+    };
   });
   afterEach(() => {
     process.env = env;
@@ -153,16 +161,22 @@ describe('ChampService', () => {
       default: 'default position',
     };
 
-    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
-      const positionInfo = [
-        { champId: '1', position: 'JUNGLE', version: '13.1.' },
-        { champId: '1', position: 'TOP', version: '12.1' },
-      ];
-      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
-      return MostPosition;
-    });
+    let getMostPosition = jest
+      .spyOn(repository, 'getMostPosition')
+      .mockImplementation(async (champId: string, version: string) => {
+        const positionInfo = [
+          { champId: '1', position: 'JUNGLE', version: '13.1.' },
+          { champId: '1', position: 'TOP', version: '12.1' },
+        ];
+        const MostPosition = [
+          positionInfo.find((v) => v.champId === champId && v.version === version),
+        ];
+        return MostPosition;
+      });
     let positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    let getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
+    let getPosition = !positionDbName
+      ? await repository.getMostPosition(Param.champId, version)
+      : positionDbName;
     expect(getMostPosition).toBeCalledTimes(1);
     expect(getPosition[0].position).toBe('JUNGLE');
 
@@ -170,7 +184,9 @@ describe('ChampService', () => {
     const Param2 = Param;
     Param2.position = 'mid';
     positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
+    getPosition = !positionDbName
+      ? await repository.getMostPosition(Param.champId, version)
+      : positionDbName;
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -180,87 +196,80 @@ describe('ChampService', () => {
   it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 포지션에 맞는 데이터를 return?', async () => {
     const version = '13.1.';
 
-    const param = {
+    const Param = {
       champId: '1',
       position: 'default',
     };
 
-    const getPosition = await repository.getMostPosition(param.champId, version);
+    const getPosition = await repository.getMostPosition(Param.champId, version);
 
     expect(getPosition[0]?.position).toEqual('JUNGLE');
 
-    const { position } = plainToInstance(GetMostPositionDto, {
-      position: getPosition[0]?.position,
-    });
+    const champPosition = getPosition[0]?.position;
 
-    const champRate: GetChampRateDto[] = champData.JUNGLE;
-    const champRateDto = await dto.createChampRate(champRate);
-
-    const champDefaultData = champData.champDefaultData;
+    const champDefaultData = champInfo.champDefaultData;
     const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skillInfo = champData.skillInfo;
+    const skillInfo = champInfo.skillInfo;
     const skill = await dto.createSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
-    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
 
-    const result = await service.getTargetChampion(param);
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+
+    const result = await service.getTargetChampion(Param);
 
     expect(result).toEqual(response);
   });
 
   it('getTargetChampion에서 포지션 파라미터의 값대로 response를 return?', async () => {
+    const version = '13.1.';
     const Param = {
       champId: '1',
       position: 'mid',
     };
-
     const champPosition = 'MIDDLE';
 
-    const { position } = await dto.createChampMostPosition(champPosition);
-
-    const champRate: GetChampRateDto[] = champData.MIDDLE;
-    const champRateDto = await dto.createChampRate(champRate);
-
-    const champDefaultData = champData.champDefaultData;
+    const champDefaultData = champInfo.champDefaultData;
     const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skillInfo = champData.skillInfo;
+    const skillInfo = champInfo.skillInfo;
     const skill = await dto.createSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
-    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
   });
 
   it('getTargetChampion에서 특정 챔피언의 정보가 없으면 default data return?', async () => {
+    const version = '13.1.';
     const Param = {
       champId: '2',
       position: 'default',
     };
+
     const champPosition = null;
 
-    const { position } = await dto.createChampMostPosition(champPosition);
-
-    const champRate: GetChampRateDto[] = champData.DEFAULT;
-    const champRateDto = await dto.createChampRate(champRate);
-
-    const champDefaultData = champData.champDefaultData;
+    const champDefaultData = champInfo.champDefaultData;
     const champDataDto = await dto.createChampData(champDefaultData);
 
-    const skillInfo = champData.skillInfo;
+    const skillInfo = champInfo.skillInfo;
     const skill = await dto.createSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
-    const { banRate } = await dto.createBanRate(banInfo?.banRate);
 
-    const response = await dto.createtargetChampResponse(champRateDto, champDataDto, skill, position, banRate);
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
     const result = await service.getTargetChampion(Param);
 
     expect(result).toEqual(response);
