@@ -6,7 +6,10 @@ import { UserInfoResponseDto } from './dto/user.response.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly champRepository: ChampRepository,
+  ) {}
 
   async getUserInfo(data: GetUserInfoRequestDto) {
     try {
@@ -23,7 +26,11 @@ export class UserService {
       const option = data.toEntity();
       const preferChamp = await this.userRepository.findPreferchamps(option.userId);
       console.log(preferChamp);
-      const preferChampList = [preferChamp.preferChamp1, preferChamp.preferChamp2, preferChamp.preferChamp3];
+      const preferChampList = [
+        preferChamp.preferChamp1,
+        preferChamp.preferChamp2,
+        preferChamp.preferChamp3,
+      ];
       for (const pcl of preferChampList) {
         await this.champRepository.delPreferChampCache(pcl);
       }

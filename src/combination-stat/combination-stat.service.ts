@@ -1,7 +1,11 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
 import { IndividualChampRequestDto, TierListRequestDto } from './dtos/combination-stat.request.dto';
-import { IndividualChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import {
+  IndividualChampResponseDto,
+  TierListResponseDto,
+  VersionResponseDto,
+} from './dtos/combination-stat.response.dto';
 
 @Injectable()
 export class CombinationStatService {
@@ -11,26 +15,32 @@ export class CombinationStatService {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
     // 최신 패치버전 조회
-    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
+    const { category0, category1, category2 } =
+      await this.combinationStatRepository.getMainpageData(versionList[0]);
     let version: string;
     if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
       version = versionList[0];
     } else {
       version = versionList[1];
     }
-    // requestOption -> toEntity 책임은 누구에게?
-    const answer = await this.combinationStatRepository.getTierList(requestOption.toEntity(version));
+
+    const answer = await this.combinationStatRepository.getTierList(
+      requestOption.toEntity(version),
+    );
     const data = answer.map((value, index: number) => {
       return new TierListResponseDto(value, index);
     });
     return data;
   }
 
-  async getIndiviualChampData(requestOption: IndividualChampRequestDto): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
+  async getIndiviualChampData(
+    requestOption: IndividualChampRequestDto,
+  ): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
 
-    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
+    const { category0, category1, category2 } =
+      await this.combinationStatRepository.getMainpageData(versionList[0]);
     let version: string;
     if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
       version = versionList[0];
@@ -38,7 +48,10 @@ export class CombinationStatService {
       version = versionList[1];
     }
     const whereOption = this.combinationStatRepository.createIndividualRequestOption(requestOption);
-    const answer = await this.combinationStatRepository.getIndividualChampData(whereOption, requestOption.toEntity(version));
+    const answer = await this.combinationStatRepository.getIndividualChampData(
+      whereOption,
+      requestOption.toEntity(version),
+    );
 
     let result: IndividualChampResponseDto[] = [];
     if (answer.length !== 0) {
@@ -54,7 +67,8 @@ export class CombinationStatService {
   async getRecentVersion(): Promise<VersionResponseDto> {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList = await sortPatchVersions(versions);
-    const { category0, category1, category2 } = await this.combinationStatRepository.getMainpageData(versionList[0]);
+    const { category0, category1, category2 } =
+      await this.combinationStatRepository.getMainpageData(versionList[0]);
     let version: string;
     if (category0 >= 30 && category1 >= 30 && category2 >= 30) {
       version = versionList[0];

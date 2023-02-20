@@ -1,9 +1,16 @@
 import { CombinationStatService } from './combination-stat.service';
 import { Controller, Get, Param } from '@nestjs/common';
-import { IndividualChampParamPipe, CategoryParamPipe } from './pipes/combination-stat.param.validator.pipe';
+import {
+  IndividualChampParamPipe,
+  CategoryParamPipe,
+} from './pipes/combination-stat.param.validator.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryParamDto, IndividualChampParamDto } from './dtos/combination-stat.request.dto';
-import { IndividualChampResponseDto, TierListResponseDto, VersionResponseDto } from './dtos/combination-stat.response.dto';
+import {
+  IndividualChampResponseDto,
+  TierListResponseDto,
+  VersionResponseDto,
+} from './dtos/combination-stat.response.dto';
 
 @ApiTags('Combination-stat')
 @Controller('combination-stat')
@@ -34,7 +41,9 @@ export class CombinationStatController {
     type: TierListResponseDto,
   })
   @Get('/:category')
-  async getTierList(@Param(CategoryParamPipe) param: CategoryParamDto): Promise<TierListResponseDto[]> {
+  async getTierList(
+    @Param(CategoryParamPipe) param: CategoryParamDto,
+  ): Promise<TierListResponseDto[]> {
     return this.combinationStatService.getTierList(param.toTierListRequestDto());
   }
 
@@ -57,7 +66,9 @@ export class CombinationStatController {
     type: IndividualChampResponseDto,
   })
   @Get('/champ/:category/:position')
-  async getIndividualChampData(@Param(IndividualChampParamPipe) param: IndividualChampParamDto): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
+  async getIndividualChampData(
+    @Param(IndividualChampParamPipe) param: IndividualChampParamDto,
+  ): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
     return this.combinationStatService.getIndiviualChampData(param.toIndividualChampRequestDto());
   }
 }

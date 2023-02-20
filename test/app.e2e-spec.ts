@@ -30,6 +30,9 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/').expect(200).expect('this is carryduo development server. cd test');
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('this is carryduo development server. cd test');
   });
 });

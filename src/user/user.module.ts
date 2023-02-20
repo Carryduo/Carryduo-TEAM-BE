@@ -9,7 +9,12 @@ import { UserRepository } from './user.repository';
 import { ChampModule } from '../champ/champ.module';
 
 @Module({
-  imports: [AdminModule, TypeOrmModule.forFeature([UserEntity]), ConfigModule.forRoot(), ChampModule],
+  imports: [
+    AdminModule,
+    TypeOrmModule.forFeature([UserEntity]),
+    ConfigModule.forRoot(),
+    ChampModule,
+  ],
   controllers: [UserController],
   providers: [UserService, UserRepository],
 })
