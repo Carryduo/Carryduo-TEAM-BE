@@ -68,6 +68,5 @@ jobs:
       - run: npm test
         if: ${{ always() }}
       - run: npm run test-e2e
-        if: ${{ always() }}
       - run: npm run build --if-present
         if: ${{ always() }}
