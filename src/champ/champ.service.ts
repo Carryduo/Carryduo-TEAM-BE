@@ -23,7 +23,6 @@ export class ChampService {
     return await this.champDto.createPreferChampUserList(users);
   }
 
-  //TODO: 스펠 이미지 추가
   async getTargetChampion(param: TargetChampionReqDTO) {
     const existChamp = await this.champRepository.existChamp(param.champId);
     if (!existChamp) {

@@ -34,7 +34,6 @@ export class champDtoFactory {
       13: 'SummonerMana',
       11: 'SummonerSmite',
       12: 'SummonerTeleport',
-      default: 'default spell Image',
     };
 
     let rate: GetChampRate;
@@ -47,8 +46,8 @@ export class champDtoFactory {
     }
     const { spell1, spell2, version, ...withoutSpell } = rate;
     if (spell1 === 0 && spell2 === 0) {
-      spell1Img = `${process.env.S3_ORIGIN_URL}/spell/${spellInfo.default}.png`;
-      spell2Img = `${process.env.S3_ORIGIN_URL}/spell/${spellInfo.default}.png`;
+      spell1Img = `${process.env.S3_ORIGIN_URL}/default/default_0.png`;
+      spell2Img = `${process.env.S3_ORIGIN_URL}/default/default_0.png`;
     } else {
       spell1Img = `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell1]}.png`;
       spell2Img = `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[spell2]}.png`;
