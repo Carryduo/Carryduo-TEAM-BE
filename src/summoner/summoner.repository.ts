@@ -6,7 +6,6 @@ import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryEntity } from './entities/summoner.history.entity';
 import { Cache } from 'cache-manager';
 import { SummonerRecordSumData } from './dto/summoner/history/history.rate.dto';
-import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { RecentChampDto } from './dto/summoner/history/history.recent.champ.dto';
 import { SummonerPositionDto } from './dto/summoner/history/history.position.dto';
 
@@ -30,7 +29,7 @@ export class SummonerRepository {
     return await this.summonerRepository
       .createQueryBuilder()
       .where('summonerName = :summonerName', { summonerName })
-      .getRawOne();
+      .getOne();
   }
 
   async getSummoner(summonerName: string): Promise<SummonerEntity> {
@@ -132,13 +131,13 @@ export class SummonerRepository {
     return this.historyRepository.createQueryBuilder().insert().values(history).execute();
   }
 
-  async updateSummoner(summonerInfo: SummonerRequestDTO) {
+  async updateSummoner(summoner: SummonerEntity) {
     await this.summonerRepository
       .createQueryBuilder()
       .update(SummonerEntity)
-      .set(summonerInfo)
-      .where('summonerName=:summonerName', {
-        summonerName: summonerInfo.summonerName,
+      .set(summoner)
+      .where('summonerName = :summonerName', {
+        summonerName: summoner.summonerName,
       })
       .execute();
   }

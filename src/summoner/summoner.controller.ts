@@ -12,21 +12,21 @@ import { SummonerHistoryResponseDto } from './dto/summoner/history/history.respo
 export class SummonerController {
   constructor(private readonly summonerService: SummonerService) {}
 
-  // @ApiOperation({ summary: '소환사 전적 정보 새로고침' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: '소환사 전적 정보 새로고침',
-  //   type: SummonerAllDataDTO,
-  // })
-  // @ApiParam({
-  //   name: 'summonerName',
-  //   required: true,
-  //   description: '소환사 이름',
-  // })
-  // @Get('refresh/:summonerName')
-  // async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
-  //   return await this.summonerService.refreshSummonerData(summonerName);
-  // }
+  @ApiOperation({ summary: '소환사 전적 정보 새로고침' })
+  @ApiResponse({
+    status: 200,
+    description: '소환사 전적 정보 새로고침',
+    type: SummonerHistoryResponseDto,
+  })
+  @ApiParam({
+    name: 'summonerName',
+    required: true,
+    description: '소환사 이름',
+  })
+  @Get('refresh/:summonerName')
+  async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
+    return await this.summonerService.refreshSummoner(summonerName);
+  }
 
   @ApiOperation({ summary: '소환사 전적 정보 조회' })
   @ApiResponse({

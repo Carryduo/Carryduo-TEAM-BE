@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SummonerRepository } from './summoner.repository';
 import axios from 'axios';
 
@@ -61,14 +61,30 @@ export class SummonerService {
     return;
   }
 
-  // async refreshSummonerData(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-  //   const summoner = await this.summonerRepository.findSummoner(summonerName);
-  //   if (!summoner) throw new HttpException('갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)', HttpStatus.BAD_REQUEST);
-  //   const refreshSummoner = await this.summonerRiotRequest(summonerName);
-  //   await this.summonerRepository.updateSummoner(refreshSummoner);
+  async refreshSummoner(summonerName: string) {
+    const existSummoner = await this.summonerRepository.existSummoner(summonerName);
+    if (!existSummoner) {
+      throw new HttpException(
+        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const currentTime = new Date();
+    const daysElapsed =
+      (currentTime.getTime() - existSummoner.updatedAt.getTime()) / (1000 * 3600 * 24);
+    if (daysElapsed > 7) {
+      const updateSummoner = await this.requestRiotSummonerApi(summonerName);
+      await this.summonerRepository.updateSummoner(updateSummoner);
+    }
+    await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerName);
 
-  //   return await this.getSummoner(summonerName);
-  // }
+    const newHistory = await this.requestRiotSummonerHistoryApi(existSummoner.summonerPuuId);
+    await this.summonerRepository.createSummonerHistory(newHistory);
+
+    const summoner = await this.summonerRepository.getSummoner(summonerName);
+
+    return await this.summonerHistoryCalculation(summoner);
+  }
 
   private async requestRiotSummonerApi(summonerName: string) {
     //SUMMONER
