@@ -1,4 +1,10 @@
-import { Controller, Get, Param, UseFilters, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpCacheInterceptor } from '../common/interceptors/cache.interceptor';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
@@ -27,20 +33,21 @@ export class SummonerController {
   // async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
   //   return await this.summonerService.refreshSummonerData(summonerName);
   // }
-  // @ApiOperation({ summary: '소환사 전적 정보 조회' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: '소환사 전적 정보 조회',
-  //   type: SummonerAllDataDTO,
-  // })
-  // @ApiParam({
-  //   name: 'summonerName',
-  //   required: true,
-  //   description: '소환사 이름',
-  // })
+
+  @ApiOperation({ summary: '소환사 전적 정보 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '소환사 전적 정보 조회',
+    type: SummonerAllDataDTO,
+  })
+  @ApiParam({
+    name: 'summonerName',
+    required: true,
+    description: '소환사 이름',
+  })
   // @UseInterceptors(HttpCacheInterceptor)
-  // @Get('/:summonerName')
-  // async summonerInfo(@Param('summonerName') summonerName: string) {
-  //   return await this.summonerService.getSummoner(summonerName);
-  // }
+  @Get('/:summonerName')
+  async summonerInfo(@Param('summonerName') summonerName: string) {
+    return await this.summonerService.getSummoner(summonerName);
+  }
 }

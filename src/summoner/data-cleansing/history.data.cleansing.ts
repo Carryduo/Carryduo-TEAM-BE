@@ -10,24 +10,20 @@ import { SummonerRepository } from '../summoner.repository';
 export class SummonerHistoryDataCleansing {
   constructor(private readonly summonerRepository: SummonerRepository) {}
 
-  async historyDataCleansing(
-    summonerName: string,
-  ): Promise<SummonerHistoryResponseDTO> {
-    const check = await this.summonerRepository.getSummonerHistory(
-      summonerName,
-    );
+  async historyDataCleansing(summonerName: string): Promise<SummonerHistoryResponseDTO> {
+    // // const check = await this.summonerRepository.getSummonerHistory(
+    //   summonerName,
+    // );
 
-    if (!check) {
-      return;
-    }
+    // if (!check) {
+    //   return;
+    // }
 
     const winInfo = await this.summonerRepository.sumWin(summonerName);
 
     const recentChampsList = []; //10경기 중 많이 플레이 한 챔피언 리스트
 
-    const recentChamps = await this.summonerRepository.recentChamp(
-      summonerName,
-    );
+    const recentChamps = await this.summonerRepository.recentChamp(summonerName);
 
     for (let r of recentChamps) {
       recentChampsList.push(r.history_champ_id);
@@ -38,10 +34,7 @@ export class SummonerHistoryDataCleansing {
     for (let rc of recentChampsList) {
       const recentChampInfo = await this.summonerRepository.recentChampInfo(rc);
 
-      const recentChampRateInfo = await this.summonerRepository.recentChampRate(
-        summonerName,
-        rc,
-      );
+      const recentChampRateInfo = await this.summonerRepository.recentChampRate(summonerName, rc);
 
       //이기거나 진 카운트가 없으면 champId는 undifined가 돼서 champId 따로 추가
       if (!recentChampRateInfo.win.history_champ_id) {
@@ -107,9 +100,7 @@ export class SummonerHistoryDataCleansing {
       total: Number(winInfo.totalCnt),
       win: Number(winInfo.winCnt),
       lose: Number(winInfo.totalCnt) - Number(winInfo.winCnt),
-      winRate: Math.floor(
-        (Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100,
-      ),
+      winRate: Math.floor((Number(winInfo.winCnt) / Number(winInfo.totalCnt)) * 100),
       positions,
       recentChampRate: recentChampRates,
     };

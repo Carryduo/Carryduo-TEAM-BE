@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ChampEntity } from 'src/champ/entities/champ.entity';
 
 export class ChampCommonDTO {
   @ApiProperty({

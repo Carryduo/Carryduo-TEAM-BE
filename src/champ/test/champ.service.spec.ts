@@ -7,16 +7,10 @@ import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';
 import { champListData } from './data/champ.list';
 import { preferChampUserData } from './data/prefer.champ.user.list';
-import * as responseData from './data/champ.target.response';
-import * as champData from './data/champ.info';
+import * as champInfo from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { ChampRateDataDto, GetChampRateDto } from '../dto/champ-rate/champ.rate.dto';
-import { ChampSkillCommonDTO } from '../dto/champ-skill/champ.skill.common.dto';
-import { plainToInstance } from 'class-transformer';
-import { ChampBanRateDto } from '../dto/champ-ban/champ.ban.common.dto';
-import { TargetChampionResDto } from '../dto/target-champion/target.response.dto';
-import { GetMostPositionDto } from '../dto/champ-position/champ.most.position.dto';
+import { champDtoFactory } from '../champ.dto.factory';
 
 class MockRepository {
   getChampList() {
@@ -35,6 +29,7 @@ class MockRepository {
   rateVersion() {
     return [{ version: '12.23' }, { version: '13.1.' }];
   }
+
   getMostPosition(champId: string, version: string) {
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') return [];
@@ -52,20 +47,20 @@ class MockRepository {
   }
 
   getSkillData(champId: string) {
-    return champData.skillInfo;
+    return champInfo.skillInfo;
   }
 
   getChampDefaultData(champId: string) {
-    return champData.champDefaultData;
+    return champInfo.champDefaultData;
   }
 
   getChampRate(champId: string, position: string, version: string) {
     //id:2에 해당하는 챔피언 데이터가 없는 경우
     if (champId === '2') {
-      return champData.DEFAULT;
+      return champInfo.DEFAULT;
     }
 
-    return champData[position];
+    return champInfo[position];
   }
   getBanRate() {
     return { banRate: 0.2 };
@@ -77,16 +72,24 @@ class MockChache {}
 describe('ChampService', () => {
   let service: ChampService;
   let repository: ChampRepository;
+  let dto: champDtoFactory;
   const env = process.env;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChampService,
+        champDtoFactory,
         { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },
+        {
+          provide: getRepositoryToken(GameInfoEntity),
+          useClass: MockRepository,
+        },
+        {
+          provide: getRepositoryToken(UpdateChampRateEntity),
+          useClass: MockRepository,
+        },
         {
           provide: getRepositoryToken(UserEntity),
           useClass: MockRepository,
@@ -97,8 +100,12 @@ describe('ChampService', () => {
 
     service = module.get<ChampService>(ChampService);
     repository = module.get<ChampRepository>(ChampRepository);
+    dto = module.get<champDtoFactory>(champDtoFactory);
     jest.resetModules();
-    process.env = { ...env, S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img` };
+    process.env = {
+      ...env,
+      S3_ORIGIN_URL: `https://ddragon.leagueoflegends.com/cdn/12.19.1/img`,
+    };
   });
   afterEach(() => {
     process.env = env;
@@ -189,102 +196,82 @@ describe('ChampService', () => {
   it('getTargetChampion에서 포지션 파라미터가 default인 경우 mostPosition을 찾아서 포지션에 맞는 데이터를 return?', async () => {
     const version = '13.1.';
 
-    const param = {
+    const Param = {
       champId: '1',
       position: 'default',
     };
 
-    const getPosition = await repository.getMostPosition(param.champId, version);
+    const getPosition = await repository.getMostPosition(Param.champId, version);
 
     expect(getPosition[0]?.position).toEqual('JUNGLE');
 
-    const { position } = plainToInstance(GetMostPositionDto, {
-      position: getPosition[0]?.position,
-    });
+    const champPosition = getPosition[0]?.position;
 
-    const champRate: GetChampRateDto[] = champData.JUNGLE;
+    const champDefaultData = champInfo.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const skillInfo = champInfo.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const champDefaultData = champData.champDefaultData;
+    const banInfo = { banRate: '0.2' };
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
 
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
-    const result = await service.getTargetChampion(param);
+    const result = await service.getTargetChampion(Param);
 
     expect(result).toEqual(response);
   });
 
   it('getTargetChampion에서 포지션 파라미터의 값대로 response를 return?', async () => {
+    const version = '13.1.';
     const Param = {
       champId: '1',
       position: 'mid',
     };
-    const { position } = plainToInstance(GetMostPositionDto, { position: 'MIDDLE' });
+    const champPosition = 'MIDDLE';
 
-    const champRate: GetChampRateDto[] = champData.MIDDLE;
+    const champDefaultData = champInfo.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const createChampRateDto = champRate.map((v) => GetChampRateDto.transformDto(v));
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const skillInfo = champInfo.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const champDefaultData = champData.champDefaultData;
+    const banInfo = { banRate: '0.2' };
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
-
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
   });
 
   it('getTargetChampion에서 특정 챔피언의 정보가 없으면 default data return?', async () => {
+    const version = '13.1.';
     const Param = {
       champId: '2',
       position: 'default',
     };
-    const { position } = plainToInstance(GetMostPositionDto, { position: null });
 
-    const champRate: GetChampRateDto[] = champData.DEFAULT;
+    const champPosition = null;
 
-    const createChampRateDto =
-      champRate.length === 0
-        ? [GetChampRateDto.transformDto(null)]
-        : champRate.map((v) => GetChampRateDto.transformDto(v));
+    const champDefaultData = champInfo.champDefaultData;
+    const champDataDto = await dto.createChampData(champDefaultData);
 
-    const champRateData = plainToInstance(ChampRateDataDto, createChampRateDto);
+    const skillInfo = champInfo.skillInfo;
+    const skill = await dto.createSkill(skillInfo);
 
-    const champDefaultData = champData.champDefaultData;
+    const banInfo = { banRate: '0.2' };
 
-    const skill = champData.skillInfo.map((v) => ChampSkillCommonDTO.transformDto(v));
+    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
+    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
 
-    const { banRate } = plainToInstance(ChampBanRateDto, { banRate: '0.2' });
-
-    const response = plainToInstance(TargetChampionResDto, {
-      ...champDefaultData,
-      skill,
-      position,
-      banRate,
-      ...champRateData[0],
-    });
-
+    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
     const result = await service.getTargetChampion(Param);
+
     expect(result).toEqual(response);
   });
 });

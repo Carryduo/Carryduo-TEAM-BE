@@ -1,68 +1,82 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { SummonerHistoryDataCleansing } from './data-cleansing/history.data.cleansing';
 import { summonerResponseCleansing } from './data-cleansing/summoner.data.cleansing';
-import {
-  SummonerAllDataDTO,
-  SummonerDataDTO,
-} from './dto/summoner/summoner.data.dto';
+import { SummonerAllDataDTO, SummonerDataDTO } from './dto/summoner/summoner.data.dto';
 
 import { SummonerRequestDTO } from './dto/summoner/summoner.request.dto';
 import { SummonerDBResponseDTO } from './dto/summoner/summoner.response.dto';
 import { SummonerRepository } from './summoner.repository';
 import axios from 'axios';
+import { SummonerRiotRequest } from './summoner.riot.request';
+import { SummonerDefaultDataDto } from './dto/summoner/summoner.common.dto';
+import { plainToInstance } from 'class-transformer';
+import {
+  SummonerHistoryRateDto,
+  SummonerPositionDto,
+  SummonerRecordSumData,
+} from './dto/history/summoner.record.dto';
+import { RecentChampDto } from './dto/history/recent.champ.dto';
 
 @Injectable()
 export class SummonerService {
   constructor(
     private readonly summonerRepository: SummonerRepository,
-    private readonly summonerResponse: summonerResponseCleansing,
-    private readonly summonerHistory: SummonerHistoryDataCleansing,
+    private readonly riotRequest: SummonerRiotRequest,
   ) {}
 
-  async cleansingData(summonerName: string, summoner: SummonerDBResponseDTO) {
-    const history = await this.summonerHistory.historyDataCleansing(
+  async getSummoner(summonerName: string) {
+    const summoner = await this.summonerRepository.getSummoner(summonerName);
+    if (!summoner) {
+      // await this.createSummoner(summonerName);
+    }
+    const summonerDefaultDataDto = SummonerDefaultDataDto.plainToSummonerDeafultDataDto(summoner);
+
+    const recordSum: SummonerRecordSumData = await this.summonerRepository.getSummonerRecordSum(
       summonerName,
     );
-    const summonerData = await this.summonerResponse.responseCleansing(
-      summoner,
-      history,
-    );
-    return summonerData;
-  }
 
-  async getSummoner(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    if (!summoner) {
-      return await this.saveSummoner(summonerName);
-    }
-    return await this.cleansingData(summonerName, summoner);
-  }
+    const historyRateDto = SummonerHistoryRateDto.plainToSummonerHistoryRateDto(recordSum);
 
-  async saveSummoner(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const newSummoner = await this.summonerRiotRequest(summonerName);
-    await this.summonerRepository.insertSummoner(newSummoner);
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    return await this.cleansingData(summonerName, summoner);
-  }
+    const position = await this.summonerRepository.getSummonerPositionRecord(summonerName);
 
-  async refreshSummonerData(
-    summonerName: string,
-  ): Promise<SummonerAllDataDTO | SummonerDataDTO> {
-    const summoner = await this.summonerRepository.findSummoner(summonerName);
-    if (!summoner)
-      throw new HttpException(
-        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
-        HttpStatus.BAD_REQUEST,
+    const positions = SummonerPositionDto.plainToSummonerPositionDto(position);
+
+    const history = plainToInstance(SummonerHistoryRateDto, { ...historyRateDto, positions });
+
+    let recentChamp = await this.summonerRepository.getRecentChamp(summonerName);
+
+    let recentChampRate = [];
+    for (let r of recentChamp) {
+      recentChampRate.push(
+        ...(await this.summonerRepository.getRecentChampInfo(r.champId, r.count)),
       );
-    const refreshSummoner = await this.summonerRiotRequest(summonerName);
-    await this.summonerRepository.updateSummoner(refreshSummoner);
+    }
 
-    return await this.getSummoner(summonerName);
+    console.log(recentChampRate);
+    // const recentChampDto = RecentChampDto.plainToRecentChampDto(recentChampInfo, recentChamp);
+
+    return { ...summonerDefaultDataDto, history };
   }
+
+  private async createSummoner(summonerName: string) {
+    const createSummonerData = await this.riotRequest.requestRiotSummonerApi(summonerName);
+    await this.summonerRepository.createSummoner(createSummonerData);
+
+    const createSummonerHistoryData = await this.riotRequest.requestRiotSummonerHistoryApi(
+      summonerName,
+      createSummonerData.summonerPuuId,
+    );
+    await this.summonerRepository.createSummonerHistory(createSummonerHistoryData);
+  }
+
+  // async refreshSummonerData(summonerName: string): Promise<SummonerAllDataDTO | SummonerDataDTO> {
+  //   const summoner = await this.summonerRepository.findSummoner(summonerName);
+  //   if (!summoner) throw new HttpException('갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)', HttpStatus.BAD_REQUEST);
+  //   const refreshSummoner = await this.summonerRiotRequest(summonerName);
+  //   await this.summonerRepository.updateSummoner(refreshSummoner);
+
+  //   return await this.getSummoner(summonerName);
+  // }
 
   //라이엇 API 요청, 데이터 저장 API
   async summonerRiotRequest(summonerName: string) {
@@ -93,19 +107,10 @@ export class SummonerService {
 
       const detailData = detailResponse.data;
 
-      let win: number,
-        lose: number,
-        winRate: number,
-        tier: string,
-        rank: string,
-        lp: number;
+      let win: number, lose: number, winRate: number, tier: string, rank: string, lp: number;
 
-      const soloRankInfo = detailData.find(
-        (ele) => ele.queueType === 'RANKED_SOLO_5x5',
-      );
-      const flexRankInfo = detailData.find(
-        (ele) => ele.queueType === 'RANKED_FLEX_SR',
-      );
+      const soloRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_SOLO_5x5');
+      const flexRankInfo = detailData.find((ele) => ele.queueType === 'RANKED_FLEX_SR');
 
       if (soloRankInfo) {
         win = soloRankInfo.wins;
@@ -130,11 +135,7 @@ export class SummonerService {
         lp = 0;
       }
 
-      if (!detailData)
-        throw new HttpException(
-          '언랭크 소환사 입니다.',
-          HttpStatus.BAD_REQUEST,
-        );
+      if (!detailData) throw new HttpException('언랭크 소환사 입니다.', HttpStatus.BAD_REQUEST);
 
       let tierImg: string;
       switch (tier) {
@@ -191,12 +192,11 @@ export class SummonerService {
       );
 
       //유저 최근 전적 요청 부분
-      const getSummonerHistory =
-        await this.summonerRepository.getSummonerHistory(summonerName);
+      // const getSummonerHistory = await this.summonerRepository.getSummonerHistory(summonerName);
 
-      if (getSummonerHistory) {
-        await this.summonerRepository.deleteSummonerHistory(summonerName);
-      }
+      // if (getSummonerHistory) {
+      //   await this.summonerRepository.deleteSummonerHistory(summonerName);
+      // }
 
       for (let m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
@@ -240,7 +240,7 @@ export class SummonerService {
                 summonerId: p.summonerId,
                 matchId: m,
               };
-              await this.summonerRepository.createSummonerHistory(history);
+              // await this.summonerRepository.createSummonerHistory(history);
             } else {
               continue;
             }
@@ -251,10 +251,7 @@ export class SummonerService {
     } catch (err) {
       console.log(err);
       if (err.response.status === 429) {
-        throw new HttpException(
-          '라이엇API 요청 과도화',
-          HttpStatus.TOO_MANY_REQUESTS,
-        );
+        throw new HttpException('라이엇API 요청 과도화', HttpStatus.TOO_MANY_REQUESTS);
       } else if (err.response.status === 403) {
         throw new HttpException('라이엇API 키 만료', HttpStatus.FORBIDDEN);
       } else if (err.status === 400) {

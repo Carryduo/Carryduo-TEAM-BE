@@ -1,27 +1,26 @@
-export class RiotSummonerDTO {
-  accountId: string;
-  profileIconId: number;
-  revisionDate: number;
-  name: string;
-  id: string;
-  puuid: string;
-  summonerLevel: number;
-}
+import { Exclude, Expose, Transform } from 'class-transformer';
 
 export class SummonerDataDto {
-  summonerId: string;
-  puuId: string;
-  summonerLevel: number;
-  summonerIcon: string;
-  summonerName: string;
+  @Exclude()
+  accountId: string;
+  @Exclude()
+  revisionDate: number;
 
-  static transformSummonerDataDto(data: RiotSummonerDTO) {
-    const summonerData = new SummonerDataDto();
-    summonerData.summonerId = data.id;
-    summonerData.puuId = data.puuid;
-    summonerData.summonerLevel = data.summonerLevel;
-    summonerData.summonerIcon = `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${data.profileIconId}.png`;
-    summonerData.summonerName = data.name;
-    return summonerData;
-  }
+  @Expose({ name: 'id' })
+  summonerId: string;
+
+  @Expose({ name: 'puuid' })
+  summonerPuuId: string;
+
+  @Expose({ name: 'summonerLevel' })
+  summonerLevel: number;
+
+  @Transform(({ value }) => {
+    return `https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/${value}.png`;
+  })
+  @Expose({ name: 'profileIconId' })
+  summonerIcon: string;
+
+  @Expose({ name: 'name' })
+  summonerName: string;
 }

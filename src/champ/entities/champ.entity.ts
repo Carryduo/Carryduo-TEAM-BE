@@ -10,6 +10,7 @@ import { SimulationEntity } from '../../simulation/entities/simulation.entity';
 import { UpdateChampRateEntity } from './update.champ.rate.entity';
 import { ChampBanEntity } from './champ.ban.entity';
 import { UpdateChampSpellEntity } from './update.champ.spell.entity';
+import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
 
 @Entity({
   name: 'CHAMP',
@@ -55,6 +56,11 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
     cascade: true,
   })
   summoner: SummonerEntity;
+
+  @OneToMany(() => SummonerHistoryEntity, (history: SummonerHistoryEntity) => history.champId, {
+    cascade: true,
+  })
+  history: SummonerHistoryEntity;
 
   @OneToMany(() => UserEntity, (user: UserEntity) => [user.preferChamp1, user.preferChamp2, user.preferChamp3], {
     cascade: true,

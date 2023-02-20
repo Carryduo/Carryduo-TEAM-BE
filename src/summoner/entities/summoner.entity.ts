@@ -16,6 +16,9 @@ export class SummonerEntity extends CommonEntity {
   summonerId: string;
 
   @Column({ type: 'varchar', nullable: false })
+  summonerPuuId: string;
+
+  @Column({ type: 'varchar', nullable: false })
   summonerIcon: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -40,7 +43,7 @@ export class SummonerEntity extends CommonEntity {
   winRate: number;
 
   @OneToMany(() => SummonerHistoryEntity, (history: SummonerHistoryEntity) => history.summonerName)
-  history: SummonerHistoryEntity;
+  history?: SummonerHistoryEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',
@@ -81,11 +84,13 @@ export class SummonerEntity extends CommonEntity {
   @OneToMany(() => SubscriptionEntity, (subscription: SubscriptionEntity) => subscription.summonerName, {
     cascade: true,
   })
+
   subscription: SubscriptionEntity;
 
   @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {
     cascade: true,
   })
+
   comment: CommentEntity;
 
   static createSummonerNameOption(summonerName: string) {
