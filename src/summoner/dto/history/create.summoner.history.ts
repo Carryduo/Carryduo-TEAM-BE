@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
+import { ChampEntity } from '../../../champ/entities/champ.entity';
+import { SummonerHistoryEntity } from '../../../summoner/entities/summoner.history.entity';
 
 const positionInfo = {
   1: 'TOP',

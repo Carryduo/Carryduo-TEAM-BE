@@ -1,14 +1,9 @@
-import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { ChampCommonDTO } from '../../champ/dto/champ/champ.common.dto';
-import { SummonerCommonDTO } from '../../summoner/dto/summoner/summoner.common.dto';
-import { UserCommonDto } from '../../user/dto/user.common.dto';
-import { UserBasicInfoResponseDTO } from '../../user/dto/user.response.dto';
+import { ChampEntity } from '../../champ/entities/champ.entity';
+import { SummonerEntity } from '../../summoner/entities/summoner.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import { CommentEntity } from '../entities/comments.entity';
-import { CommentCommonDto } from './comments.common.dto';
 
 export class CommentGetResponseDto {
   @Exclude() _id: string;
@@ -109,33 +104,4 @@ export class CommentGetResponseDto {
   get summonerName() {
     return this._summonerName;
   }
-}
-export class CommentGetResponseDTO extends PickType(CommentCommonDto, ['id', 'category', 'content', 'reportNum', 'createdAt']) {
-  @ApiProperty({
-    description: '평판 작성자 정보',
-  })
-  userId: UserBasicInfoResponseDTO;
-  @ApiProperty({
-    example: { id: 15 },
-    description: '평판이 등록된 챔피언 고유 ID',
-  })
-  champId: { id: string } | null;
-
-  @ApiProperty({
-    example: {
-      summonerName: '쿠바버샷추가',
-    },
-    description: '평판이 등록된 소환사 이름',
-  })
-  summonerName: { summonerName: string } | null;
-}
-
-class CommentUser extends OmitType(UserCommonDto, ['createdAt', 'updatedAt', 'deletedAt', 'preferChamp1', 'preferChamp2', 'preferChamp3']) {}
-
-class CommentSummoner extends OmitType(SummonerCommonDTO, ['id', 'createdAt', 'updatedAt', 'deletedAt', 'mostChamp1', 'mostChamp2', 'mostChamp3']) {}
-
-export class ContentDTO extends PickType(CommentCommonDto, ['id', 'createdAt', 'updatedAt', 'deletedAt', 'category', 'content', 'reportNum']) {
-  userId: CommentUser;
-  champId: ChampCommonDTO | null;
-  summonerName: CommentSummoner;
 }

@@ -26,7 +26,7 @@ export class typeOrmOption {
     entities: [GameInfoEntity, UpdateChampRateEntity, ChampBanEntity, UpdateChampSpellEntity, UserEntity, ChampEntity, ChampSkillEntity, SummonerEntity, CombinationStatEntity, CommentEntity, SubscriptionEntity, SummonerHistoryEntity, SimulationEntity],
     synchronize: false,
     autoLoadEntities: true,
-    logging: true,
+    logging: false,
     keepConnectionAlive: true,
     timezone: 'local',
     charset: 'utf8mb4',

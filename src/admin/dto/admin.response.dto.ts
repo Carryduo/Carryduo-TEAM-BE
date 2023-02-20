@@ -1,8 +1,8 @@
 import { UpdateReportNumRequestDto, DeleteCommentRequestDto } from './../../comments/dto/comment.request.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { PostCommentRequestDto, UpdateCommentRequestDto } from 'src/comments/dto/comment.request.dto';
-import { GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto, UpdateUserOptionRequestDto } from 'src/user/dto/user.request.dto';
+import { PostCommentRequestDto, UpdateCommentRequestDto } from '../../comments/dto/comment.request.dto';
+import { GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto, UpdateUserOptionRequestDto } from '../../user/dto/user.request.dto';
 
 // TODO: 얘는 RESPONSE DTO
 

@@ -1,13 +1,13 @@
 import { UserService } from './user.service';
 import { Controller, Post } from '@nestjs/common';
-import { Get, UseGuards, UseFilters, Param, Body, ParseUUIDPipe } from '@nestjs/common';
+import { Get, UseGuards, UseFilters, Param, Body } from '@nestjs/common';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
-import { GetOtherUserInfoRequestDto, GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto } from './dto/user.request.dto';
+import { GetOtherUserInfoRequestDto, UpdateUserOptionRequestBodyDto } from './dto/user.request.dto';
 import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
-import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
+import { LoginResponseDto } from '../admin/dto/admin.response.dto';
 import { UserInfoResponseDto } from './dto/user.response.dto';
 
 @Controller('user')
