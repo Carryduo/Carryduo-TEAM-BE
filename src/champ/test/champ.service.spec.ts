@@ -1,7 +1,7 @@
 import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import { ChampRepository } from '../champ.repository';
 import { ChampService } from '../champ.service';
 import { ChampEntity } from '../entities/champ.entity';

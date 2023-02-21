@@ -8,7 +8,7 @@ import { ChampEntity } from '../../champ/entities/champ.entity';
 })
 export class SummonerHistoryEntity extends CommonEntity {
   @Column({ type: 'boolean', nullable: false, default: 0 })
-  win: boolean;
+  win: number;
 
   @Column({ type: 'int', nullable: false, default: 0 })
   kill: number;
@@ -23,10 +23,10 @@ export class SummonerHistoryEntity extends CommonEntity {
   position: number;
 
   @Column({ type: 'varchar', nullable: false })
-  summonerId: string;
+  matchId: string;
 
   @Column({ type: 'varchar', nullable: false })
-  matchId: string;
+  summonerName: string;
 
   @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.summonerName, {
     onDelete: 'CASCADE',
@@ -34,11 +34,11 @@ export class SummonerHistoryEntity extends CommonEntity {
   })
   @JoinColumn([
     {
-      name: 'summonerName',
-      referencedColumnName: 'summonerName',
+      name: 'summonerId',
+      referencedColumnName: 'summonerId',
     },
   ])
-  summonerName: SummonerEntity | string;
+  summonerId: SummonerEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
     onDelete: 'CASCADE',

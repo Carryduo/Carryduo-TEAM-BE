@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { ChampRateDataDto, GetChampRate } from './dto/champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO, SkillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
