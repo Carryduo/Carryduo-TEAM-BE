@@ -24,7 +24,7 @@ export class SummonerService {
     return await this.summonerHistoryCalculation(summoner);
   }
 
-  private async summonerHistoryCalculation(summoner: SummonerEntity) {
+  async summonerHistoryCalculation(summoner: SummonerEntity) {
     const summonerDefaultDataDto = await this.summonerDto.createSummonerDefaultData(summoner);
 
     const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerId);
@@ -52,7 +52,7 @@ export class SummonerService {
     return await this.summonerDto.createHistoryResponse(summonerDefaultDataDto, historyRateDto);
   }
 
-  private async createSummoner(summonerName: string) {
+  async createSummoner(summonerName: string) {
     const summoner = await this.requestRiotSummonerApi(summonerName);
     const history = await this.requestRiotSummonerHistoryApi(summoner.summonerPuuId);
 
@@ -87,7 +87,7 @@ export class SummonerService {
     return await this.summonerHistoryCalculation(summoner);
   }
 
-  private async requestRiotSummonerApi(summonerName: string) {
+  async requestRiotSummonerApi(summonerName: string) {
     //SUMMONER
     const response = await axios.get(
       `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
@@ -154,6 +154,7 @@ export class SummonerService {
           'RIOT_API_KEY',
         )}`,
       );
+
       const matchDataInfo = matchDataResponse.data.info;
 
       if (matchDataInfo.gameMode === 'CLASSIC') {

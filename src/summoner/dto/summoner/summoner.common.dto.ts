@@ -1,6 +1,5 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { ChampCommonDTO } from '../../../champ/dto/champ/champ.common.dto';
 import { CommonEntity } from '../../../common/entities/common.entity';
 
 export class SummonerCommonDTO extends CommonEntity {
@@ -23,7 +22,7 @@ export class SummonerCommonDTO extends CommonEntity {
     description: '소환사 puuid',
     required: true,
   })
-  readonly summonerPuuId: string;
+  readonly summonerPuuId?: string;
 
   @ApiProperty({
     example: 'example.png',

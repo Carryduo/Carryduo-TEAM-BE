@@ -18,7 +18,7 @@ export class CreateSummonerDto extends OmitType(SummonerCommonDTO, [
     summoner.tier = this.tier;
     summoner.tierImg = this.tierImg;
     summoner.lp = this.lp;
-    summoner.win = this.win ? 1 : 0;
+    summoner.win = this.win;
     summoner.lose = this.lose;
     summoner.winRate = this.winRate;
     summoner.mostChamp1 = this.mostChamp1;
