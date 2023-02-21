@@ -25,7 +25,6 @@ export class UserService {
     try {
       const option = data.toEntity();
       const preferChamp = await this.userRepository.findPreferchamps(option.userId);
-      console.log(preferChamp);
       const preferChampList = [
         preferChamp.preferChamp1,
         preferChamp.preferChamp2,

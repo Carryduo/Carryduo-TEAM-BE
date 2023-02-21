@@ -1,4 +1,19 @@
-import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete, Patch, ParseUUIDPipe, HttpException, UseInterceptors, CacheInterceptor } from '@nestjs/common';
+import {
+  Controller,
+  UseFilters,
+  Get,
+  Post,
+  Param,
+  Req,
+  Body,
+  UseGuards,
+  Delete,
+  Patch,
+  ParseUUIDPipe,
+  HttpException,
+  UseInterceptors,
+  CacheInterceptor,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginResponseDto } from '../admin/dto/admin.response.dto';
 import { HttpCacheInterceptor } from '../common/interceptors/cache.interceptor';
@@ -62,8 +77,14 @@ export class CommentsController {
   })
   @Post('/:category/:target')
   @UseGuards(jwtGuard)
-  async postComment(@Param(CommentParamPipe) param: CommentParamDto, @User() user: LoginResponseDto, @Body() body: CommentBodyDto) {
-    await this.commentService.postComment(user.toPostCommentRequestDto(param.category, param.target, body.content));
+  async postComment(
+    @Param(CommentParamPipe) param: CommentParamDto,
+    @User() user: LoginResponseDto,
+    @Body() body: CommentBodyDto,
+  ) {
+    await this.commentService.postComment(
+      user.toPostCommentRequestDto(param.category, param.target, body.content),
+    );
     return new CommonResponseDto(true, '평판 업로드 완료했습니다');
   }
 
@@ -81,7 +102,11 @@ export class CommentsController {
   })
   @Patch('/:id')
   @UseGuards(jwtGuard)
-  async updateContent(@Param('id', ParseUUIDPipe) id, @User() user: LoginResponseDto, @Body() body: CommentBodyDto) {
+  async updateContent(
+    @Param('id', ParseUUIDPipe) id,
+    @User() user: LoginResponseDto,
+    @Body() body: CommentBodyDto,
+  ) {
     await this.commentService.updateContent(user.toUpdateCommentRequestDto(id, body.content));
     return new CommonResponseDto(true, '평판 수정 완료되었습니다');
   }
@@ -100,7 +125,10 @@ export class CommentsController {
   })
   @Patch('/report/:id')
   @UseGuards(jwtGuard)
-  async updateReportNum(@Param('id', ParseUUIDPipe) commentId: string, @User() user: LoginResponseDto): Promise<CommonResponseDto> {
+  async updateReportNum(
+    @Param('id', ParseUUIDPipe) commentId: string,
+    @User() user: LoginResponseDto,
+  ): Promise<CommonResponseDto> {
     await this.commentService.updateReportNum(user.toUpdateCommentReportNumRequestDto(commentId));
     return new CommonResponseDto(true, '평판 신고 완료되었습니다');
   }
@@ -119,7 +147,10 @@ export class CommentsController {
   })
   @Delete('/:id')
   @UseGuards(jwtGuard)
-  async deleteComment(@Param('id', ParseUUIDPipe) commentId: string, @User() user: LoginResponseDto): Promise<CommonResponseDto> {
+  async deleteComment(
+    @Param('id', ParseUUIDPipe) commentId: string,
+    @User() user: LoginResponseDto,
+  ): Promise<CommonResponseDto> {
     await this.commentService.deleteComment(user.toDeleteCommentRequestDto(commentId));
     return new CommonResponseDto(true, '평판 삭제 완료되었습니다');
   }

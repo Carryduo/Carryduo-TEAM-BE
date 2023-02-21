@@ -1,4 +1,3 @@
-import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
@@ -8,7 +7,6 @@ import { HttpExceptionFilter } from '../src/common/exception/http-exception.filt
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let dataSource: DataSource;
   jest.setTimeout(50000);
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
