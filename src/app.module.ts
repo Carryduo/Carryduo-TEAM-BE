@@ -1,4 +1,4 @@
-import { CacheModule, Module } from '@nestjs/common';
+import { CacheModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -13,6 +13,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
 import { typeOrmOption } from './common/configs/typeorm.config';
 import { redisOption } from './common/configs/redis.config';
 import { SimulationModule } from './simulation/simulation.module';
+import { LoggerMiddleware } from './common/middlewares/logging.middleware';
 
 @Module({
   imports: [
@@ -31,4 +32,8 @@ import { SimulationModule } from './simulation/simulation.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
