@@ -102,6 +102,7 @@ describe('Comment (e2e)', () => {
 
   it('/:categry/:target (GET) | 댓글 조회', async () => {
     const response = await request(app.getHttpServer()).get('/comments/champ/875');
+    console.log(response.body);
     expect(response.body.length).toBe(1);
     expect(response.body[0].champId.id).toBe('875');
     expect(response.body[0].userId.nickname).toBe(sample.nickname);
