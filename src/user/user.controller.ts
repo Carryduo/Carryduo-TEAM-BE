@@ -56,7 +56,10 @@ export class UserController {
   })
   @Post('/option')
   @UseGuards(jwtGuard)
-  async updateUserOptionInfo(@User() user: LoginResponseDto, @Body() body: UpdateUserOptionRequestBodyDto): Promise<CommonResponseDto> {
+  async updateUserOptionInfo(
+    @User() user: LoginResponseDto,
+    @Body() body: UpdateUserOptionRequestBodyDto,
+  ): Promise<CommonResponseDto> {
     await this.userService.updateUserOptionInfo(user.toUpdateOptionRequestDto(body));
     return new CommonResponseDto(true, '설정 변경 완료되었습니다');
   }
@@ -73,7 +76,9 @@ export class UserController {
     type: UserInfoResponseDto,
   })
   @Get('/:id')
-  async getIndividualUserInfo(@Param() user: GetOtherUserInfoRequestDto): Promise<UserInfoResponseDto> {
+  async getIndividualUserInfo(
+    @Param() user: GetOtherUserInfoRequestDto,
+  ): Promise<UserInfoResponseDto> {
     return this.userService.getUserInfo(user.toGetUserInfoRequestDto('individual'));
   }
 }

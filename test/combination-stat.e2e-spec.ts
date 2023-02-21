@@ -11,11 +11,9 @@ import { AppModule } from './../src/app.module';
 import { Reflector } from '@nestjs/core';
 import { HttpExceptionFilter } from '../src/common/exception/http-exception.filter';
 
-describe('AppController (e2e)', () => {
+describe('Combination-Stat (e2e)', () => {
   let app: INestApplication;
-  let dataSource: DataSource;
-  jest.setTimeout(50000);
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -31,11 +29,6 @@ describe('AppController (e2e)', () => {
     );
     app.useGlobalFilters(new HttpExceptionFilter()); // httpException filter 등록
     await app.init();
-    dataSource = app.get<DataSource>(DataSource); // app module에 주입되어 있는 typeorm을 변수에 할당
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 
   it('/:category (GET)', async () => {
@@ -106,5 +99,9 @@ describe('AppController (e2e)', () => {
     const status = response.statusCode;
     expect(status).toBe(200);
     expect(body.version).toBe('13.3.');
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });

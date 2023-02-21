@@ -10,7 +10,7 @@ describe('AppController (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
   jest.setTimeout(50000);
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -26,7 +26,6 @@ describe('AppController (e2e)', () => {
     );
     app.useGlobalFilters(new HttpExceptionFilter()); // httpException filter 등록
     await app.init();
-    dataSource = app.get<DataSource>(DataSource); // app module에 주입되어 있는 typeorm을 변수에 할당
   });
 
   it('/ (GET)', () => {
@@ -34,5 +33,9 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(200)
       .expect('this is carryduo development server. cd test');
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });
