@@ -25,7 +25,14 @@ import { UserRepository } from '../user/user.repository';
     ChampModule,
   ],
   controllers: [AdminController],
-  providers: [AdminService, KakaoStrategy, jwtStrategy, AdminRepository, UserRepository, CommentRepository],
+  providers: [
+    AdminService,
+    KakaoStrategy,
+    jwtStrategy,
+    AdminRepository,
+    UserRepository,
+    CommentRepository,
+  ],
   exports: [AdminRepository],
 })
 export class AdminModule {}

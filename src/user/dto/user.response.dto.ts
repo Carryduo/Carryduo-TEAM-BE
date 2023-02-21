@@ -1,8 +1,8 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { CommentEntity } from 'src/comments/entities/comments.entity';
+import { ChampEntity } from '../../champ/entities/champ.entity';
+import { CommentEntity } from '../../comments/entities/comments.entity';
 import { ChampCommonDTO } from '../../champ/dto/champ/champ.common.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserCommonDto } from './user.common.dto';

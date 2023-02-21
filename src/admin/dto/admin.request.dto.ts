@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import { kakaoPayload } from './kakao.payload';
 
 export class DeleteUserReqeustDto {

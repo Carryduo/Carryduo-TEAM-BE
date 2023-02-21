@@ -1,7 +1,7 @@
 import { Controller, UseFilters, Get, Post, Param, Req, Body, UseGuards, Delete, Patch, ParseUUIDPipe, HttpException, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginResponseDto } from 'src/admin/dto/admin.response.dto';
-import { HttpCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
+import { LoginResponseDto } from '../admin/dto/admin.response.dto';
+import { HttpCacheInterceptor } from '../common/interceptors/cache.interceptor';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
 import { User } from '../common/decorators/user.decorator';
 import { CommonResponseDto } from '../common/dto/common.response.dto';

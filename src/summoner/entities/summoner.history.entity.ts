@@ -1,13 +1,14 @@
 import { CommonEntity } from '../../common/entities/common.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { SummonerEntity } from './summoner.entity';
+import { ChampEntity } from '../../champ/entities/champ.entity';
 
 @Entity({
   name: 'SUMMONERHISTORY',
 })
 export class SummonerHistoryEntity extends CommonEntity {
   @Column({ type: 'boolean', nullable: false, default: 0 })
-  win: boolean;
+  win: number;
 
   @Column({ type: 'int', nullable: false, default: 0 })
   kill: number;
@@ -21,14 +22,11 @@ export class SummonerHistoryEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   position: number;
 
-  @Column({ type: 'int', nullable: false, default: false })
-  champId: number;
-
-  @Column({ type: 'varchar', nullable: false })
-  summonerId: string;
-
   @Column({ type: 'varchar', nullable: false })
   matchId: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  summonerName: string;
 
   @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.summonerName, {
     onDelete: 'CASCADE',
@@ -36,9 +34,21 @@ export class SummonerHistoryEntity extends CommonEntity {
   })
   @JoinColumn([
     {
-      name: 'summonerName',
-      referencedColumnName: 'summonerName',
+      name: 'summonerId',
+      referencedColumnName: 'summonerId',
     },
   ])
-  summonerName: SummonerEntity;
+  summonerId: SummonerEntity;
+
+  @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([
+    {
+      name: 'champId',
+      referencedColumnName: 'id',
+    },
+  ])
+  champId: ChampEntity;
 }

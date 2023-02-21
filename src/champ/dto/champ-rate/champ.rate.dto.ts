@@ -1,60 +1,71 @@
-import { Expose, Transform } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
-const spellInfo = {
-  21: 'SummonerBarrier',
-  1: 'SummonerBoost',
-  14: 'SummonerDot',
-  3: 'SummonerExhaust',
-  4: 'SummonerFlash',
-  6: 'SummonerHaste',
-  7: 'SummonerHeal',
-  13: 'SummonerMana',
-  11: 'SummonerSmite',
-  12: 'SummonerTeleport',
-  default: 'default spell Image',
-};
-
-export class GetChampRateDto {
-  winRate: string = null;
-  pickRate: string = null;
-  spell1: number = null;
-  spell2: number = null;
-  version: string = null;
-  static transformDto(data: GetChampRateDto | null) {
-    const champRate = new GetChampRateDto();
-    if (!data) return champRate;
-    champRate.winRate = data.winRate;
-    champRate.pickRate = data.pickRate;
-    champRate.spell1 = data.spell1;
-    champRate.spell2 = data.spell2;
-    champRate.version = data.version;
-    return champRate;
+export class GetChampRate {
+  readonly winRate: string | number = 0;
+  readonly pickRate: string | number = 0;
+  readonly spell1: number = 0;
+  readonly spell2: number = 0;
+  readonly version: string | number = 0;
+  constructor(partial: Partial<GetChampRate>) {
+    if (partial) Object.assign(this, partial);
   }
 }
 
 export class ChampRateDataDto {
+  @ApiProperty({
+    example: 48.45,
+    description: '승률',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? Number(Number(value).toFixed(2)) : 0;
   })
   readonly winRate: number;
 
+  @ApiProperty({
+    example: 13.2,
+    description: '밴 비율',
+    required: true,
+  })
+  banRate: number;
+
+  @ApiProperty({
+    example: 8.19,
+    description: '픽률',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? Number(Number(value).toFixed(2)) : 0;
   })
   readonly pickRate: number;
 
-  @Expose({ name: 'spell1' })
-  @Transform(({ value }) => {
-    return value ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[value]}.png` : spellInfo.default;
+  @ApiProperty({
+    example: 'BOTTOM',
+    description: '포지션',
+    required: true,
+  })
+  position: string;
+
+  @ApiProperty({
+    example: 'spell1 image.png',
+    description: '첫번째 스펠이미지',
+    required: true,
   })
   readonly spell1Img: string;
 
-  @Expose({ name: 'spell2' })
-  @Transform(({ value }) => {
-    return value ? `${process.env.S3_ORIGIN_URL}/spell/${spellInfo[value]}.png` : spellInfo.default;
+  @ApiProperty({
+    example: 'spell2 image.png',
+    description: '두번째 스펠이미지',
+    required: true,
   })
   readonly spell2Img: string;
 
+  @ApiProperty({
+    example: '13.3.',
+    description: '버전 정보',
+    required: true,
+  })
   @Transform(({ value }) => {
     return value ? value : 'default version';
   })

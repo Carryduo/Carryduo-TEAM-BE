@@ -31,38 +31,39 @@ jobs:
 
       - run: npm ci
         if: ${{ always() }}
-      - name: Create .env file
-        run: |
-          touch .env
-          echo NODE_ENV:${{secrets.NODE_ENV}} >> .env
-          echo PORT:${{secrets.PORT}} >> .env
-          echo AUTH_PATH:${{secrets.AUTH_PATH}} >> .env
-          echo FRONT_URL_PROD:${{secrets.FRONT_URL_PROD}} >> .env
-          echo FRONT_URL2_PROD:${{secrets.FRONT_URL2_PROD}} >> .env
-          echo FRONT_URL_DEV:${{secrets.FRONT_URL_DEV}} >> .env
-          echo FRONT_URL2_DEV:${{secrets.FRONT_URL2_DEV}} >> .env
-          echo FRONT_URL_LOCAL:${{secrets.FRONT_URL_LOCAL}} >> .env
-          echo SWAGGER_ID:${{secrets.SWAGGER_ID}} >> .env
-          echo SWAGGER_PW:${{secrets.SWAGGER_PW}} >> .env
-          echo SWAGGER_JSON:${{secrets.SWAGGER_JSON}} >> .env
-          echo SWAGGER_PATH_DEV:${{secrets.SWAGGER_PATH_DEV}} >> .env
-          echo DB_USERNAME:${{secrets.DB_USERNAME}} >> .env
-          echo DB_PASSWORD:${{secrets.DB_PASSWORD}} >> .env
-          echo DB_HOST:${{secrets.DB_HOST}} >> .env
-          echo DB_PORT:${{secrets.DB_PORT}} >> .env
-          echo DB_NAME:${{secrets.DB_NAME}} >> .env
-          echo REDIS_HOST:${{secrets.REDIS_HOST}} >> .env
-          echo REIDS_PORT:${{secrets.REIDS_PORT}} >> .env
-          echo REDIS_PASSWORD:${{secrets.REDIS_PASSWORD}} >> .env
-          echo REDIS_TTL:${{secrets.REDIS_TTL}} >> .env
-          echo JWT_SECRET_KEY:${{secrets.JWT_SECRET_KEY}} >> .env
-          echo JWT_EXPRIED_TIME:${{secrets.JWT_EXPRIED_TIME}} >> .env
-          echo KAKAO_CLIENT_ID:${{secrets.KAKAO_CLIENT_ID}} >> .env
-          echo KAKAO_CALLBACK_URL:${{secrets.KAKAO_CALLBACK_URL}} >> .env
-          echo KAKAO_CLIENT_SECRET_KEY:${{secrets.KAKAO_CLIENT_SECRET_KEY}} >> .env
-          echo RIOT_API_KEY:${{secrets.RIOT_API_KEY}} >> .env
-          cat .env
       - run: npm test
         if: ${{ always() }}
+      - run: npm run test-e2e
+        env:
+          NODE_ENV: ${{secrets.NODE_ENV}}
+          PORT: ${{secrets.PORT}}
+          AUTH_PATH: ${{secrets.AUTH_PATH}}
+          FRONT_URL_PROD: ${{secrets.FRONT_URL_PROD}}
+          FRONT_URL2_PROD: ${{secrets.FRONT_URL2_PROD}}
+          FRONT_URL_DEV: ${{secrets.FRONT_URL_DEV}}
+          FRONT_URL2_DEV: ${{secrets.FRONT_URL2_DEV}}
+          FRONT_URL_LOCAL: ${{secrets.FRONT_URL_LOCAL}}
+          SWAGGER_ID: ${{secrets.SWAGGER_ID}}
+          SWAGGER_PW: ${{secrets.SWAGGER_PW}}
+          SWAGGER_JSON: ${{secrets.SWAGGER_JSON}}
+          SWAGGER_PATH_DEV: ${{secrets.SWAGGER_PATH_DEV}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          DB_HOST: ${{secrets.DB_HOST}}
+          DB_PORT: ${{secrets.DB_PORT}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          REDIS_HOST: ${{secrets.REDIS_HOST}}
+          REIDS_PORT: ${{secrets.REIDS_PORT}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_TTL: ${{secrets.REDIS_TTL}}
+          REDIS_DB_NUM: ${{secrets.REDIS_DB_NUM}}
+          REDIS_TEST_DB_NUM: ${{secrets.REDIS_TEST_DB_NUM}}
+          JWT_SECRET_KEY: ${{secrets.JWT_SECRET_KEY}}
+          JWT_EXPRIED_TIME: ${{secrets.JWT_EXPRIED_TIME}}
+          KAKAO_CLIENT_ID: ${{secrets.KAKAO_CLIENT_ID}}
+          KAKAO_CALLBACK_URL: ${{secrets.KAKAO_CALLBACK_URL}}
+          KAKAO_CLIENT_SECRET_KEY: ${{secrets.KAKAO_CLIENT_SECRET_KEY}}
+          RIOT_API_KEY: ${{secrets.RIOT_API_KEY}}
+          DB_NAME_TEST: ${{secrets.DB_NAME_TEST}}
       - run: npm run build --if-present
         if: ${{ always() }}

@@ -5,10 +5,11 @@ import { ChampRepository } from '../champ.repository';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ChampEntity } from '../entities/champ.entity';
 import { ChampSkillEntity } from '../entities/champSkillInfo.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
+import { champDtoFactory } from '../champ.dto.factory';
 
 class MockRepository {}
 class MockChache {}
@@ -22,6 +23,7 @@ describe('ChampController', () => {
       providers: [
         ChampService,
         ChampRepository,
+        champDtoFactory,
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
         { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },

@@ -15,7 +15,19 @@ import { redisOption } from './common/configs/redis.config';
 import { SimulationModule } from './simulation/simulation.module';
 
 @Module({
-  imports: [CacheModule.register(redisOption[process.env.NODE_ENV]), ConfigModule.forRoot({ isGlobal: true }), TypeOrmModule.forRoot(typeOrmOption[process.env.NODE_ENV]), AdminModule, UserModule, ChampModule, SummonerModule, CommentsModule, CombinationStatModule, SubscriptionModule, SimulationModule],
+  imports: [
+    CacheModule.register(redisOption[process.env.NODE_ENV]),
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(typeOrmOption[process.env.NODE_ENV]),
+    AdminModule,
+    UserModule,
+    ChampModule,
+    SummonerModule,
+    CommentsModule,
+    CombinationStatModule,
+    SubscriptionModule,
+    SimulationModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
