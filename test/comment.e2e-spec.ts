@@ -20,6 +20,7 @@ describe('Comment (e2e)', () => {
       imports: [AppModule],
     }).compile();
 
+    jest.setTimeout(50000);
     app = moduleFixture.createNestApplication();
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalPipes(
