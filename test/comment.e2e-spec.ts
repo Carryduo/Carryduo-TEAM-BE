@@ -100,46 +100,46 @@ describe('Comment (e2e)', () => {
     expect(response.body.message).toBe('a 는 소환사 타겟이 아닙니다');
   });
 
-  //   it('/:categry/:target (GET) | 댓글 조회', async () => {
-  //     const response = await request(app.getHttpServer()).get('/comments/champ/875');
-  //     expect(response.body.length).toBe(1);
-  //     expect(response.body[0].champId.id).toBe('875');
-  //     expect(response.body[0].userId.nickname).toBe(sample.nickname);
-  //     commentId = response.body[0].id;
-  //   });
+  it('/:categry/:target (GET) | 댓글 조회', async () => {
+    const response = await request(app.getHttpServer()).get('/comments/champ/875');
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].champId.id).toBe('875');
+    expect(response.body[0].userId.nickname).toBe(sample.nickname);
+    commentId = response.body[0].id;
+  });
 
-  //   it('/:id (Patch) | 댓글 수정', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .patch(`/comments/${commentId}`)
-  //       .set('authorization', `Bearer ${token}`)
-  //       .send({ content: 'fix' });
-  //     expect(response.statusCode).toBe(200);
-  //     expect(response.body.success).toBe(true);
-  //   });
+  it('/:id (Patch) | 댓글 수정', async () => {
+    const response = await request(app.getHttpServer())
+      .patch(`/comments/${commentId}`)
+      .set('authorization', `Bearer ${token}`)
+      .send({ content: 'fix' });
+    expect(response.statusCode).toBe(200);
+    expect(response.body.success).toBe(true);
+  });
 
-  //   it('/report/:id (Patch) | 댓글 신고 ', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .patch(`/comments/report/${commentId}`)
-  //       .set('authorization', `Bearer ${token}`);
-  //     expect(response.statusCode).toBe(200);
-  //     expect(response.body.success).toBe(true);
-  //   });
+  it('/report/:id (Patch) | 댓글 신고 ', async () => {
+    const response = await request(app.getHttpServer())
+      .patch(`/comments/report/${commentId}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.success).toBe(true);
+  });
 
-  //   it('/:categry/:target (GET) | 댓글 수정, 삭제 확인', async () => {
-  //     const response = await request(app.getHttpServer()).get('/comments/champ/875');
-  //     expect(response.body.length).toBe(1);
-  //     expect(response.body[0].champId.id).toBe('875');
-  //     expect(response.body[0].userId.nickname).toBe(sample.nickname);
-  //     expect(response.body[0].content).toBe('fix');
-  //     expect(response.body[0].reportNum).toBe(1);
-  //   });
+  it('/:categry/:target (GET) | 댓글 수정, 삭제 확인', async () => {
+    const response = await request(app.getHttpServer()).get('/comments/champ/875');
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].champId.id).toBe('875');
+    expect(response.body[0].userId.nickname).toBe(sample.nickname);
+    expect(response.body[0].content).toBe('fix');
+    expect(response.body[0].reportNum).toBe(1);
+  });
 
-  //   it('/:id (DELETE) | 댓글 삭제', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .delete(`/comments/${commentId}`)
-  //       .set('authorization', `Bearer ${token}`);
-  //     expect(response.statusCode).toBe(200);
-  //   });
+  it('/:id (DELETE) | 댓글 삭제', async () => {
+    const response = await request(app.getHttpServer())
+      .delete(`/comments/${commentId}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(200);
+  });
 
   afterAll(async () => {
     await dataSource
