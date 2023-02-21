@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
+import { ChampEntity } from '../../../champ/entities/champ.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 
 export class SummonerCommonDTO extends CommonEntity {

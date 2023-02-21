@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { ChampCommonDTO } from 'src/champ/dto/champ/champ.common.dto';
+import { ChampCommonDTO } from '../../../../champ/dto/champ/champ.common.dto';
 import { SummonerCommonDTO } from '../summoner.common.dto';
 
 export class SummonerDefaultDataDto extends OmitType(SummonerCommonDTO, [

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChampEntity } from 'src/champ/entities/champ.entity';
-import { SummonerEntity } from 'src/summoner/entities/summoner.entity';
+import { ChampEntity } from '../../../../champ/entities/champ.entity';
+import { SummonerEntity } from '../../../entities/summoner.entity';
 
 export class SummonerHistoryCommonDto {
   @ApiProperty({
