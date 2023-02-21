@@ -94,6 +94,8 @@ describe('SummonerService', () => {
     const createSummoner = jest.spyOn(service, 'createSummoner');
     createSummoner.mockResolvedValue();
 
+    await service.getSummoner(summonerName);
+
     expect(createSummoner).toBeCalled();
     expect(createSummoner).toHaveBeenCalledWith(summonerName);
   });
