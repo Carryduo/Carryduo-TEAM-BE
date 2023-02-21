@@ -39,9 +39,13 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @Column({ type: 'boolean', default: true })
   enableChat: boolean;
 
-  @OneToMany(() => SubscriptionEntity, (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.userId, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => SubscriptionEntity,
+    (subscriptionEntity: SubscriptionEntity) => subscriptionEntity.userId,
+    {
+      cascade: true,
+    },
+  )
   subscription: SubscriptionEntity;
 
   @OneToMany(() => CommentEntity, (commentEntity: CommentEntity) => commentEntity.userId, {
@@ -88,7 +92,12 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   ])
   preferChamp3: ChampEntity;
 
-  static createUserOption(socialId: string, social: string, nickname: string, profileImg: string): UserEntity {
+  static createUserOption(
+    socialId: string,
+    social: string,
+    nickname: string,
+    profileImg: string,
+  ): UserEntity {
     const user = new UserEntity();
     user.socialId = socialId;
     user.social = social;
@@ -102,7 +111,18 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
     return user;
   }
 
-  static createUpdateOption(data: { userId: string; nickname: string; profileImg: string; bio: string; preferPosition: string; tier: number; enableChat: boolean; preferChamp1: ChampEntity; preferChamp2: ChampEntity; preferChamp3: ChampEntity }) {
+  static createUpdateOption(data: {
+    userId: string;
+    nickname: string;
+    profileImg: string;
+    bio: string;
+    preferPosition: string;
+    tier: number;
+    enableChat: boolean;
+    preferChamp1: ChampEntity;
+    preferChamp2: ChampEntity;
+    preferChamp3: ChampEntity;
+  }) {
     const option = new UserEntity();
     option.userId = data.userId;
     option.nickname = data.nickname;

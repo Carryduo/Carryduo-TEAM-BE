@@ -9,7 +9,13 @@ import { FirstLoginResponseDto } from './dto/admin.response.dto';
 import { FirstLoginRequestDto, DeleteUserReqeustDto } from './dto/admin.request.dto';
 @Injectable()
 export class AdminService {
-  constructor(private readonly adminRepository: AdminRepository, private jwtService: JwtService, private readonly commentRepository: CommentRepository, private readonly userRepository: UserRepository, private readonly champRepository: ChampRepository) {}
+  constructor(
+    private readonly adminRepository: AdminRepository,
+    private jwtService: JwtService,
+    private readonly commentRepository: CommentRepository,
+    private readonly userRepository: UserRepository,
+    private readonly champRepository: ChampRepository,
+  ) {}
 
   async kakaoLogin(data: FirstLoginRequestDto): Promise<FirstLoginResponseDto> {
     // 유저 검증 및 생성
@@ -18,7 +24,11 @@ export class AdminService {
     if (user === null) {
       user = await this.adminRepository.createUser(option);
     }
-    return new FirstLoginResponseDto(user.userId, user.nickname, await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }));
+    return new FirstLoginResponseDto(
+      user.userId,
+      user.nickname,
+      await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }),
+    );
 
     // TODO: DTO 생성 | 로그인 시 기본 정보, 감싸기
     // TODO: DTO 생성: POST, DELETE 등 RESPONSE 값
@@ -42,14 +52,20 @@ export class AdminService {
         if (!value.summonerName) {
           target = value.champId.id;
           option = new Brackets((qb) => {
-            qb.where('comment.category = :category', { category }).andWhere('comment.champId = :champId', { champId: value.champId.id });
+            qb.where('comment.category = :category', { category }).andWhere(
+              'comment.champId = :champId',
+              { champId: value.champId.id },
+            );
           });
         } else {
           target = encodeURI(String(value.summonerName.summonerName));
           option = new Brackets((qb) => {
-            qb.where('comment.category = :category', { category }).andWhere('comment.summonerName = :summonerName', {
-              summonerName: value.summonerName.summonerName,
-            });
+            qb.where('comment.category = :category', { category }).andWhere(
+              'comment.summonerName = :summonerName',
+              {
+                summonerName: value.summonerName.summonerName,
+              },
+            );
           });
         }
         const cacheOptions = { category, target, option };
@@ -58,7 +74,11 @@ export class AdminService {
 
       const preferchamp = await this.userRepository.findPreferchamps(option.userId);
 
-      const preferChampList = [preferchamp.preferChamp1, preferchamp.preferChamp2, preferchamp.preferChamp3];
+      const preferChampList = [
+        preferchamp.preferChamp1,
+        preferchamp.preferChamp2,
+        preferchamp.preferChamp3,
+      ];
 
       for (const pcl of preferChampList) {
         if (pcl !== null) {
@@ -72,7 +92,11 @@ export class AdminService {
 
       // 평판 목록 redis에 갱신하기
       for (const cacheOption of cacheOptionList) {
-        await this.commentRepository.setCommentCache(cacheOption.category, cacheOption.target, cacheOption.option);
+        await this.commentRepository.setCommentCache(
+          cacheOption.category,
+          cacheOption.target,
+          cacheOption.option,
+        );
       }
       return { success: true, message: '회원 탈퇴 완료되었습니다' };
     } catch (error) {
