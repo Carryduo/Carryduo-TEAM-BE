@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import { SummonerHistoryEntity } from 'src/summoner/entities/summoner.history.entity';
+import { SummonerHistoryEntity } from '../../../entities/summoner.history.entity';
 import { SummonerHistoryCommonDto } from './history.common.dto';
 
 export class CreateSummonerHistoryDto extends PickType(SummonerHistoryCommonDto, [
