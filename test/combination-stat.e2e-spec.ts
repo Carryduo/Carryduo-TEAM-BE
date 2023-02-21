@@ -1,4 +1,3 @@
-import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   ClassSerializerInterceptor,
