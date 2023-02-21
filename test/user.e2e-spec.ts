@@ -71,7 +71,6 @@ describe('User (e2e)', () => {
       .get('/user/option')
       .set('authorization', `Bearer ${token}`);
 
-    console.log(response.body);
     expect(Object.keys(response.body).length).toBe(9);
   });
 
@@ -81,7 +80,6 @@ describe('User (e2e)', () => {
       .set('authorization', `Bearer ${token}1`);
 
     expect(response.statusCode).toBe(401);
-    console.log(response.body);
     expect(response.body.message).toBe('Unauthorized');
   });
 
@@ -122,6 +120,12 @@ describe('User (e2e)', () => {
   });
 
   afterAll(async () => {
+    await dataSource
+      .getRepository(UserEntity)
+      .createQueryBuilder()
+      .delete()
+      .where({ userId: sample.userId })
+      .execute();
     await app.close();
   });
 });

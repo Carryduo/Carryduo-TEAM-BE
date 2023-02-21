@@ -76,7 +76,12 @@ export class PostCommentRequestDto {
     this._content = content;
   }
 
-  static createDto(userId: string, category: 'summoner' | 'champ', target: string, content: string) {
+  static createDto(
+    userId: string,
+    category: 'summoner' | 'champ',
+    target: string,
+    content: string,
+  ) {
     return new PostCommentRequestDto(userId, category, target, content);
   }
 
@@ -96,10 +101,20 @@ export class PostCommentRequestDto {
     const userId = UserEntity.createSelectOption(this._userId);
     if (this._category === 'champ') {
       target = ChampEntity.createChampIdOption(this._target);
-      return CommentEntity.createPostChampCommentOption(this._category, target, this._content, userId);
+      return CommentEntity.createPostChampCommentOption(
+        this._category,
+        target,
+        this._content,
+        userId,
+      );
     } else {
       target = SummonerEntity.createSummonerNameOption(this._target);
-      return CommentEntity.createPostSummonerCommentOption(this._category, target, this._content, userId);
+      return CommentEntity.createPostSummonerCommentOption(
+        this._category,
+        target,
+        this._content,
+        userId,
+      );
     }
     return;
   }

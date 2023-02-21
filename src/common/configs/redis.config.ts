@@ -9,7 +9,7 @@ export class redisOption {
     password: process.env.REDIS_PASSWORD,
     ttl: Number(process.env.REDIS_TTL),
     no_ready_check: true,
-    db: process.env.REIDS_DB_NUM,
+    db: process.env.REDIS_DB_NUM,
   };
 
   static readonly test: CacheModuleOptions = {
@@ -20,6 +20,6 @@ export class redisOption {
     password: process.env.REDIS_PASSWORD,
     ttl: Number(process.env.REDIS_TTL),
     no_ready_check: true,
-    db: process.env.REIDS_TEST_DB_NUM,
+    db: process.env.REDIS_TEST_DB_NUM,
   };
 }

@@ -56,7 +56,6 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {
@@ -69,7 +68,6 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {
@@ -82,7 +80,6 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: true,
   })
   @JoinColumn([
     {

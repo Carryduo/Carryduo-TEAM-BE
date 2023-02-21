@@ -1,5 +1,11 @@
 import { CommentRepository } from './comments.repository';
-import { DeleteCommentRequestDto, GetCommentRequestDto, PostCommentRequestDto, UpdateCommentRequestDto, UpdateReportNumRequestDto } from './dto/comment.request.dto';
+import {
+  DeleteCommentRequestDto,
+  GetCommentRequestDto,
+  PostCommentRequestDto,
+  UpdateCommentRequestDto,
+  UpdateReportNumRequestDto,
+} from './dto/comment.request.dto';
 import { Injectable, HttpException } from '@nestjs/common';
 import { CommentGetResponseDto } from './dto/comment.response.dto';
 import { Brackets } from 'typeorm';
@@ -25,7 +31,11 @@ export class CommentsService {
     try {
       const whereOption = this.commentRepository.createSelectOption(requestOption.toEntity());
       await this.commentRepository.postComment(requestOption.toEntity());
-      await this.commentRepository.setCommentCache(requestOption.category, requestOption.target, whereOption);
+      await this.commentRepository.setCommentCache(
+        requestOption.category,
+        requestOption.target,
+        whereOption,
+      );
       return;
     } catch (err) {
       console.log(err);
