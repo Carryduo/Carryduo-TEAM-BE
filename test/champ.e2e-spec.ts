@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
@@ -12,7 +12,6 @@ import { plainToInstance } from 'class-transformer';
 describe('Champ (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
-  let exaple: ChampEntity;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
