@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
@@ -81,13 +81,14 @@ describe('Champ (e2e)', () => {
     expect(response.body.pickRate).toBe(1.64);
   });
 
+  it('/GET 타겟 챔피언 포지션에 대한 파라미터 예외 처리?', async () => {
+    const response = await request(app.getHttpServer()).get('/champ/888/position/aaa');
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual(['position must be one of the following values: default, top, jungle, mid, ad, support']);
+  });
+
   afterAll(async () => {
-    await dataSource
-      .getRepository(UserEntity)
-      .createQueryBuilder()
-      .delete()
-      .where({ nickname: '영우' })
-      .execute();
+    await dataSource.getRepository(UserEntity).createQueryBuilder().delete().where({ nickname: '영우' }).execute();
     await app.close();
   });
 });
