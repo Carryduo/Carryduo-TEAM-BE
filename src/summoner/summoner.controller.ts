@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { TypeOrmFilter } from '../common/exception/typeorm-exception.filter';
 import { SummonerService } from './summoner.service';
 import { SummonerHistoryResponseDto } from './dto/summoner/history/history.response.dto';
+import { ThrottleInterceptor } from '../common/interceptors/throttler.interceptors';
 
 @Controller('summoner')
 @ApiTags('Summoner')
@@ -23,6 +24,7 @@ export class SummonerController {
     required: true,
     description: '소환사 이름',
   })
+  @UseInterceptors(ThrottleInterceptor)
   @Get('refresh/:summonerName')
   async refreshSummonerInfo(@Param('summonerName') summonerName: string) {
     return await this.summonerService.refreshSummoner(summonerName);

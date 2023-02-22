@@ -68,7 +68,7 @@ export class typeOrmOption {
       SummonerHistoryEntity,
       SimulationEntity,
     ],
-    synchronize: true,
+    synchronize: false,
     autoLoadEntities: true,
     logging: false,
     keepConnectionAlive: true,

@@ -39,6 +39,7 @@ export class champDtoFactory {
     let rate: GetChampRate;
     let spell1Img: string;
     let spell2Img: string;
+
     if (champRate.length === 0) {
       rate = new GetChampRate(null);
     } else {
