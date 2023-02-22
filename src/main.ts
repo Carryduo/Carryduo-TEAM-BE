@@ -63,7 +63,7 @@ async function bootstrap() {
   }
 
   app.enableCors(corsOptions);
-  app.useStaticAssets(join(__dirname, '../', 'static'), {
+  app.useStaticAssets(join(__dirname, '../../', 'static'), {
     prefix: '/tier',
   });
 
