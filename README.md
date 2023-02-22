@@ -9,6 +9,7 @@
 ## 프로젝트 소개
 
 ### 🚀 기능
+<details>
 
 #### 최신 버전의 리그오브레전드 챔피언 데이터 제공
 
@@ -29,14 +30,21 @@
 #### 카카오 소셜 로그인 제공
 
 - 카카오를 통한 소셜 로그인으로 간단하고 안전하게 회원가입이 가능합니다.
+</details>
 
 ### 🛠 Architecture
+<details>
 
-![Carryduo 서비스 아키텍처](https://user-images.githubusercontent.com/91710667/202378441-9b647519-012a-4adf-b820-3b1bd91c2e82.png)
+![Carryduo BE 서비스 아키텍처](https://user-images.githubusercontent.com/49478770/220548692-6c2c35b7-8cd5-4021-8b0c-1fa6220d1485.png)
+
+</details>
 
 ### 📈 ERD
+<details>
 
 ![Carryduo 서비스 ERD](https://user-images.githubusercontent.com/91710667/202378401-9a983754-d8f1-4f41-8d8b-d79e62d2b283.png)
+
+</details>
 
 ### 🚀 데이터분석 프로세스
 
@@ -45,6 +53,7 @@
 [notionLink]: https://frequent-hovercraft-885.notion.site/Carryduo-7a9e5f584620444986ee950bd309b524
 
 ## 🛠 Tools
+<details>
 
 #### Language
 
@@ -93,6 +102,8 @@
 | @nestjs/testing</br>jest          |  테스트코드             |9.0.0</br>28.1.3|
 
 <hr>
+
+</details>
 
 ## 🔥이슈 및 트러블슈팅
 
