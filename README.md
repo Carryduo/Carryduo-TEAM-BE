@@ -159,14 +159,34 @@
 <details>
 <summary><b>➡️ service <-> repository 계층 간 명확한 책임 분리 </b></summary>
 <br/>
+
+
+> **문제** : 이전 개선 사항에서 service에 Brackets를 주입하였습니다. 하지만 Brackets는 select 쿼리 시 조건문을 생성하는 용도로 활용되고 있는 객체임에도 불구하고, service에서 직접적으로 주입되어 사용되고 있는 것은 "비즈니스 로직"만 담당한다는 service의 역할을 초과하는 일이라 판단했습니다.
+>
+> **해결** : 쿼리를 전적으로 담당하는 계층은 repository이므로, Brackets를 생성하는 책임은 repository로 위임했습니다. service에서는 Brackets 생성을 위해 필요한 매개변수를 repository에 전달하고, Brackets 객체를 반환받습니다.
+<br/> <br/>
+>
+> **코드스니펫**<br/>
+> - [1)service 계층][CodeSnipet6]
+> - [2)repository 계층][CodeSnipet7]
   
+  [CodeSnipet6]: https://github.com/Carryduo/Carryduo-TEAM-BE/blob/e52062ef4b2a0517568adc2b1c03005fcf0cdc8f/src/combination-stat/combination-stat.service.ts#L50
+  [CodeSnipet7]: https://github.com/Carryduo/Carryduo-TEAM-BE/blob/e52062ef4b2a0517568adc2b1c03005fcf0cdc8f/src/combination-stat/combination-stat.repository.ts#L125-L206
+<details>
+<summary>이전 개선 사항</summary>
+
 > **문제** : 프로젝트는 3-Layered-Architecture 구조에 입각하여 작성되었습니다. 프로젝트의 기능 중 request 값에 따라 쿼리문의 where문을 변경해주어야 하는 로직이 있었습니다. 기존에는 이를 DB 쿼리를 관리하는 repository 계층에서 분기 처리를 해주었습니다. 이에 따라, 순수한 DB 쿼리만을 관리한다는 repositroy 계층이 비즈니스 로직을 관리하는  service 계층의 책임까지  분담하는 구조적 문제가 발생했습니다.
 >
 > **해결** : switch-case 문을 활용하여, serivce에서 controller부터 받은 request 값에 따라 쿼리 where문을 사전에 분기처리하여 repository 계층으로 이를 넘기도록 구조를 수정하여 계층 간 책임 분리를 공고화하였습니다. <br/> <br/>
+>
 > **코드스니펫**<br/>
 > [1)switch-case문 활용 코드스니펫][CodeSnipet4]
   
   [CodeSnipet4]: https://github.com/Carryduo/Carryduo-TEAM-BE/blob/cf32a5f4440151a273421f314a7e206d77669d26/src/combination-stat/combination-stat.service.ts#L119-L194
+
+</details>
+
+
 </details>
 
 <details>
