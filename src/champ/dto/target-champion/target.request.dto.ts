@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class TargetChampionReqDTO {
   @IsString()
@@ -6,5 +6,6 @@ export class TargetChampionReqDTO {
   champId: string;
   @IsString()
   @IsNotEmpty()
+  @IsIn(['default', 'top', 'jungle', 'mid', 'ad', 'support'])
   position: string;
 }
