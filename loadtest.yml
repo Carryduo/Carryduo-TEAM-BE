@@ -1,0 +1,16 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 5
+      arrivalRate: 2
+scenarios:
+  - name: 'Get champ List'
+    flow:
+      - get:
+          url: '/summoner/쿠바버샷추가'
+          headers:
+            User-Agent: 'Artillery'
+      - get:
+          url: '/summoner/hide on bush'
+          headers:
+            User-Agent: 'Artillery'

@@ -22,4 +22,14 @@ export class redisOption {
     no_ready_check: true,
     db: process.env.REDIS_TEST_DB_NUM,
   };
+
+  static readonly local: CacheModuleOptions = {
+    isGlobal: true,
+    store: redisStore,
+    host: process.env.LOCAL_REDIS_HOST,
+    port: process.env.LOCAL_REIDS_PORT,
+    ttl: Number(process.env.REDIS_TTL),
+    no_ready_check: true,
+    db: 1,
+  };
 }

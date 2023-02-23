@@ -75,4 +75,35 @@ export class typeOrmOption {
     timezone: 'local',
     charset: 'utf8mb4',
   };
+
+  static readonly local: TypeOrmModuleOptions = {
+    namingStrategy: new SnakeNamingStrategy(),
+    type: 'mysql',
+    host: process.env.LOCAL_DB_HOST, // process.env.DB_HOST
+    port: Number(process.env.LOCAL_DB_PORT),
+    username: process.env.LOCAL_DB_USERNAME,
+    password: process.env.LOCAL_DB_PASSWORD,
+    database: process.env.LOCAL_DB_NAME,
+    entities: [
+      GameInfoEntity,
+      UpdateChampRateEntity,
+      ChampBanEntity,
+      UpdateChampSpellEntity,
+      UserEntity,
+      ChampEntity,
+      ChampSkillEntity,
+      SummonerEntity,
+      CombinationStatEntity,
+      CommentEntity,
+      SubscriptionEntity,
+      SummonerHistoryEntity,
+      SimulationEntity,
+    ],
+    synchronize: false,
+    autoLoadEntities: true,
+    logging: false,
+    keepConnectionAlive: true,
+    timezone: 'local',
+    charset: 'utf8mb4',
+  };
 }
