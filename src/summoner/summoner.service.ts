@@ -15,76 +15,105 @@ export class SummonerService {
   ) {}
 
   async getSummoner(summonerName: string) {
-    const existSummoner = await this.summonerRepository.existSummoner(summonerName);
-    if (!existSummoner) {
-      await this.createSummoner(summonerName);
-    }
-    const summoner = await this.summonerRepository.getSummoner(summonerName);
+    try {
+      const existSummoner = await axios.get(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(
+          summonerName,
+        )}?api_key=${this.configService.get('RIOT_API_KEY')}`,
+      );
 
-    return await this.summonerHistoryCalculation(summoner);
+      const existDbSummoner = await this.summonerRepository.existSummoner(existSummoner.data.name);
+
+      if (!existDbSummoner) {
+        await this.createSummoner(existSummoner.data.name);
+      }
+      const summoner = await this.summonerRepository.getSummoner(existSummoner.data.name);
+      return await this.summonerHistoryCalculation(summoner);
+    } catch (err) {
+      if (err.response.status === 404) {
+        throw new HttpException('존재 하지 않는 소환사입니다.', HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+          `${err.response.statusText} - from getSummoner`,
+          err.response.status,
+        );
+      }
+    }
   }
 
   async summonerHistoryCalculation(summoner: SummonerEntity) {
-    const summonerDefaultDataDto = await this.summonerDto.createSummonerDefaultData(summoner);
+    try {
+      const summonerDefaultDataDto = await this.summonerDto.createSummonerDefaultData(summoner);
 
-    const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerId);
-    const positions = await this.summonerDto.createPosition(position);
+      const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerId);
+      const positions = await this.summonerDto.createPosition(position);
 
-    const recentChampInfoList = [];
-    const recentChamp = await this.summonerRepository.getRecentChamp(summoner.summonerId);
-    for (let r of recentChamp) {
-      const recentChampRate = await this.summonerRepository.getRecentChampRate(
-        r.champId,
-        summoner.summonerId,
+      const recentChampInfoList = [];
+      const recentChamp = await this.summonerRepository.getRecentChamp(summoner.summonerId);
+      for (let r of recentChamp) {
+        const recentChampRate = await this.summonerRepository.getRecentChampRate(
+          r.champId,
+          summoner.summonerId,
+        );
+        recentChampInfoList.push({ ...recentChampRate });
+      }
+      const recentChampDto = await this.summonerDto.createRecentChamp(recentChampInfoList);
+
+      const recordSum = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
+
+      const historyRateDto = await this.summonerDto.createHistoryRate(
+        recordSum,
+        positions,
+        recentChampDto,
       );
-      recentChampInfoList.push({ ...recentChampRate });
+
+      return await this.summonerDto.createHistoryResponse(summonerDefaultDataDto, historyRateDto);
+    } catch (err) {
+      throw new HttpException(err, 400);
     }
-    const recentChampDto = await this.summonerDto.createRecentChamp(recentChampInfoList);
-
-    const recordSum = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
-
-    const historyRateDto = await this.summonerDto.createHistoryRate(
-      recordSum,
-      positions,
-      recentChampDto,
-    );
-
-    return await this.summonerDto.createHistoryResponse(summonerDefaultDataDto, historyRateDto);
   }
 
   async createSummoner(summonerName: string) {
-    const summoner = await this.requestRiotSummonerApi(summonerName);
-    const history = await this.requestRiotSummonerHistoryApi(summoner.summonerPuuId);
+    try {
+      const summoner = await this.requestRiotSummonerApi(summonerName);
+      const history = await this.requestRiotSummonerHistoryApi(summoner.summonerPuuId);
 
-    await this.summonerRepository.createSummoner(summoner);
-    await this.summonerRepository.createSummonerHistory(history);
-    return;
+      await this.summonerRepository.createSummoner(summoner);
+      await this.summonerRepository.createSummonerHistory(history);
+      return;
+    } catch (err) {
+      throw new HttpException(err, 400);
+    }
   }
 
   async refreshSummoner(summonerName: string) {
-    const existSummoner = await this.summonerRepository.existSummoner(summonerName);
-    if (!existSummoner) {
-      throw new HttpException(
-        '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
-        HttpStatus.BAD_REQUEST,
-      );
+    try {
+      const existSummoner = await this.summonerRepository.existSummoner(summonerName);
+      if (!existSummoner) {
+        throw new HttpException(
+          '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const currentTime = new Date();
+      const daysElapsed =
+        (currentTime.getTime() - existSummoner.updatedAt.getTime()) / (1000 * 3600 * 24);
+      if (daysElapsed > 7) {
+        const updateSummoner = await this.requestRiotSummonerApi(summonerName);
+        await this.summonerRepository.updateSummoner(updateSummoner);
+      }
+      await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerId);
+
+      const newHistory = await this.requestRiotSummonerHistoryApi(existSummoner.summonerPuuId);
+
+      await this.summonerRepository.createSummonerHistory(newHistory);
+
+      const summoner = await this.summonerRepository.getSummoner(summonerName);
+
+      return await this.summonerHistoryCalculation(summoner);
+    } catch (err) {
+      throw new HttpException(err, 400);
     }
-    const currentTime = new Date();
-    const daysElapsed =
-      (currentTime.getTime() - existSummoner.updatedAt.getTime()) / (1000 * 3600 * 24);
-    if (daysElapsed > 7) {
-      const updateSummoner = await this.requestRiotSummonerApi(summonerName);
-      await this.summonerRepository.updateSummoner(updateSummoner);
-    }
-    await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerId);
-
-    const newHistory = await this.requestRiotSummonerHistoryApi(existSummoner.summonerPuuId);
-
-    await this.summonerRepository.createSummonerHistory(newHistory);
-
-    const summoner = await this.summonerRepository.getSummoner(summonerName);
-
-    return await this.summonerHistoryCalculation(summoner);
   }
 
   async requestRiotSummonerApi(summonerName: string) {
@@ -136,9 +165,13 @@ export class SummonerService {
         soloRankDataDto,
         mostChampDataDto,
       );
+
       return summonerDtoToEntity;
     } catch (err) {
-      throw new HttpException(err.response.statusText, err.response.status);
+      throw new HttpException(
+        `${err.response.statusText} - from requestRiotSummonerApi`,
+        err.response.status,
+      );
     }
   }
 
@@ -186,7 +219,10 @@ export class SummonerService {
       );
       return summonerHistoryDtoToEntity;
     } catch (err) {
-      throw new HttpException(err.response.statusText, err.response.status);
+      throw new HttpException(
+        `${err.response.statusText} - from requestRiotSummonerHistoryApi`,
+        err.response.status,
+      );
     }
   }
 }

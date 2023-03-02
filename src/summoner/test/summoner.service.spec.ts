@@ -85,6 +85,11 @@ describe('SummonerService', () => {
   it('getSummoner existSummoner 없으면 createSummoner실행?', async () => {
     const summonerName = '할배탈';
     const existSummoner = null;
+    const request = jest.spyOn(axios, 'get');
+
+    request.mockImplementation(async (url) => {
+      return { data: { name: '할배탈' } };
+    });
 
     repository.existSummoner = jest.fn().mockResolvedValue(existSummoner);
     repository.getSummoner = jest.fn().mockResolvedValue(RepositoryGetSummoner);
