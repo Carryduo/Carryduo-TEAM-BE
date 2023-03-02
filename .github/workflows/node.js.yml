@@ -31,6 +31,8 @@ jobs:
       - run: npm ci
         if: ${{ always() }}
       - run: npm test
+        env:
+          RIOT_KEY: ${{secrets.RIOT_API_KEY}}
         if: ${{ always() }}
       - run: npm run test-e2e
         env:
