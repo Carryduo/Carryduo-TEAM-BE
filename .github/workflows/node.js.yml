@@ -66,5 +66,6 @@ jobs:
           DB_NAME_TEST: ${{secrets.DB_NAME_TEST}}
           TEST_NICKNAME: ${{secrets.TEST_NICKNAME}}
           TEST_IMG: ${{secrets.TEST_IMG}}
+          RIOT_KEY: ${{secrets.RIOT_API_KEY}}
       - run: npm run build --if-present
         if: ${{ always() }}
