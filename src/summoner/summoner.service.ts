@@ -32,8 +32,12 @@ export class SummonerService {
     } catch (err) {
       if (err.response.status === 404) {
         throw new HttpException('존재 하지 않는 소환사입니다.', HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException(
+          `${err.response.statusText} - from getSummoner`,
+          err.response.status,
+        );
       }
-      throw new HttpException(`${err.response.statusText} - from getSummoner`, err.response.status);
     }
   }
 
