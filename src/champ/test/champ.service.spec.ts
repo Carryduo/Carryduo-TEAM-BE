@@ -10,7 +10,9 @@ import { preferChampUserData } from './data/prefer.champ.user.list';
 import * as champInfo from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { champDtoFactory } from '../champ.dto.factory';
+import { TransferChampData } from '../champ.data.transfer';
+import { plainToInstance } from 'class-transformer';
+import { TargetChampionResDto } from '../dto/target-champion/target.response.dto';
 
 class MockRepository {
   getChampList() {
@@ -40,9 +42,7 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [
-      champPositionInfo.find((v) => v.champId === champId && v.version === version),
-    ];
+    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
     return mostPosition;
   }
 
@@ -72,14 +72,14 @@ class MockChache {}
 describe('ChampService', () => {
   let service: ChampService;
   let repository: ChampRepository;
-  let dto: champDtoFactory;
+  let transfer: TransferChampData;
   const env = process.env;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChampService,
-        champDtoFactory,
+        TransferChampData,
         { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         {
@@ -100,7 +100,7 @@ describe('ChampService', () => {
 
     service = module.get<ChampService>(ChampService);
     repository = module.get<ChampRepository>(ChampRepository);
-    dto = module.get<champDtoFactory>(champDtoFactory);
+    transfer = module.get<TransferChampData>(TransferChampData);
     jest.resetModules();
     process.env = {
       ...env,
@@ -161,22 +161,16 @@ describe('ChampService', () => {
       default: 'default position',
     };
 
-    let getMostPosition = jest
-      .spyOn(repository, 'getMostPosition')
-      .mockImplementation(async (champId: string, version: string) => {
-        const positionInfo = [
-          { champId: '1', position: 'JUNGLE', version: '13.1.' },
-          { champId: '1', position: 'TOP', version: '12.1' },
-        ];
-        const MostPosition = [
-          positionInfo.find((v) => v.champId === champId && v.version === version),
-        ];
-        return MostPosition;
-      });
+    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
+      const positionInfo = [
+        { champId: '1', position: 'JUNGLE', version: '13.1.' },
+        { champId: '1', position: 'TOP', version: '12.1' },
+      ];
+      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
+      return MostPosition;
+    });
     let positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    let getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    let getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
     expect(getMostPosition).toBeCalledTimes(1);
     expect(getPosition[0].position).toBe('JUNGLE');
 
@@ -184,9 +178,7 @@ describe('ChampService', () => {
     const Param2 = Param;
     Param2.position = 'mid';
     positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -205,20 +197,23 @@ describe('ChampService', () => {
 
     expect(getPosition[0]?.position).toEqual('JUNGLE');
 
-    const champPosition = getPosition[0]?.position;
+    const champPosition = await transfer.champPosition(Param, version);
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
 
     const result = await service.getTargetChampion(Param);
 
@@ -231,20 +226,23 @@ describe('ChampService', () => {
       champId: '1',
       position: 'mid',
     };
-    const champPosition = 'MIDDLE';
+    const champPosition = await transfer.champPosition(Param, version);
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
   });
@@ -256,20 +254,23 @@ describe('ChampService', () => {
       position: 'default',
     };
 
-    const champPosition = null;
+    const champPosition = await transfer.champPosition(Param, version);
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
     const result = await service.getTargetChampion(Param);
 
     expect(result).toEqual(response);
