@@ -42,9 +42,7 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [
-      champPositionInfo.find((v) => v.champId === champId && v.version === version),
-    ];
+    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
     return mostPosition;
   }
 
@@ -163,22 +161,16 @@ describe('ChampService', () => {
       default: 'default position',
     };
 
-    let getMostPosition = jest
-      .spyOn(repository, 'getMostPosition')
-      .mockImplementation(async (champId: string, version: string) => {
-        const positionInfo = [
-          { champId: '1', position: 'JUNGLE', version: '13.1.' },
-          { champId: '1', position: 'TOP', version: '12.1' },
-        ];
-        const MostPosition = [
-          positionInfo.find((v) => v.champId === champId && v.version === version),
-        ];
-        return MostPosition;
-      });
+    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
+      const positionInfo = [
+        { champId: '1', position: 'JUNGLE', version: '13.1.' },
+        { champId: '1', position: 'TOP', version: '12.1' },
+      ];
+      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
+      return MostPosition;
+    });
     let positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    let getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    let getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
     expect(getMostPosition).toBeCalledTimes(1);
     expect(getPosition[0].position).toBe('JUNGLE');
 
@@ -186,9 +178,7 @@ describe('ChampService', () => {
     const Param2 = Param;
     Param2.position = 'mid';
     positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    getPosition = !positionDbName
-      ? await repository.getMostPosition(Param.champId, version)
-      : positionDbName;
+    getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -207,7 +197,7 @@ describe('ChampService', () => {
 
     expect(getPosition[0]?.position).toEqual('JUNGLE');
 
-    const champPosition = getPosition[0]?.position;
+    const champPosition = await transfer.champPosition(Param, version);
 
     const champData = champInfo.champDefaultData;
 
@@ -236,7 +226,7 @@ describe('ChampService', () => {
       champId: '1',
       position: 'mid',
     };
-    const champPosition = 'MIDDLE';
+    const champPosition = await transfer.champPosition(Param, version);
 
     const champData = champInfo.champDefaultData;
 
@@ -264,7 +254,7 @@ describe('ChampService', () => {
       position: 'default',
     };
 
-    const champPosition = null;
+    const champPosition = await transfer.champPosition(Param, version);
 
     const champData = champInfo.champDefaultData;
 
