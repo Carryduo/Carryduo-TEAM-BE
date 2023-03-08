@@ -1,28 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { UserEntity } from '../user/entities/user.entity';
 import { ChampRateDataDto, GetChampRate } from './dto/champ-rate/champ.rate.dto';
 import { ChampSkillCommonDTO, SkillSet } from './dto/champ-skill/champ.skill.common.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
-import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
-import { ChampEntity } from './entities/champ.entity';
 
 @Injectable()
-export class champDtoFactory {
+export class TransferChampData {
   constructor() {}
-  async createChampList(champArray: ChampEntity[]) {
-    return champArray.map((v) => plainToInstance(ChampCommonDTO, v));
-  }
-  async createPreferChampUserList(user: UserEntity[]) {
-    return user.map((v) => plainToInstance(PreferChampUsersResDTO, v));
-  }
 
-  async createChampData(champData: ChampCommonDTO) {
-    return plainToInstance(ChampCommonDTO, champData);
-  }
-
-  async createChampRate(champRate: GetChampRate[], banRate: string | number, position: string) {
+  async champRate(champRate: GetChampRate[], banRate: string | number, position: string) {
     const spellInfo = {
       21: 'SummonerBarrier',
       1: 'SummonerBoost',
@@ -64,9 +51,7 @@ export class champDtoFactory {
       support: 'UTILITY',
       default: 'default position',
     };
-    position = !position
-      ? positionList.default
-      : Object.keys(positionList).find((key) => positionList[key] === position);
+    position = !position ? positionList.default : Object.keys(positionList).find((key) => positionList[key] === position);
 
     return plainToInstance(ChampRateDataDto, {
       ...withoutSpell,
@@ -78,7 +63,7 @@ export class champDtoFactory {
     });
   }
 
-  async createSkill(skill: SkillSet[]) {
+  async champSkill(skill: SkillSet[]) {
     const propertyChange = skill.map((v) => {
       return {
         id: v.skillId,
@@ -89,17 +74,5 @@ export class champDtoFactory {
       };
     });
     return propertyChange.map((v) => plainToInstance(ChampSkillCommonDTO, v));
-  }
-
-  async createtargetChampResponse(
-    champDataDto: ChampCommonDTO,
-    champRateDto: ChampRateDataDto,
-    skill: ChampSkillCommonDTO[],
-  ) {
-    return plainToInstance(TargetChampionResDto, {
-      ...champDataDto,
-      ...champRateDto,
-      skill,
-    });
   }
 }

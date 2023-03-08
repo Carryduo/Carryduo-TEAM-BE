@@ -1,26 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { champDtoFactory } from './champ.dto.factory';
+import { plainToInstance } from 'class-transformer';
+import { TransferChampData } from './champ.data.transfer';
 import { ChampRepository } from './champ.repository';
 import { GetChampRate } from './dto/champ-rate/champ.rate.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
-import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
+import { PreferChampUsersDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
+import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
 @Injectable()
 export class ChampService {
-  constructor(
-    private readonly champRepository: ChampRepository,
-    private readonly champDto: champDtoFactory,
-  ) {}
+  constructor(private readonly champRepository: ChampRepository, private readonly transfer: TransferChampData) {}
 
   async getChampList(): Promise<ChampCommonDTO[]> {
     const champList = await this.champRepository.getChampList();
-    return await this.champDto.createChampList(champList);
+    return champList.map((v) => plainToInstance(ChampCommonDTO, v));
   }
 
-  async getPreferChampUsers(champId: string): Promise<PreferChampUsersResDTO[] | []> {
+  async getPreferChampUsers(champId: string): Promise<PreferChampUsersDTO[] | []> {
     const users = await this.champRepository.findPreferChampUsers(champId);
-    return await this.champDto.createPreferChampUserList(users);
+    return users.map((v) => plainToInstance(PreferChampUsersDTO, v));
   }
 
   async getTargetChampion(param: TargetChampionReqDTO) {
@@ -45,34 +44,27 @@ export class ChampService {
     const positionDbName = param.position === 'default' ? false : positionList[param.position];
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 or DB에 있는 포지션명 할당
-    const getPosition = !positionDbName
-      ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0])
-      : positionDbName;
+    const getPosition = !positionDbName ? await this.champRepository.getMostPosition(param.champId, rateLatestVersions[0]) : positionDbName;
 
     //default 파라미터인 경우 모스트 포지션 값 할당 or DB에 있는 포지션명 할당
     const champPosition = !positionDbName ? getPosition[0]?.position : getPosition;
 
     const champData = await this.champRepository.getChampDefaultData(param.champId);
-    const champDataDto = await this.champDto.createChampData(champData);
 
     const skillInfo = await this.champRepository.getSkillData(param.champId);
-    const skill = await this.champDto.createSkill(skillInfo);
+    const skill = await this.transfer.champSkill(skillInfo);
 
     const banInfo = await this.champRepository.getBanRate(param.champId, rateLatestVersions[0]);
 
-    const champRate: GetChampRate[] | [] = await this.champRepository.getChampRate(
-      param.champId,
-      champPosition,
-      rateLatestVersions[0],
-    );
+    const champRate: GetChampRate[] | [] = await this.champRepository.getChampRate(param.champId, champPosition, rateLatestVersions[0]);
 
-    const champRateDto = await this.champDto.createChampRate(
-      champRate,
-      banInfo?.banRate,
-      champPosition,
-    );
+    const champRateDto = await this.transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    return await this.champDto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    return plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
   }
 
   private async getVersion(versionList: Array<{ version: string }>): Promise<Array<string>> {
