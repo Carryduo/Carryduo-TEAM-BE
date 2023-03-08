@@ -10,7 +10,9 @@ import { preferChampUserData } from './data/prefer.champ.user.list';
 import * as champInfo from './data/champ.info';
 import { GameInfoEntity } from '../entities/game.info.entity';
 import { UpdateChampRateEntity } from '../entities/update.champ.rate.entity';
-import { champDtoFactory } from '../champ.dto.factory';
+import { TransferChampData } from '../champ.data.transfer';
+import { plainToInstance } from 'class-transformer';
+import { TargetChampionResDto } from '../dto/target-champion/target.response.dto';
 
 class MockRepository {
   getChampList() {
@@ -72,14 +74,14 @@ class MockChache {}
 describe('ChampService', () => {
   let service: ChampService;
   let repository: ChampRepository;
-  let dto: champDtoFactory;
+  let transfer: TransferChampData;
   const env = process.env;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChampService,
-        champDtoFactory,
+        TransferChampData,
         { provide: ChampRepository, useClass: MockRepository },
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
         {
@@ -100,7 +102,7 @@ describe('ChampService', () => {
 
     service = module.get<ChampService>(ChampService);
     repository = module.get<ChampRepository>(ChampRepository);
-    dto = module.get<champDtoFactory>(champDtoFactory);
+    transfer = module.get<TransferChampData>(TransferChampData);
     jest.resetModules();
     process.env = {
       ...env,
@@ -207,18 +209,21 @@ describe('ChampService', () => {
 
     const champPosition = getPosition[0]?.position;
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
 
     const result = await service.getTargetChampion(Param);
 
@@ -233,18 +238,21 @@ describe('ChampService', () => {
     };
     const champPosition = 'MIDDLE';
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
     const result = await service.getTargetChampion(Param);
     expect(result).toEqual(response);
   });
@@ -258,18 +266,21 @@ describe('ChampService', () => {
 
     const champPosition = null;
 
-    const champDefaultData = champInfo.champDefaultData;
-    const champDataDto = await dto.createChampData(champDefaultData);
+    const champData = champInfo.champDefaultData;
 
     const skillInfo = champInfo.skillInfo;
-    const skill = await dto.createSkill(skillInfo);
+    const skill = await transfer.champSkill(skillInfo);
 
     const banInfo = { banRate: '0.2' };
 
     const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await dto.createChampRate(champRate, banInfo?.banRate, champPosition);
+    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
 
-    const response = await dto.createtargetChampResponse(champDataDto, champRateDto, skill);
+    const response = plainToInstance(TargetChampionResDto, {
+      ...champData,
+      ...champRateDto,
+      skill,
+    });
     const result = await service.getTargetChampion(Param);
 
     expect(result).toEqual(response);
