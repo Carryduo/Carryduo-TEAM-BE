@@ -11,11 +11,7 @@ import { TargetChampionResDto } from './dto/target-champion/target.response.dto'
 export class TransferChampData {
   constructor(private readonly champRepository: ChampRepository) {}
 
-  gameVersion(
-    versionList: {
-      version: string;
-    }[],
-  ) {
+  gameVersion(versionList: { version: string }[]): string {
     let data = [];
     for (const value of versionList) {
       data.push(value.version);
@@ -58,7 +54,7 @@ export class TransferChampData {
     return versionList_DESC[0];
   }
 
-  async champPosition(param: TargetChampionReqDTO, version: string) {
+  async champPosition(param: TargetChampionReqDTO, version: string): Promise<string> {
     const positionList = {
       top: 'TOP',
       jungle: 'JUNGLE',
@@ -78,7 +74,7 @@ export class TransferChampData {
     return !positionDbName ? findPosition[0]?.position : findPosition;
   }
 
-  async champRate(champRateInfo: GetChampRate[], banRate: string | number, position: string) {
+  async champRate(champRateInfo: GetChampRate[], banRate: string | number, position: string): Promise<ChampRateDataDto> {
     const spellInfo = {
       21: 'SummonerBarrier',
       1: 'SummonerBoost',
@@ -132,7 +128,7 @@ export class TransferChampData {
     });
   }
 
-  async champSkill(skill: SkillSet[]) {
+  async champSkill(skill: SkillSet[]): Promise<ChampSkillCommonDTO[]> {
     const propertyChange = skill.map((v) => {
       return {
         id: v.skillId,
