@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { TypeOrmFilter } from '../common/exception/typeorm-exception.filter';
 import { ChampService } from './champ.service';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
-import { PreferChampUsersResDTO } from './dto/prefer-champ/prefer.champ.users.dto';
+import { PreferChampUsersDTO } from './dto/prefer-champ/prefer.champ.users.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
 import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
 
@@ -57,11 +57,11 @@ export class ChampController {
   @ApiResponse({
     status: 200,
     description: '특정 챔피언 선호한 유저 조회 응답 예시',
-    type: PreferChampUsersResDTO,
+    type: PreferChampUsersDTO,
   })
   // @UseInterceptors(CacheInterceptor)
   @Get('/:champId/users')
-  async getPreferChampUser(@Param('champId') champId: string): Promise<PreferChampUsersResDTO[]> {
+  async getPreferChampUser(@Param('champId') champId: string): Promise<PreferChampUsersDTO[]> {
     return await this.champService.getPreferChampUsers(champId);
   }
 }
