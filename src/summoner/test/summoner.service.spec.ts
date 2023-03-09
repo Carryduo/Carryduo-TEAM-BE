@@ -6,7 +6,7 @@ import { SummonerEntity } from '../entities/summoner.entity';
 import { SummonerHistoryEntity } from '../entities/summoner.history.entity';
 import { SummonerRepository } from '../summoner.repository';
 import { SummonerService } from '../summoner.service';
-import { SummonerDtoFactory } from '../summoner.dto.factory';
+import { TransferSummonerData } from '../summoner.data.transfer';
 import * as dotenv from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -33,7 +33,7 @@ describe('SummonerService', () => {
   let configService: ConfigService;
   let service: SummonerService;
   let repository: SummonerRepository;
-  let dto: SummonerDtoFactory;
+  let transfer: TransferSummonerData;
   const mockRepository = () => {
     createQueryBuilder: jest.fn();
   };
@@ -48,7 +48,7 @@ describe('SummonerService', () => {
         ConfigService,
         SummonerService,
         SummonerRepository,
-        SummonerDtoFactory,
+        TransferSummonerData,
         {
           provide: axios,
           useValue: { get: jest.fn() },
@@ -75,7 +75,7 @@ describe('SummonerService', () => {
     configService = module.get<ConfigService>(ConfigService);
     service = module.get<SummonerService>(SummonerService);
     repository = module.get<SummonerRepository>(SummonerRepository);
-    dto = module.get<SummonerDtoFactory>(SummonerDtoFactory);
+    transfer = module.get<TransferSummonerData>(TransferSummonerData);
   });
 
   it('should be defined', () => {
@@ -180,7 +180,7 @@ describe('SummonerService', () => {
     });
 
     const result = await service.requestRiotSummonerHistoryApi(puuId);
-    const response = await dto.createSummonerHistory(summonerHistory);
+    const response = await transfer.summonerHistoryEntity(summonerHistory);
 
     expect(result).toEqual(response);
   });
