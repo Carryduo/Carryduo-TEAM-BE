@@ -2,15 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SummonerRepository } from './summoner.repository';
 import axios from 'axios';
 
-import { SummonerDtoFactory } from './summoner.dto.factory';
+import { TransferSummonerData } from './summoner.data.transfer';
 import { ConfigService } from '@nestjs/config';
-import { SummonerEntity } from './entities/summoner.entity';
+import { SummonerCommonDTO } from './dto/summoner/summoner.common.dto';
 
 @Injectable()
 export class SummonerService {
   constructor(
     private readonly summonerRepository: SummonerRepository,
-    private readonly summonerDto: SummonerDtoFactory,
+    private readonly transfer: TransferSummonerData,
     private readonly configService: ConfigService,
   ) {}
 
@@ -27,6 +27,7 @@ export class SummonerService {
       if (!existDbSummoner) {
         await this.createSummoner(existSummoner.data.name);
       }
+
       const summoner = await this.summonerRepository.getSummoner(existSummoner.data.name);
       return await this.summonerHistoryCalculation(summoner);
     } catch (err) {
@@ -41,33 +42,30 @@ export class SummonerService {
     }
   }
 
-  async summonerHistoryCalculation(summoner: SummonerEntity) {
+  async summonerHistoryCalculation(summoner: SummonerCommonDTO) {
     try {
-      const summonerDefaultDataDto = await this.summonerDto.createSummonerDefaultData(summoner);
+      const summonerDefaultData = await this.transfer.summonerDefaultData(summoner);
 
-      const position = await this.summonerRepository.getSummonerPositionRecord(summoner.summonerId);
-      const positions = await this.summonerDto.createPosition(position);
+      const positionInfo = await this.summonerRepository.getSummonerPositionRecord(
+        summoner.summonerId,
+      );
+      const position = await this.transfer.summonerPosition(positionInfo);
 
-      const recentChampInfoList = [];
-      const recentChamp = await this.summonerRepository.getRecentChamp(summoner.summonerId);
-      for (let r of recentChamp) {
-        const recentChampRate = await this.summonerRepository.getRecentChampRate(
-          r.champId,
-          summoner.summonerId,
-        );
-        recentChampInfoList.push({ ...recentChampRate });
-      }
-      const recentChampDto = await this.summonerDto.createRecentChamp(recentChampInfoList);
+      const recentChampInfo = await this.summonerRepository.getRecentChamp(summoner.summonerId);
 
-      const recordSum = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
+      const recentChamp = await this.transfer.summonerRecentChamp(
+        recentChampInfo,
+        summoner.summonerId,
+      );
+      const recordSumInfo = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
 
-      const historyRateDto = await this.summonerDto.createHistoryRate(
-        recordSum,
-        positions,
-        recentChampDto,
+      const historyRate = await this.transfer.summonerHistoryRate(
+        recordSumInfo,
+        position,
+        recentChamp,
       );
 
-      return await this.summonerDto.createHistoryResponse(summonerDefaultDataDto, historyRateDto);
+      return await this.transfer.SummonerHistoryResponse(summonerDefaultData, historyRate);
     } catch (err) {
       throw new HttpException(err, 400);
     }
@@ -125,12 +123,12 @@ export class SummonerService {
         )}?api_key=${this.configService.get('RIOT_API_KEY')}`,
       );
       const { data } = response;
-      const summonerDataDto = await this.summonerDto.createSummoner(data);
+      const summoner = await this.transfer.summonerData(data);
 
       //SUMMONER LEAGUE INFO
       const detailResponse = await axios.get(
         `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${
-          summonerDataDto.summonerId
+          summoner.summonerId
         }?api_key=${this.configService.get('RIOT_API_KEY')}`,
       );
       let summonerLeagueInfo = detailResponse?.data;
@@ -144,29 +142,25 @@ export class SummonerService {
         summonerLeagueInfo = summonerLeagueInfo[0];
       }
 
-      const soloRankDataDto = await this.summonerDto.createSoloRank(summonerLeagueInfo);
+      const soloRank = await this.transfer.soloRankData(summonerLeagueInfo);
 
       //SUMMONER CHAMP MASTERY
       const mostChampResponse = await axios.get(
         `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${
-          summonerDataDto.summonerId
+          summoner.summonerId
         }/top?count=3&api_key=${this.configService.get('RIOT_API_KEY')}`,
       );
-      const mostChamp = mostChampResponse.data;
+      const mostChampData = mostChampResponse.data;
 
-      const mostChampDataDto = await this.summonerDto.createMostChamp(
-        mostChamp[0].championId,
-        mostChamp[1].championId,
-        mostChamp[2].championId,
+      const mostChamps = await this.transfer.mostChampData(
+        mostChampData[0].championId,
+        mostChampData[1].championId,
+        mostChampData[2].championId,
       );
 
-      const summonerDtoToEntity = await this.summonerDto.createSummonerToEntity(
-        summonerDataDto,
-        soloRankDataDto,
-        mostChampDataDto,
-      );
+      const summonerEntity = await this.transfer.summonerEntity(summoner, soloRank, mostChamps);
 
-      return summonerDtoToEntity;
+      return summonerEntity;
     } catch (err) {
       throw new HttpException(
         `${err.response.statusText} - from requestRiotSummonerApi`,
@@ -183,7 +177,7 @@ export class SummonerService {
           'RIOT_API_KEY',
         )}`,
       );
-      const summonerHistoryList = [];
+      const summonerHistoryArr = [];
 
       for (let m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
@@ -209,15 +203,13 @@ export class SummonerService {
                 summonerId: p.summonerId,
                 matchId: m,
               };
-              summonerHistoryList.push(history);
+              summonerHistoryArr.push(history);
             }
           }
         }
       }
-      const summonerHistoryDtoToEntity = await this.summonerDto.createSummonerHistory(
-        summonerHistoryList,
-      );
-      return summonerHistoryDtoToEntity;
+      const summonerHistoryList = await this.transfer.summonerHistoryEntity(summonerHistoryArr);
+      return summonerHistoryList;
     } catch (err) {
       throw new HttpException(
         `${err.response.statusText} - from requestRiotSummonerHistoryApi`,

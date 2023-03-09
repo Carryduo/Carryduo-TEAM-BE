@@ -8,6 +8,7 @@ import { Cache } from 'cache-manager';
 import { SummonerRecordSumData } from './dto/summoner/history/history.rate.dto';
 import { RecentChampDto } from './dto/summoner/history/history.recent.champ.dto';
 import { SummonerPositionDto } from './dto/summoner/history/history.position.dto';
+import { SummonerCommonDTO } from './dto/summoner/summoner.common.dto';
 
 export class SummonerRepository {
   constructor(
@@ -25,14 +26,14 @@ export class SummonerRepository {
   //   await this.cacheManager.set(`/summoner/${summonerName}`, data);
   // }
 
-  async existSummoner(summonerName: string): Promise<SummonerEntity> {
+  async existSummoner(summonerName: string): Promise<SummonerCommonDTO> {
     return await this.summonerRepository
       .createQueryBuilder()
       .where('summonerName = :summonerName', { summonerName })
       .getOne();
   }
 
-  async getSummoner(summonerName: string): Promise<SummonerEntity> {
+  async getSummoner(summonerName: string): Promise<SummonerCommonDTO> {
     return await this.summonerRepository
       .createQueryBuilder('summoner')
       .leftJoinAndSelect('summoner.mostChamp1', 'most1')
