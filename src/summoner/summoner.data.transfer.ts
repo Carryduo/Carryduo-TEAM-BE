@@ -15,11 +15,14 @@ import { SummonerCommonDTO } from './dto/summoner/summoner.common.dto';
 import { SummonerEntity } from './entities/summoner.entity';
 import { SummonerHistoryResponseDto } from './dto/summoner/history/history.response.dto';
 import { SummonerDefaultDataDto } from './dto/summoner/history/history.summoner.dto';
+import { SummonerHistoryEntity } from './entities/summoner.history.entity';
+import { SummonerRepository } from './summoner.repository';
 
 @Injectable()
-export class SummonerDtoFactory {
+export class TransferSummonerData {
+  constructor(private readonly summonerRepository: SummonerRepository) {}
   //riot Dto
-  async createSummoner(data: any) {
+  async summonerData(data: any): Promise<SummonerDataDto> {
     const summonerId = data.id;
     const summonerPuuId = data.puuid;
     const summonerLevel = data.summonerLevel;
@@ -34,7 +37,7 @@ export class SummonerDtoFactory {
     });
   }
 
-  async createSoloRank(data: any) {
+  async soloRankData(data: any): Promise<SoloRankDataDto> {
     const tierImgInfo = {
       IRON: 'https://erunjrun.com/tier/Iron.png',
       BRONZE: 'https://erunjrun.com/tier/Bronze.png',
@@ -57,18 +60,22 @@ export class SummonerDtoFactory {
     return plainToInstance(SoloRankDataDto, { win, lose, winRate, tier, tierImg, lp });
   }
 
-  async createMostChamp(mostChamp1: number, mostChamp2: number, mostChamp3: number) {
+  async mostChampData(
+    mostChamp1: number,
+    mostChamp2: number,
+    mostChamp3: number,
+  ): Promise<MostChampDataDto> {
     mostChamp1 = mostChamp1 ? mostChamp1 : null;
     mostChamp2 = mostChamp2 ? mostChamp2 : null;
     mostChamp3 = mostChamp3 ? mostChamp3 : null;
     return plainToInstance(MostChampDataDto, { mostChamp1, mostChamp2, mostChamp3 });
   }
 
-  async createSummonerToEntity(
+  async summonerEntity(
     summonerDataDto: SummonerDataDto,
     soloRankDataDto: SoloRankDataDto,
     mostChampDataDto: MostChampDataDto,
-  ) {
+  ): Promise<SummonerEntity> {
     const summonerResult = plainToInstance(CreateSummonerDto, {
       ...summonerDataDto,
       ...soloRankDataDto,
@@ -77,7 +84,7 @@ export class SummonerDtoFactory {
     return summonerResult.toEntity();
   }
 
-  async createSummonerHistory(histories: any) {
+  async summonerHistoryEntity(histories: any): Promise<SummonerHistoryEntity[]> {
     const positionInfo = {
       1: 'TOP',
       2: 'JUNGLE',
@@ -97,7 +104,7 @@ export class SummonerDtoFactory {
   }
 
   //summoner & history Dto
-  async createSummonerDefaultData(summoner: SummonerEntity) {
+  async summonerDefaultData(summoner: SummonerCommonDTO): Promise<SummonerDefaultDataDto> {
     const summonerDto = plainToInstance(SummonerCommonDTO, summoner);
     const { mostChamp1, mostChamp2, mostChamp3, ...summonerDtoWithoutMostChamps } = summonerDto;
     const mostChamps = [mostChamp1, mostChamp2, mostChamp3];
@@ -106,7 +113,7 @@ export class SummonerDtoFactory {
     return plainToInstance(SummonerDefaultDataDto, summonerDefaultData);
   }
 
-  async createPosition(position: SummonerPositionDto[]) {
+  async summonerPosition(position: SummonerPositionDto[]): Promise<SummonerPositionDto[]> {
     const positionId = [1, 2, 3, 4, 5];
     let positions: { id: number; cnt: number }[] = [];
     for (let p of position) {
@@ -122,15 +129,27 @@ export class SummonerDtoFactory {
     return positions.map((v) => plainToInstance(SummonerPositionDto, v));
   }
 
-  async createRecentChamp(recentChampInfo: RecentChampDto[]) {
-    return recentChampInfo.map((v) => plainToInstance(RecentChampDto, v));
+  async summonerRecentChamp(
+    recentChampInfo: { count: string; champId: string }[],
+    summonerId: string,
+  ): Promise<RecentChampDto[]> {
+    const recentChampInfoList = [];
+
+    for (let r of recentChampInfo) {
+      const recentChampRate = await this.summonerRepository.getRecentChampRate(
+        r.champId,
+        summonerId,
+      );
+      recentChampInfoList.push({ ...recentChampRate });
+    }
+    return recentChampInfoList.map((v) => plainToInstance(RecentChampDto, v));
   }
 
-  async createHistoryRate(
+  async summonerHistoryRate(
     recordSum: SummonerRecordSumData,
     summonerPosition: SummonerPositionDto[],
     recentChamps: RecentChampDto[],
-  ) {
+  ): Promise<SummonerHistoryRateDto> {
     const kill = Number((Number(recordSum.killCount) / Number(recordSum.totalCount)).toFixed(2));
     const death = Number((Number(recordSum.deathCount) / Number(recordSum.totalCount)).toFixed(2));
     const assist = Number(
@@ -164,7 +183,10 @@ export class SummonerDtoFactory {
       recentChamp,
     });
   }
-  async createHistoryResponse(summoner: SummonerDefaultDataDto, history: SummonerHistoryRateDto) {
+  async SummonerHistoryResponse(
+    summoner: SummonerDefaultDataDto,
+    history: SummonerHistoryRateDto,
+  ): Promise<SummonerHistoryResponseDto> {
     return plainToInstance(SummonerHistoryResponseDto, { ...summoner, history });
   }
 }
