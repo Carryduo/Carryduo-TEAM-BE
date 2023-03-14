@@ -21,7 +21,6 @@ export class SummonerService {
           summonerName,
         )}?api_key=${this.configService.get('RIOT_API_KEY')}`,
       );
-
       const existDbSummoner = await this.summonerRepository.existSummoner(existSummoner.data.name);
 
       if (!existDbSummoner) {
@@ -31,20 +30,14 @@ export class SummonerService {
       const summoner = await this.summonerRepository.getSummoner(existSummoner.data.name);
       return await this.summonerHistoryCalculation(summoner);
     } catch (err) {
-      if (err.response.status === 404) {
-        throw new HttpException('존재 하지 않는 소환사입니다.', HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          `${err.response.statusText} - from getSummoner`,
-          err.response.status,
-        );
-      }
+      throw new HttpException(`${err.response.statusText} - from getSummoner`, err.response.status);
     }
   }
 
   async summonerHistoryCalculation(summoner: SummonerCommonDTO) {
     try {
       const summonerDefaultData = await this.transfer.summonerDefaultData(summoner);
+      const recordSumInfo = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
 
       const positionInfo = await this.summonerRepository.getSummonerPositionRecord(
         summoner.summonerId,
@@ -52,12 +45,10 @@ export class SummonerService {
       const position = await this.transfer.summonerPosition(positionInfo);
 
       const recentChampInfo = await this.summonerRepository.getRecentChamp(summoner.summonerId);
-
       const recentChamp = await this.transfer.summonerRecentChamp(
         recentChampInfo,
         summoner.summonerId,
       );
-      const recordSumInfo = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
 
       const historyRate = await this.transfer.summonerHistoryRate(
         recordSumInfo,
