@@ -44,7 +44,7 @@ describe('Summoner (e2e)', () => {
     const summonerName = encodeURIComponent('asdasui245y3jfnsdf;sdf13248');
     const response = await request(app.getHttpServer()).get(`/summoner/${summonerName}`);
     expect(response.statusCode).toBe(404);
-    expect(response.body.message).toEqual('존재 하지 않는 소환사입니다.');
+    expect(response.body.message).toEqual('Not Found - from getSummoner');
   });
 
   it('/GET 소환사 전적 갱신 DB에 없는 소환사일 경우 error?', async () => {
