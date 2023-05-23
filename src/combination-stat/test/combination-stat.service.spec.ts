@@ -101,13 +101,65 @@ describe('CombinationStatService', () => {
 
   it('individual 테스트: 클라이언트로부터 받은 챔피언 포지션 요청 값을 잘 가공해서 repostiroy로 전달하는가?', async () => {
     // 카테고리
+    jest.spyOn(repository, 'getVersions').mockImplementation(
+      (): Promise<{ version: string }[]> =>
+        new Promise((resolve) => {
+          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+        }),
+    );
+    jest.spyOn(repository, 'getMainpageData').mockImplementation(
+      (version) =>
+        new Promise((resolve) => {
+          resolve(testData.result_mainPageData_recentVersion);
+        }),
+    );
+
+    repository.getIndividualChampData = jest.fn().mockImplementation(() => {
+      return testData.result0_tierList;
+    });
+
+    repository.createCategoryOption = jest.fn().mockResolvedValue({});
+    repository.createChampIdOption = jest.fn().mockResolvedValue({});
 
     await service.getIndiviualChampData(
       new IndividualChampRequestDto('888', 'top'),
     );
     expect(repository.createCategoryOption).toBeCalledWith(0);
+    expect(repository.createChampIdOption).toBeCalledWith({
+      mainChampId: '888',
+    });
     // 포지션
-    return;
+  });
+
+  it('individual 테스트: 클라이언트로부터 받은 챔피언 포지션 요청 값을 잘 가공해서 repostiroy로 전달하는가?(정글 케이스)', async () => {
+    jest.spyOn(repository, 'getVersions').mockImplementation(
+      (): Promise<{ version: string }[]> =>
+        new Promise((resolve) => {
+          resolve([{ version: '13.1.' }, { version: '12.23' }]);
+        }),
+    );
+    jest.spyOn(repository, 'getMainpageData').mockImplementation(
+      (version) =>
+        new Promise((resolve) => {
+          resolve(testData.result_mainPageData_recentVersion);
+        }),
+    );
+
+    repository.getIndividualChampData = jest.fn().mockImplementation(() => {
+      return testData.result0_tierList;
+    });
+
+    repository.createCategoryOption = jest.fn().mockResolvedValue({});
+    repository.createChampIdOption = jest.fn().mockResolvedValue({});
+
+    await service.getIndiviualChampData(
+      new IndividualChampRequestDto('888', 'jungle'),
+    );
+    expect(repository.createCategoryOption).toBeCalledWith([0, 1]);
+    expect(repository.createChampIdOption).toBeCalledWith({
+      subChampId: '888',
+    });
+    // 포지션
   });
 
   it('individualChamp 테스트: 데이터가 없는 경우에 에러 메시지를 잘 응답하는가?', async () => {

@@ -56,12 +56,50 @@ export class CombinationStatService {
     } else {
       version = versionList[1];
     }
-    const whereOption =
-      this.combinationStatRepository.createIndividualRequestOption(
-        requestOption,
-      );
+
+    const { champId, position } = requestOption;
+
+    let category: number | number[];
+    let champOption: { mainChampId: string } | { subChampId: string };
+    switch (position) {
+      case 'top':
+        category = 0;
+        champOption = {
+          mainChampId: champId,
+        };
+        break;
+      case 'mid':
+        category = 1;
+        champOption = {
+          mainChampId: champId,
+        };
+        break;
+      case 'ad':
+        category = 2;
+        champOption = {
+          mainChampId: champId,
+        };
+        break;
+      case 'jungle':
+        category = [0, 1];
+        champOption = {
+          subChampId: champId,
+        };
+        break;
+      case 'support':
+        category = 2;
+        champOption = {
+          subChampId: champId,
+        };
+        break;
+    }
+    const categoryOption =
+      this.combinationStatRepository.createCategoryOption(category);
+
+    const champIdOption =
+      this.combinationStatRepository.createChampIdOption(champOption);
     const answer = await this.combinationStatRepository.getIndividualChampData(
-      whereOption,
+      { option: { category: categoryOption, champ: champIdOption } },
       requestOption.toEntity(version),
     );
 

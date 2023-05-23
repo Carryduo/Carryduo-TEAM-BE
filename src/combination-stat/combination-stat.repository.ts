@@ -152,94 +152,38 @@ export class CombinationStatRepository {
     }
   }
 
-  createCategoryOption() {
-    return;
-  }
-  createIndividualRequestOption(requestOption: {
-    champId: string;
-    position: string;
-  }): {
-    option: { category: Brackets; champ: Brackets };
-  } {
-    const { champId, position } = requestOption;
-    let option: { category: Brackets; champ: Brackets };
-    switch (position) {
-      case 'top':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 0,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-      case 'jungle':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 0,
-            }).orWhere('COMBINATION_STAT.category = :category2', {
-              category2: 1,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
-              subChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'mid':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 1,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'ad':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 2,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'support':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 2,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
-              subChampId: champId,
-            });
-          }),
-        };
-        break;
+  createCategoryOption(category: number | number[]): Brackets {
+    let categoryOption: Brackets;
+    if (Array.isArray(category)) {
+      categoryOption = new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.category = :category', {
+          category: category[0],
+        }).orWhere('COMBINATION_STAT.category = :category2', {
+          category2: category[1],
+        });
+      });
+    } else {
+      categoryOption = new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.category = :category', {
+          category,
+        });
+      });
     }
-    return { option };
+    return categoryOption;
+  }
+
+  createChampIdOption(champIdOption: {
+    mainChampId?: string;
+    subChampId?: string;
+  }): Brackets {
+    if (champIdOption.subChampId === undefined) {
+      return new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.mainChampId = :mainChampId', champIdOption);
+      });
+    } else {
+      return new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.subChampId = :subChampId', champIdOption);
+      });
+    }
   }
 }
