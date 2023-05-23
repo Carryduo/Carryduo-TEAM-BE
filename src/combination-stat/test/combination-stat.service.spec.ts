@@ -99,6 +99,17 @@ describe('CombinationStatService', () => {
     expect(response_ad[0].category).toEqual(2);
   });
 
+  it('individual 테스트: 클라이언트로부터 받은 챔피언 포지션 요청 값을 잘 가공해서 repostiroy로 전달하는가?', async () => {
+    // 카테고리
+
+    await service.getIndiviualChampData(
+      new IndividualChampRequestDto('888', 'top'),
+    );
+    expect(repository.createCategoryOption).toBeCalledWith(0);
+    // 포지션
+    return;
+  });
+
   it('individualChamp 테스트: 데이터가 없는 경우에 에러 메시지를 잘 응답하는가?', async () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>
@@ -334,6 +345,7 @@ describe('CombinationStatService', () => {
     const response = await service.getRecentVersion();
     expect(response.version).toEqual('13.1.');
   });
+
   it('version 테스트: 메인페이지 티어리스트가 충족되지 않으면, 이전 패치버전을 응답하는가?', async () => {
     jest.spyOn(repository, 'getVersions').mockImplementation(
       () =>

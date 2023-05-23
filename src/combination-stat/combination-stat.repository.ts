@@ -96,9 +96,9 @@ export class CombinationStatRepository {
       .getRawMany();
   }
 
-  getMainpageData = async (
+  async getMainpageData(
     version: string,
-  ): Promise<{ category0: number; category1: number; category2: number }> => {
+  ): Promise<{ category0: number; category1: number; category2: number }> {
     try {
       const category0 = await this.combinationStatRepository
         .createQueryBuilder('COMBINATION_STAT')
@@ -150,8 +150,11 @@ export class CombinationStatRepository {
       console.log(err);
       return;
     }
-  };
+  }
 
+  createCategoryOption() {
+    return;
+  }
   createIndividualRequestOption(requestOption: {
     champId: string;
     position: string;
