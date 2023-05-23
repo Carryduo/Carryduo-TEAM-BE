@@ -2,9 +2,18 @@ import { UserService } from './user.service';
 import { Controller, Post } from '@nestjs/common';
 import { Get, UseGuards, UseFilters, Param, Body } from '@nestjs/common';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
-import { GetOtherUserInfoRequestDto, UpdateUserOptionRequestBodyDto } from './dto/user.request.dto';
+import {
+  GetOtherUserInfoRequestDto,
+  UpdateUserOptionRequestBodyDto,
+} from './dto/user.request.dto';
 import { CommonResponseDto } from '../common/dto/common.response.dto';
 import { User } from '../common/decorators/user.decorator';
 import { LoginResponseDto } from '../admin/dto/admin.response.dto';
@@ -30,7 +39,9 @@ export class UserController {
   })
   @Get()
   @UseGuards(jwtGuard)
-  async getLoginUserInfo(@User() user: LoginResponseDto): Promise<UserInfoResponseDto> {
+  async getLoginUserInfo(
+    @User() user: LoginResponseDto,
+  ): Promise<UserInfoResponseDto> {
     return this.userService.getUserInfo(user.toGetOwnInfoRequestDto('login'));
   }
 
@@ -43,7 +54,9 @@ export class UserController {
   })
   @Get('/option')
   @UseGuards(jwtGuard)
-  async getLoginUserOptionInfo(@User() user: LoginResponseDto): Promise<UserInfoResponseDto> {
+  async getLoginUserOptionInfo(
+    @User() user: LoginResponseDto,
+  ): Promise<UserInfoResponseDto> {
     return this.userService.getUserInfo(user.toGetOwnInfoRequestDto('option'));
   }
 
@@ -60,7 +73,9 @@ export class UserController {
     @User() user: LoginResponseDto,
     @Body() body: UpdateUserOptionRequestBodyDto,
   ): Promise<CommonResponseDto> {
-    await this.userService.updateUserOptionInfo(user.toUpdateOptionRequestDto(body));
+    await this.userService.updateUserOptionInfo(
+      user.toUpdateOptionRequestDto(body),
+    );
     return new CommonResponseDto(true, '설정 변경 완료되었습니다');
   }
 
@@ -79,6 +94,8 @@ export class UserController {
   async getIndividualUserInfo(
     @Param() user: GetOtherUserInfoRequestDto,
   ): Promise<UserInfoResponseDto> {
-    return this.userService.getUserInfo(user.toGetUserInfoRequestDto('individual'));
+    return this.userService.getUserInfo(
+      user.toGetUserInfoRequestDto('individual'),
+    );
   }
 }

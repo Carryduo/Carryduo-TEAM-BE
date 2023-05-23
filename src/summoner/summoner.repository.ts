@@ -67,7 +67,9 @@ export class SummonerRepository {
       .getOne();
   }
 
-  async getSummonerRecordSum(summonerId: string): Promise<SummonerRecordSumData> {
+  async getSummonerRecordSum(
+    summonerId: string,
+  ): Promise<SummonerRecordSumData> {
     return await this.historyRepository
       .createQueryBuilder('history')
       .select('SUM(history.win) winCount')
@@ -79,7 +81,9 @@ export class SummonerRepository {
       .getRawOne();
   }
 
-  async getSummonerPositionRecord(summonerId: string): Promise<SummonerPositionDto[]> {
+  async getSummonerPositionRecord(
+    summonerId: string,
+  ): Promise<SummonerPositionDto[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerId = :summonerId', { summonerId })
@@ -90,7 +94,9 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChamp(summonerId: string): Promise<{ count: string; champId: string }[]> {
+  async getRecentChamp(
+    summonerId: string,
+  ): Promise<{ count: string; champId: string }[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerId = :summonerId', { summonerId })
@@ -101,7 +107,10 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChampRate(champId: string, summonerId: string): Promise<RecentChampDto> {
+  async getRecentChampRate(
+    champId: string,
+    summonerId: string,
+  ): Promise<RecentChampDto> {
     return await this.historyRepository
       .createQueryBuilder('history')
       .leftJoinAndSelect('history.champId', 'champ')
@@ -110,8 +119,14 @@ export class SummonerRepository {
         'champ.champNameKo recentChampName',
         'champ.champImg recentChampImg',
       ])
-      .addSelect('SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END)', 'recentChampWin')
-      .addSelect('SUM(CASE WHEN history.win = 0 THEN 1 ELSE 0 END)', 'recentChampLose')
+      .addSelect(
+        'SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END)',
+        'recentChampWin',
+      )
+      .addSelect(
+        'SUM(CASE WHEN history.win = 0 THEN 1 ELSE 0 END)',
+        'recentChampLose',
+      )
       .addSelect(
         'SUM(CASE WHEN history.win = 0 THEN 1 WHEN history.win = 1 THEN 1 ELSE 0 END)',
         'recentChampTotal',
@@ -126,10 +141,18 @@ export class SummonerRepository {
   }
 
   async createSummoner(summoner: SummonerEntity) {
-    await this.summonerRepository.createQueryBuilder().insert().values(summoner).execute();
+    await this.summonerRepository
+      .createQueryBuilder()
+      .insert()
+      .values(summoner)
+      .execute();
   }
   async createSummonerHistory(history: SummonerHistoryEntity[]) {
-    return this.historyRepository.createQueryBuilder().insert().values(history).execute();
+    return this.historyRepository
+      .createQueryBuilder()
+      .insert()
+      .values(history)
+      .execute();
   }
 
   async updateSummoner(summoner: SummonerEntity) {

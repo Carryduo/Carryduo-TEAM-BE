@@ -4,7 +4,14 @@ import { ChampEntity } from '../../champ/entities/champ.entity';
 import { CommentEntity } from '../../comments/entities/comments.entity';
 import { CommonEntity } from '../../common/entities/common.entity';
 import { SubscriptionEntity } from '../../subscription/entities/subscription.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'USER',
@@ -48,9 +55,13 @@ export class UserEntity extends OmitType(CommonEntity, ['id']) {
   )
   subscription: SubscriptionEntity;
 
-  @OneToMany(() => CommentEntity, (commentEntity: CommentEntity) => commentEntity.userId, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => CommentEntity,
+    (commentEntity: CommentEntity) => commentEntity.userId,
+    {
+      cascade: true,
+    },
+  )
   comment: CommentEntity[];
 
   @ManyToOne(() => ChampEntity, (champEntity: ChampEntity) => champEntity.id, {

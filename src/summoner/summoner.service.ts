@@ -21,30 +21,44 @@ export class SummonerService {
           summonerName,
         )}?api_key=${this.configService.get('RIOT_API_KEY')}`,
       );
-      const existDbSummoner = await this.summonerRepository.existSummoner(existSummoner.data.name);
+      const existDbSummoner = await this.summonerRepository.existSummoner(
+        existSummoner.data.name,
+      );
 
       if (!existDbSummoner) {
         await this.createSummoner(existSummoner.data.name);
       }
 
-      const summoner = await this.summonerRepository.getSummoner(existSummoner.data.name);
+      const summoner = await this.summonerRepository.getSummoner(
+        existSummoner.data.name,
+      );
       return await this.summonerHistoryCalculation(summoner);
     } catch (err) {
-      throw new HttpException(`${err.response.statusText} - from getSummoner`, err.response.status);
+      throw new HttpException(
+        `${err.response.statusText} - from getSummoner`,
+        err.response.status,
+      );
     }
   }
 
   async summonerHistoryCalculation(summoner: SummonerCommonDTO) {
     try {
-      const summonerDefaultData = await this.transfer.summonerDefaultData(summoner);
-      const recordSumInfo = await this.summonerRepository.getSummonerRecordSum(summoner.summonerId);
-
-      const positionInfo = await this.summonerRepository.getSummonerPositionRecord(
+      const summonerDefaultData = await this.transfer.summonerDefaultData(
+        summoner,
+      );
+      const recordSumInfo = await this.summonerRepository.getSummonerRecordSum(
         summoner.summonerId,
       );
+
+      const positionInfo =
+        await this.summonerRepository.getSummonerPositionRecord(
+          summoner.summonerId,
+        );
       const position = await this.transfer.summonerPosition(positionInfo);
 
-      const recentChampInfo = await this.summonerRepository.getRecentChamp(summoner.summonerId);
+      const recentChampInfo = await this.summonerRepository.getRecentChamp(
+        summoner.summonerId,
+      );
       const recentChamp = await this.transfer.summonerRecentChamp(
         recentChampInfo,
         summoner.summonerId,
@@ -56,7 +70,10 @@ export class SummonerService {
         recentChamp,
       );
 
-      return await this.transfer.SummonerHistoryResponse(summonerDefaultData, historyRate);
+      return await this.transfer.SummonerHistoryResponse(
+        summonerDefaultData,
+        historyRate,
+      );
     } catch (err) {
       throw new HttpException(err, 400);
     }
@@ -65,7 +82,9 @@ export class SummonerService {
   async createSummoner(summonerName: string) {
     try {
       const summoner = await this.requestRiotSummonerApi(summonerName);
-      const history = await this.requestRiotSummonerHistoryApi(summoner.summonerPuuId);
+      const history = await this.requestRiotSummonerHistoryApi(
+        summoner.summonerPuuId,
+      );
 
       await this.summonerRepository.createSummoner(summoner);
       await this.summonerRepository.createSummonerHistory(history);
@@ -77,7 +96,9 @@ export class SummonerService {
 
   async refreshSummoner(summonerName: string) {
     try {
-      const existSummoner = await this.summonerRepository.existSummoner(summonerName);
+      const existSummoner = await this.summonerRepository.existSummoner(
+        summonerName,
+      );
       if (!existSummoner) {
         throw new HttpException(
           '갱신할 수 없는 소환사입니다.(DB에 소환사가 없습니다.)',
@@ -86,14 +107,19 @@ export class SummonerService {
       }
       const currentTime = new Date();
       const daysElapsed =
-        (currentTime.getTime() - existSummoner.updatedAt.getTime()) / (1000 * 3600 * 24);
+        (currentTime.getTime() - existSummoner.updatedAt.getTime()) /
+        (1000 * 3600 * 24);
       if (daysElapsed > 7) {
         const updateSummoner = await this.requestRiotSummonerApi(summonerName);
         await this.summonerRepository.updateSummoner(updateSummoner);
       }
-      await this.summonerRepository.deleteSummonerHistory(existSummoner.summonerId);
+      await this.summonerRepository.deleteSummonerHistory(
+        existSummoner.summonerId,
+      );
 
-      const newHistory = await this.requestRiotSummonerHistoryApi(existSummoner.summonerPuuId);
+      const newHistory = await this.requestRiotSummonerHistoryApi(
+        existSummoner.summonerPuuId,
+      );
 
       await this.summonerRepository.createSummonerHistory(newHistory);
 
@@ -124,7 +150,9 @@ export class SummonerService {
       );
       let summonerLeagueInfo = detailResponse?.data;
 
-      summonerLeagueInfo = summonerLeagueInfo.filter((v: any) => v.queueType === 'RANKED_SOLO_5x5');
+      summonerLeagueInfo = summonerLeagueInfo.filter(
+        (v: any) => v.queueType === 'RANKED_SOLO_5x5',
+      );
 
       if (summonerLeagueInfo.length === 0) {
         //summonerLeagueData에 RANKED_SOLO_5x5 기록이 없는 경우
@@ -149,7 +177,11 @@ export class SummonerService {
         mostChampData[2].championId,
       );
 
-      const summonerEntity = await this.transfer.summonerEntity(summoner, soloRank, mostChamps);
+      const summonerEntity = await this.transfer.summonerEntity(
+        summoner,
+        soloRank,
+        mostChamps,
+      );
 
       return summonerEntity;
     } catch (err) {
@@ -170,7 +202,7 @@ export class SummonerService {
       );
       const summonerHistoryArr = [];
 
-      for (let m of matchIdResponse.data) {
+      for (const m of matchIdResponse.data) {
         //SUMMONER MATCH DATA
         const matchDataResponse = await axios.get(
           `https://asia.api.riotgames.com/lol/match/v5/matches/${m}?api_key=${this.configService.get(
@@ -181,7 +213,7 @@ export class SummonerService {
         const matchDataInfo = matchDataResponse.data.info;
 
         if (matchDataInfo.gameMode === 'CLASSIC') {
-          for (let p of matchDataInfo.participants) {
+          for (const p of matchDataInfo.participants) {
             if (p.puuid === puuId && p.teamPosition) {
               const history = {
                 win: p.win,
@@ -199,7 +231,9 @@ export class SummonerService {
           }
         }
       }
-      const summonerHistoryList = await this.transfer.summonerHistoryEntity(summonerHistoryArr);
+      const summonerHistoryList = await this.transfer.summonerHistoryEntity(
+        summonerHistoryArr,
+      );
       return summonerHistoryList;
     } catch (err) {
       throw new HttpException(

@@ -41,9 +41,13 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   )
   champ_rate: UpdateChampRateEntity;
 
-  @OneToMany(() => ChampBanEntity, (champ_ban: ChampBanEntity) => champ_ban.champId, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => ChampBanEntity,
+    (champ_ban: ChampBanEntity) => champ_ban.champId,
+    {
+      cascade: true,
+    },
+  )
   champ_ban: ChampBanEntity;
 
   @OneToMany(
@@ -55,28 +59,44 @@ export class ChampEntity extends OmitType(CommonEntity, ['id'] as const) {
   )
   champ_spell: UpdateChampSpellEntity;
 
-  @OneToMany(() => ChampSkillEntity, (champSkillInfo: ChampSkillEntity) => champSkillInfo.champId, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => ChampSkillEntity,
+    (champSkillInfo: ChampSkillEntity) => champSkillInfo.champId,
+    {
+      cascade: true,
+    },
+  )
   champSkillInfo: ChampSkillEntity;
 
   @OneToMany(
     () => SummonerEntity,
-    (summoner: SummonerEntity) => [summoner.mostChamp1, summoner.mostChamp2, summoner.mostChamp3],
+    (summoner: SummonerEntity) => [
+      summoner.mostChamp1,
+      summoner.mostChamp2,
+      summoner.mostChamp3,
+    ],
     {
       cascade: true,
     },
   )
   summoner: SummonerEntity;
 
-  @OneToMany(() => SummonerHistoryEntity, (history: SummonerHistoryEntity) => history.champId, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => SummonerHistoryEntity,
+    (history: SummonerHistoryEntity) => history.champId,
+    {
+      cascade: true,
+    },
+  )
   history: SummonerHistoryEntity;
 
   @OneToMany(
     () => UserEntity,
-    (user: UserEntity) => [user.preferChamp1, user.preferChamp2, user.preferChamp3],
+    (user: UserEntity) => [
+      user.preferChamp1,
+      user.preferChamp2,
+      user.preferChamp3,
+    ],
     {
       cascade: true,
     },

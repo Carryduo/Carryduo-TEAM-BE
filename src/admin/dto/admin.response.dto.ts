@@ -89,8 +89,17 @@ export class LoginResponseDto {
     return UpdateUserOptionRequestDto.createDto(this._userId, body);
   }
 
-  toPostCommentRequestDto(category: 'summoner' | 'champ', target: string, content: string) {
-    return PostCommentRequestDto.createDto(this._userId, category, target, content);
+  toPostCommentRequestDto(
+    category: 'summoner' | 'champ',
+    target: string,
+    content: string,
+  ) {
+    return PostCommentRequestDto.createDto(
+      this._userId,
+      category,
+      target,
+      content,
+    );
   }
 
   toUpdateCommentRequestDto(commentId: string, content: string) {

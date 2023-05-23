@@ -10,7 +10,11 @@ import { ChampSkillEntity } from 'src/champ/entities/champSkillInfo.entity';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { UpdateChampRateEntity } from 'src/champ/entities/update.champ.rate.entity';
 import { GameInfoEntity } from 'src/champ/entities/game.info.entity';
-import { GetUserInfoRequestDto, UpdateUserOptionRequestBodyDto, UpdateUserOptionRequestDto } from '../dto/user.request.dto';
+import {
+  GetUserInfoRequestDto,
+  UpdateUserOptionRequestBodyDto,
+  UpdateUserOptionRequestDto,
+} from '../dto/user.request.dto';
 
 describe('UserService', () => {
   let service: UserService;
@@ -35,8 +39,14 @@ describe('UserService', () => {
           provide: getRepositoryToken(ChampEntity),
           useValue: mockRepository,
         },
-        { provide: getRepositoryToken(GameInfoEntity), useValue: mockRepository },
-        { provide: getRepositoryToken(UpdateChampRateEntity), useValue: mockRepository },
+        {
+          provide: getRepositoryToken(GameInfoEntity),
+          useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(UpdateChampRateEntity),
+          useValue: mockRepository,
+        },
         {
           provide: getRepositoryToken(ChampSkillEntity),
           useValue: mockRepository,
@@ -56,13 +66,19 @@ describe('UserService', () => {
 
   it('getUserInfo 테스트: 카테고리에 따라 repository에 option을 다르게 주는가?', async () => {
     //  모킹방법은 이게 맞음.
-    userRepository.getUserInfo = jest.fn().mockImplementation((select: string[], userId: UserEntity) => {
-      return { userId: select.length };
-    });
+    userRepository.getUserInfo = jest
+      .fn()
+      .mockImplementation((select: string[], userId: UserEntity) => {
+        return { userId: select.length };
+      });
     // 정상로직 확인
-    const result = await service.getUserInfo(new GetUserInfoRequestDto('option', 'a'));
+    const result = await service.getUserInfo(
+      new GetUserInfoRequestDto('option', 'a'),
+    );
     expect(result.userId).toEqual(21);
-    const result_login = await service.getUserInfo(new GetUserInfoRequestDto('login', 'a'));
+    const result_login = await service.getUserInfo(
+      new GetUserInfoRequestDto('login', 'a'),
+    );
     expect(result_login.userId).toEqual(3);
     // 예외처리 확인
     try {
@@ -88,20 +104,36 @@ describe('UserService', () => {
       preferChamp3: null,
     };
     const option = UpdateUserOptionRequestDto.createDto(userId, body);
-    userRepository.findPreferchamps = jest.fn().mockImplementation((userId: string): { preferChamp1: string; preferChamp2: string; preferChamp3: string } => {
-      return { preferChamp1: '1', preferChamp2: '2', preferChamp3: '3' };
-    });
-    userRepository.updateUserOptionInfo = jest.fn().mockImplementation((option) => {
-      return option;
-    });
-    champRepository.delPreferChampCache = jest.fn().mockImplementation((option) => {
-      return option;
-    });
+    userRepository.findPreferchamps = jest.fn().mockImplementation(
+      (
+        userId: string,
+      ): {
+        preferChamp1: string;
+        preferChamp2: string;
+        preferChamp3: string;
+      } => {
+        return { preferChamp1: '1', preferChamp2: '2', preferChamp3: '3' };
+      },
+    );
+    userRepository.updateUserOptionInfo = jest
+      .fn()
+      .mockImplementation((option) => {
+        return option;
+      });
+    champRepository.delPreferChampCache = jest
+      .fn()
+      .mockImplementation((option) => {
+        return option;
+      });
     await service.updateUserOptionInfo(option);
     // 정상로직 확인
-    expect(userRepository.findPreferchamps).toBeCalledWith(option.toEntity().userId);
+    expect(userRepository.findPreferchamps).toBeCalledWith(
+      option.toEntity().userId,
+    );
     expect(champRepository.delPreferChampCache).toBeCalledTimes(3);
-    expect(userRepository.updateUserOptionInfo).toBeCalledWith(option.toEntity());
+    expect(userRepository.updateUserOptionInfo).toBeCalledWith(
+      option.toEntity(),
+    );
     // 예외처리 확인
     // try {
     //   await service.updateUserOptionInfo(option);

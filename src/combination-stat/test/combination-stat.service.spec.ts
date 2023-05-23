@@ -6,7 +6,10 @@ import { CombinationStatEntity } from '../entities/combination-stat.entity';
 import * as testData from './data/combination-stat.test.data';
 import { Brackets } from 'typeorm';
 import { RawQueryResponseDto } from '../dtos/combination-stat.repository.dto';
-import { IndividualChampRequestDto, TierListRequestDto } from '../dtos/combination-stat.request.dto';
+import {
+  IndividualChampRequestDto,
+  TierListRequestDto,
+} from '../dtos/combination-stat.request.dto';
 const mockRepository = () => {
   createQueryBuilder: jest.fn();
 };
@@ -27,7 +30,9 @@ describe('CombinationStatService', () => {
       ],
     }).compile();
     service = module.get<CombinationStatService>(CombinationStatService);
-    repository = module.get<CombinationStatRepository>(CombinationStatRepository);
+    repository = module.get<CombinationStatRepository>(
+      CombinationStatRepository,
+    );
   });
 
   it('request로 받은 category에 대응해 TierList를 response 하는가?', async () => {
@@ -45,7 +50,10 @@ describe('CombinationStatService', () => {
     );
 
     jest.spyOn(repository, 'getTierList').mockImplementation(
-      (requestOption: { category: number; version: string }): Promise<RawQueryResponseDto[]> =>
+      (requestOption: {
+        category: number;
+        version: string;
+      }): Promise<RawQueryResponseDto[]> =>
         new Promise((resolve) => {
           const { category, version } = requestOption;
           if (category === 0) {
@@ -72,15 +80,21 @@ describe('CombinationStatService', () => {
         }),
     );
 
-    const response = await service.getTierList(new TierListRequestDto('top-jungle'));
+    const response = await service.getTierList(
+      new TierListRequestDto('top-jungle'),
+    );
 
     expect(response[0].category).toEqual(0);
     expect(response[0].version).toEqual('13.1.');
-    const response_mid = await service.getTierList(new TierListRequestDto('mid-jungle'));
+    const response_mid = await service.getTierList(
+      new TierListRequestDto('mid-jungle'),
+    );
 
     expect(response_mid[0].version).toEqual('13.1.');
     expect(response_mid[0].category).toEqual(1);
-    const response_ad = await service.getTierList(new TierListRequestDto('ad-support'));
+    const response_ad = await service.getTierList(
+      new TierListRequestDto('ad-support'),
+    );
     expect(response_ad[0].version).toEqual('13.1.');
     expect(response_ad[0].category).toEqual(2);
   });
@@ -100,12 +114,19 @@ describe('CombinationStatService', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: { version: string }): Promise<RawQueryResponseDto[]> =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: { version: string },
+      ): Promise<RawQueryResponseDto[]> =>
         new Promise((resolve) => {
           resolve(testData.result_individualChamp_noResponse);
         }),
     );
-    expect(await service.getIndiviualChampData(new IndividualChampRequestDto('888', 'support'))).toEqual({
+    expect(
+      await service.getIndiviualChampData(
+        new IndividualChampRequestDto('888', 'support'),
+      ),
+    ).toEqual({
       result: testData.result_individualChamp_noResponse,
       message: '유효한 데이터(표본 5 이상)가 없습니다',
     });
@@ -126,14 +147,23 @@ describe('CombinationStatService', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: { version: string }): Promise<RawQueryResponseDto[]> =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: { version: string },
+      ): Promise<RawQueryResponseDto[]> =>
         new Promise((resolve) => {
           resolve(JSON.parse(JSON.stringify(testData.input_IndividualChamp)));
         }),
     );
-    const value_ad = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'ad'));
-    const value_mid = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'top'));
-    const value_top = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'mid'));
+    const value_ad = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'ad'),
+    );
+    const value_mid = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'top'),
+    );
+    const value_top = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'mid'),
+    );
 
     const mainChampId_ad = value_ad[0].mainChampId.id;
     const mainChampId_mid = value_mid[0].mainChampId.id;
@@ -164,12 +194,17 @@ describe('CombinationStatService', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: { version: string }) =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: { version: string },
+      ) =>
         new Promise((resolve) => {
           resolve(testData.input_IndividualChamp);
         }),
     );
-    const value_support = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'support'));
+    const value_support = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'support'),
+    );
 
     const mainChampId_support = value_support[0].mainChampId.id;
     expect(mainChampId_support).toEqual('875');
@@ -190,12 +225,17 @@ describe('CombinationStatService', () => {
         }),
     );
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: CombinationStatEntity) =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: CombinationStatEntity,
+      ) =>
         new Promise((resolve) => {
           resolve(testData.input_IndividualChamp_jungle);
         }),
     );
-    const value_jungle = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'jungle'));
+    const value_jungle = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'jungle'),
+    );
 
     const mainChampId_jungle = value_jungle[0].mainChampId.id;
     expect(mainChampId_jungle).toEqual('875');
@@ -217,17 +257,25 @@ describe('CombinationStatService', () => {
     );
 
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: CombinationStatEntity) =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: CombinationStatEntity,
+      ) =>
         new Promise((resolve) => {
           const { version } = requestOption;
-          if (testData.input_IndividualChamp_jungle_recentVersion[0].version === version) {
+          if (
+            testData.input_IndividualChamp_jungle_recentVersion[0].version ===
+            version
+          ) {
             resolve(testData.input_IndividualChamp_jungle_recentVersion);
           } else {
             resolve(testData.input_IndividualChamp_jungle_oldVersion);
           }
         }),
     );
-    const data = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'jungle'));
+    const data = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'jungle'),
+    );
     expect(data[0].version).toEqual('12.23');
   });
 
@@ -247,17 +295,25 @@ describe('CombinationStatService', () => {
     );
 
     jest.spyOn(repository, 'getIndividualChampData').mockImplementation(
-      (whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: CombinationStatEntity) =>
+      (
+        whereOption: { option: { category: Brackets; champ: Brackets } },
+        requestOption: CombinationStatEntity,
+      ) =>
         new Promise((resolve) => {
           const { version } = requestOption;
-          if (testData.input_IndividualChamp_jungle_recentVersion[0].version === version) {
+          if (
+            testData.input_IndividualChamp_jungle_recentVersion[0].version ===
+            version
+          ) {
             resolve(testData.input_IndividualChamp_jungle_recentVersion);
           } else {
             resolve(testData.input_IndividualChamp_jungle_oldVersion);
           }
         }),
     );
-    const data = await service.getIndiviualChampData(new IndividualChampRequestDto('875', 'jungle'));
+    const data = await service.getIndiviualChampData(
+      new IndividualChampRequestDto('875', 'jungle'),
+    );
     expect(data[0].version).toEqual('13.1.');
   });
 

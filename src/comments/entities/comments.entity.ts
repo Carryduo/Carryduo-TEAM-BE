@@ -42,10 +42,14 @@ export class CommentEntity extends CommonEntity {
   ])
   champId: ChampEntity;
 
-  @ManyToOne(() => SummonerEntity, (summonerEntity: SummonerEntity) => summonerEntity.summonerName, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @ManyToOne(
+    () => SummonerEntity,
+    (summonerEntity: SummonerEntity) => summonerEntity.summonerName,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
   @JoinColumn([
     {
       name: 'summonerName',
@@ -61,14 +65,22 @@ export class CommentEntity extends CommonEntity {
     return comment;
   }
 
-  static createGetSummonerCommentOption(category: string, target: SummonerEntity) {
+  static createGetSummonerCommentOption(
+    category: string,
+    target: SummonerEntity,
+  ) {
     const comment = new CommentEntity();
     comment.category = category;
     comment.summonerName = target;
     return comment;
   }
 
-  static createPostChampCommentOption(category: string, target: ChampEntity, content: string, userId: UserEntity): CommentEntity {
+  static createPostChampCommentOption(
+    category: string,
+    target: ChampEntity,
+    content: string,
+    userId: UserEntity,
+  ): CommentEntity {
     const comment = new CommentEntity();
     comment.category = category;
     comment.champId = target;
@@ -77,7 +89,12 @@ export class CommentEntity extends CommonEntity {
     return comment;
   }
 
-  static createPostSummonerCommentOption(category: string, target: SummonerEntity, content: string, userId: UserEntity): CommentEntity {
+  static createPostSummonerCommentOption(
+    category: string,
+    target: SummonerEntity,
+    content: string,
+    userId: UserEntity,
+  ): CommentEntity {
     const comment = new CommentEntity();
     comment.category = category;
     comment.summonerName = target;
@@ -86,7 +103,11 @@ export class CommentEntity extends CommonEntity {
     return comment;
   }
 
-  static createUpdateCommentOption(id: string, userId: UserEntity, content: string) {
+  static createUpdateCommentOption(
+    id: string,
+    userId: UserEntity,
+    content: string,
+  ) {
     const comment = new CommentEntity();
     comment.id = id;
     comment.userId = userId;

@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { ChampRepository } from './champ.repository';
-import { ChampRateDataDto, GetChampRate } from './dto/champ-rate/champ.rate.dto';
-import { ChampSkillCommonDTO, SkillSet } from './dto/champ-skill/champ.skill.common.dto';
+import {
+  ChampRateDataDto,
+  GetChampRate,
+} from './dto/champ-rate/champ.rate.dto';
+import {
+  ChampSkillCommonDTO,
+  SkillSet,
+} from './dto/champ-skill/champ.skill.common.dto';
 import { ChampCommonDTO } from './dto/champ/champ.common.dto';
 import { TargetChampionReqDTO } from './dto/target-champion/target.request.dto';
 import { TargetChampionResDto } from './dto/target-champion/target.response.dto';
@@ -54,7 +60,10 @@ export class TransferChampData {
     return versionList_DESC[0];
   }
 
-  async champPosition(param: TargetChampionReqDTO, version: string): Promise<string> {
+  async champPosition(
+    param: TargetChampionReqDTO,
+    version: string,
+  ): Promise<string> {
     const positionList = {
       top: 'TOP',
       jungle: 'JUNGLE',
@@ -65,16 +74,23 @@ export class TransferChampData {
     };
 
     //파라미터값을 DB에 있는 포지션명으로 변경
-    const positionDbName = param.position === 'default' ? false : positionList[param.position];
+    const positionDbName =
+      param.position === 'default' ? false : positionList[param.position];
 
     //default 파라미터인 경우 최대 많이 플레이한 포지션 산출 or DB에 있는 포지션명 할당
-    const findPosition = !positionDbName ? await this.champRepository.getMostPosition(param.champId, version) : positionDbName;
+    const findPosition = !positionDbName
+      ? await this.champRepository.getMostPosition(param.champId, version)
+      : positionDbName;
 
     //default 파라미터인 경우 모스트 포지션 값 할당 or DB에 있는 포지션명 할당
     return !positionDbName ? findPosition[0]?.position : findPosition;
   }
 
-  async champRate(champRateInfo: GetChampRate[], banRate: string | number, position: string): Promise<ChampRateDataDto> {
+  async champRate(
+    champRateInfo: GetChampRate[],
+    banRate: string | number,
+    position: string,
+  ): Promise<ChampRateDataDto> {
     const spellInfo = {
       21: 'SummonerBarrier',
       1: 'SummonerBoost',
@@ -116,7 +132,9 @@ export class TransferChampData {
       support: 'UTILITY',
       default: 'default position',
     };
-    position = !position ? positionList.default : Object.keys(positionList).find((key) => positionList[key] === position);
+    position = !position
+      ? positionList.default
+      : Object.keys(positionList).find((key) => positionList[key] === position);
 
     return plainToInstance(ChampRateDataDto, {
       ...withoutSpell,

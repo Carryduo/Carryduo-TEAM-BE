@@ -21,7 +21,10 @@ export class ThrottleInterceptor implements NestInterceptor {
       const lastRequestTime = this.cache.get(summonerName);
 
       if (requestTime - lastRequestTime < 5 * 60 * 1000) {
-        throw new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS);
+        throw new HttpException(
+          'Too many requests',
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
       }
     }
 

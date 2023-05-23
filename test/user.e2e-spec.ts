@@ -1,7 +1,11 @@
 import { UserEntity } from './../src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { Reflector } from '@nestjs/core';
@@ -20,7 +24,9 @@ describe('User (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true, // 아무 decorator 도 없는 어떤 property의 object를 거름
@@ -114,7 +120,9 @@ describe('User (e2e)', () => {
   });
 
   it('/individual (GET) 다른 유저 정보 조회', async () => {
-    const response = await request(app.getHttpServer()).get(`/user/${sample.userId}`);
+    const response = await request(app.getHttpServer()).get(
+      `/user/${sample.userId}`,
+    );
 
     expect(Object.keys(response.body).length).toBe(9);
   });

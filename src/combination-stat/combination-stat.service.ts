@@ -1,6 +1,9 @@
 import { CombinationStatRepository } from './combination-stat.repository';
 import { Injectable } from '@nestjs/common';
-import { IndividualChampRequestDto, TierListRequestDto } from './dtos/combination-stat.request.dto';
+import {
+  IndividualChampRequestDto,
+  TierListRequestDto,
+} from './dtos/combination-stat.request.dto';
 import {
   IndividualChampResponseDto,
   TierListResponseDto,
@@ -9,9 +12,13 @@ import {
 
 @Injectable()
 export class CombinationStatService {
-  constructor(private readonly combinationStatRepository: CombinationStatRepository) {}
+  constructor(
+    private readonly combinationStatRepository: CombinationStatRepository,
+  ) {}
 
-  async getTierList(requestOption: TierListRequestDto): Promise<TierListResponseDto[]> {
+  async getTierList(
+    requestOption: TierListRequestDto,
+  ): Promise<TierListResponseDto[]> {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
     // 최신 패치버전 조회
@@ -35,7 +42,9 @@ export class CombinationStatService {
 
   async getIndiviualChampData(
     requestOption: IndividualChampRequestDto,
-  ): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
+  ): Promise<
+    IndividualChampResponseDto[] | { result: any[]; message: string }
+  > {
     const versions = await this.combinationStatRepository.getVersions();
     const versionList: string[] = await sortPatchVersions(versions);
 
@@ -47,7 +56,10 @@ export class CombinationStatService {
     } else {
       version = versionList[1];
     }
-    const whereOption = this.combinationStatRepository.createIndividualRequestOption(requestOption);
+    const whereOption =
+      this.combinationStatRepository.createIndividualRequestOption(
+        requestOption,
+      );
     const answer = await this.combinationStatRepository.getIndividualChampData(
       whereOption,
       requestOption.toEntity(version),
@@ -79,7 +91,9 @@ export class CombinationStatService {
   }
 }
 
-async function sortPatchVersions(versions: { version: string }[]): Promise<string[]> {
+async function sortPatchVersions(
+  versions: { version: string }[],
+): Promise<string[]> {
   let data = [];
   for (const value of versions) {
     data.push(value.version);

@@ -11,7 +11,13 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LoginResponseDto } from '../admin/dto/admin.response.dto';
 import { HttpCacheInterceptor } from '../common/interceptors/cache.interceptor';
 import { jwtGuard } from '../admin/jwt/jwt.guard';
@@ -49,7 +55,9 @@ export class CommentsController {
   })
   // @UseInterceptors(HttpCacheInterceptor)
   @Get('/:category/:target')
-  getComments(@Param(CommentParamPipe) param: CommentParamDto): Promise<CommentGetResponseDto[]> {
+  getComments(
+    @Param(CommentParamPipe) param: CommentParamDto,
+  ): Promise<CommentGetResponseDto[]> {
     return this.commentService.getComments(param.toGetCommentRequestDto());
   }
 
@@ -104,7 +112,9 @@ export class CommentsController {
     @User() user: LoginResponseDto,
     @Body() body: CommentBodyDto,
   ) {
-    await this.commentService.updateContent(user.toUpdateCommentRequestDto(id, body.content));
+    await this.commentService.updateContent(
+      user.toUpdateCommentRequestDto(id, body.content),
+    );
     return new CommonResponseDto(true, '평판 수정 완료되었습니다');
   }
 
@@ -126,7 +136,9 @@ export class CommentsController {
     @Param('id', ParseUUIDPipe) commentId: string,
     @User() user: LoginResponseDto,
   ): Promise<CommonResponseDto> {
-    await this.commentService.updateReportNum(user.toUpdateCommentReportNumRequestDto(commentId));
+    await this.commentService.updateReportNum(
+      user.toUpdateCommentReportNumRequestDto(commentId),
+    );
     return new CommonResponseDto(true, '평판 신고 완료되었습니다');
   }
 
@@ -148,7 +160,9 @@ export class CommentsController {
     @Param('id', ParseUUIDPipe) commentId: string,
     @User() user: LoginResponseDto,
   ): Promise<CommonResponseDto> {
-    await this.commentService.deleteComment(user.toDeleteCommentRequestDto(commentId));
+    await this.commentService.deleteComment(
+      user.toDeleteCommentRequestDto(commentId),
+    );
     return new CommonResponseDto(true, '평판 삭제 완료되었습니다');
   }
 }

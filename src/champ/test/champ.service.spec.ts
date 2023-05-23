@@ -20,7 +20,9 @@ class MockRepository {
   }
   findPreferChampUsers(champId: string) {
     const preferChampIdList = ['1', '2', '3', '4'];
-    const preferChampUser = preferChampIdList.includes(champId) ? preferChampUserData : [];
+    const preferChampUser = preferChampIdList.includes(champId)
+      ? preferChampUserData
+      : [];
     return preferChampUser;
   }
 
@@ -42,7 +44,11 @@ class MockRepository {
       { champId: '1', position: 'JUNGLE', version: '13.1.' },
     ];
 
-    const mostPosition = [champPositionInfo.find((v) => v.champId === champId && v.version === version)];
+    const mostPosition = [
+      champPositionInfo.find(
+        (v) => v.champId === champId && v.version === version,
+      ),
+    ];
     return mostPosition;
   }
 
@@ -161,24 +167,36 @@ describe('ChampService', () => {
       default: 'default position',
     };
 
-    let getMostPosition = jest.spyOn(repository, 'getMostPosition').mockImplementation(async (champId: string, version: string) => {
-      const positionInfo = [
-        { champId: '1', position: 'JUNGLE', version: '13.1.' },
-        { champId: '1', position: 'TOP', version: '12.1' },
-      ];
-      const MostPosition = [positionInfo.find((v) => v.champId === champId && v.version === version)];
-      return MostPosition;
-    });
-    let positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    let getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
+    const getMostPosition = jest
+      .spyOn(repository, 'getMostPosition')
+      .mockImplementation(async (champId: string, version: string) => {
+        const positionInfo = [
+          { champId: '1', position: 'JUNGLE', version: '13.1.' },
+          { champId: '1', position: 'TOP', version: '12.1' },
+        ];
+        const MostPosition = [
+          positionInfo.find(
+            (v) => v.champId === champId && v.version === version,
+          ),
+        ];
+        return MostPosition;
+      });
+    let positionDbName =
+      Param.position === 'default' ? false : positionList[Param.position];
+    let getPosition = !positionDbName
+      ? await repository.getMostPosition(Param.champId, version)
+      : positionDbName;
     expect(getMostPosition).toBeCalledTimes(1);
     expect(getPosition[0].position).toBe('JUNGLE');
 
     // default 파라미터가 아닌 경우
     const Param2 = Param;
     Param2.position = 'mid';
-    positionDbName = Param.position === 'default' ? false : positionList[Param.position];
-    getPosition = !positionDbName ? await repository.getMostPosition(Param.champId, version) : positionDbName;
+    positionDbName =
+      Param.position === 'default' ? false : positionList[Param.position];
+    getPosition = !positionDbName
+      ? await repository.getMostPosition(Param.champId, version)
+      : positionDbName;
 
     //default 파라미터였던 상황만 실행되므로 mid로 주워진 targetPosition에선 실행이 안돼서 1번만 실행됨
     expect(getMostPosition).toHaveBeenCalledTimes(1);
@@ -193,7 +211,10 @@ describe('ChampService', () => {
       position: 'default',
     };
 
-    const getPosition = await repository.getMostPosition(Param.champId, version);
+    const getPosition = await repository.getMostPosition(
+      Param.champId,
+      version,
+    );
 
     expect(getPosition[0]?.position).toEqual('JUNGLE');
 
@@ -206,8 +227,16 @@ describe('ChampService', () => {
 
     const banInfo = { banRate: '0.2' };
 
-    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
+    const champRate = await repository.getChampRate(
+      Param.champId,
+      champPosition,
+      version,
+    );
+    const champRateDto = await transfer.champRate(
+      champRate,
+      banInfo?.banRate,
+      champPosition,
+    );
 
     const response = plainToInstance(TargetChampionResDto, {
       ...champData,
@@ -235,8 +264,16 @@ describe('ChampService', () => {
 
     const banInfo = { banRate: '0.2' };
 
-    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
+    const champRate = await repository.getChampRate(
+      Param.champId,
+      champPosition,
+      version,
+    );
+    const champRateDto = await transfer.champRate(
+      champRate,
+      banInfo?.banRate,
+      champPosition,
+    );
 
     const response = plainToInstance(TargetChampionResDto, {
       ...champData,
@@ -263,8 +300,16 @@ describe('ChampService', () => {
 
     const banInfo = { banRate: '0.2' };
 
-    const champRate = await repository.getChampRate(Param.champId, champPosition, version);
-    const champRateDto = await transfer.champRate(champRate, banInfo?.banRate, champPosition);
+    const champRate = await repository.getChampRate(
+      Param.champId,
+      champPosition,
+      version,
+    );
+    const champRateDto = await transfer.champRate(
+      champRate,
+      banInfo?.banRate,
+      champPosition,
+    );
 
     const response = plainToInstance(TargetChampionResDto, {
       ...champData,

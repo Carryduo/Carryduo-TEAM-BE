@@ -98,7 +98,9 @@ describe('SummonerService', () => {
 
     repository.existSummoner = jest.fn().mockResolvedValue(existSummoner);
     repository.getSummoner = jest.fn().mockResolvedValue(RepositoryGetSummoner);
-    service.summonerHistoryCalculation = jest.fn().mockResolvedValue(summonerResponseDto);
+    service.summonerHistoryCalculation = jest
+      .fn()
+      .mockResolvedValue(summonerResponseDto);
 
     //createSummoner
     const createSummoner = jest.spyOn(service, 'createSummoner');
@@ -113,7 +115,9 @@ describe('SummonerService', () => {
   it('getSummoner 존재하지 않는 소환사 입력시 error return?', async () => {
     const summonerName = '할배탈';
     const request = jest.spyOn(axios, 'get');
-    request.mockRejectedValue({ response: { statusText: 'Not Found', status: 404 } });
+    request.mockRejectedValue({
+      response: { statusText: 'Not Found', status: 404 },
+    });
 
     try {
       await service.getSummoner(summonerName);
@@ -219,13 +223,21 @@ describe('SummonerService', () => {
   it('소환사 전적 데이터 연산 정상 작동 return?', async () => {
     const summoner = plainToInstance(SummonerCommonDTO, summonerDto);
     const summonerDefaultData = await transfer.summonerDefaultData(summoner);
-    repository.getSummonerRecordSum = jest.fn().mockResolvedValue(recordSumInfoData);
+    repository.getSummonerRecordSum = jest
+      .fn()
+      .mockResolvedValue(recordSumInfoData);
 
-    repository.getSummonerPositionRecord = jest.fn().mockResolvedValue(positionInfoData);
+    repository.getSummonerPositionRecord = jest
+      .fn()
+      .mockResolvedValue(positionInfoData);
     const position = await transfer.summonerPosition(positionInfoData);
 
-    repository.getRecentChamp = jest.fn().mockResolvedValue(recentChampInfoData);
-    repository.getRecentChampRate = jest.fn().mockResolvedValue(recentChampRateData);
+    repository.getRecentChamp = jest
+      .fn()
+      .mockResolvedValue(recentChampInfoData);
+    repository.getRecentChampRate = jest
+      .fn()
+      .mockResolvedValue(recentChampRateData);
     const recentChamp = await transfer.summonerRecentChamp(
       recentChampInfoData,
       summoner.summonerId,
@@ -237,7 +249,10 @@ describe('SummonerService', () => {
       recentChamp,
     );
 
-    const response = await transfer.SummonerHistoryResponse(summonerDefaultData, historyRate);
+    const response = await transfer.SummonerHistoryResponse(
+      summonerDefaultData,
+      historyRate,
+    );
 
     const result = await service.summonerHistoryCalculation(summoner);
 

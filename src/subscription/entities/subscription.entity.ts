@@ -24,9 +24,13 @@ export class SubscriptionEntity extends CommonEntity {
   ])
   userId: UserEntity;
 
-  @ManyToOne(() => SummonerEntity, (summoner: SummonerEntity) => summoner.summonerName, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    () => SummonerEntity,
+    (summoner: SummonerEntity) => summoner.summonerName,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @ApiProperty({
     example: 'xzczcaQWWWE23',
     description: '구독한 소환사 ID',

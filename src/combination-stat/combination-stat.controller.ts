@@ -5,7 +5,10 @@ import {
   CategoryParamPipe,
 } from './pipes/combination-stat.param.validator.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CategoryParamDto, IndividualChampParamDto } from './dtos/combination-stat.request.dto';
+import {
+  CategoryParamDto,
+  IndividualChampParamDto,
+} from './dtos/combination-stat.request.dto';
 import {
   IndividualChampResponseDto,
   TierListResponseDto,
@@ -15,7 +18,9 @@ import {
 @ApiTags('Combination-stat')
 @Controller('combination-stat')
 export class CombinationStatController {
-  constructor(private readonly combinationStatService: CombinationStatService) {}
+  constructor(
+    private readonly combinationStatService: CombinationStatService,
+  ) {}
 
   @ApiOperation({ summary: '현재 데이터의 패치버전' })
   @ApiResponse({
@@ -44,7 +49,9 @@ export class CombinationStatController {
   async getTierList(
     @Param(CategoryParamPipe) param: CategoryParamDto,
   ): Promise<TierListResponseDto[]> {
-    return this.combinationStatService.getTierList(param.toTierListRequestDto());
+    return this.combinationStatService.getTierList(
+      param.toTierListRequestDto(),
+    );
   }
 
   @ApiOperation({ summary: '개인 챔피언의 조합승률 TOP 5 조회' })
@@ -68,7 +75,11 @@ export class CombinationStatController {
   @Get('/champ/:category/:position')
   async getIndividualChampData(
     @Param(IndividualChampParamPipe) param: IndividualChampParamDto,
-  ): Promise<IndividualChampResponseDto[] | { result: any[]; message: string }> {
-    return this.combinationStatService.getIndiviualChampData(param.toIndividualChampRequestDto());
+  ): Promise<
+    IndividualChampResponseDto[] | { result: any[]; message: string }
+  > {
+    return this.combinationStatService.getIndiviualChampData(
+      param.toIndividualChampRequestDto(),
+    );
   }
 }

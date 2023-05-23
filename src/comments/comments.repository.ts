@@ -51,20 +51,22 @@ export class CommentRepository {
   }
 
   async updateReportNum(requestOption: CommentEntity) {
-    await this.commentsRepository.manager.transaction(async (transactionalEntityManager) => {
-      const data = await transactionalEntityManager
-        .createQueryBuilder()
-        .select('COMMENT')
-        .from(CommentEntity, 'COMMENT')
-        .where('COMMENT.id = :id', { id: requestOption.id })
-        .getOne();
-      await transactionalEntityManager
-        .createQueryBuilder()
-        .update(CommentEntity)
-        .set({ reportNum: data.reportNum + 1 })
-        .where('id = :id', { id: requestOption.id })
-        .execute();
-    });
+    await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id: requestOption.id })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .update(CommentEntity)
+          .set({ reportNum: data.reportNum + 1 })
+          .where('id = :id', { id: requestOption.id })
+          .execute();
+      },
+    );
     const data = await this.commentsRepository
       .createQueryBuilder('comment')
       .select()
@@ -85,22 +87,26 @@ export class CommentRepository {
       .leftJoinAndSelect('comment.summonerName', 'summoner')
       .where('comment.id = :id', { id: requestOption.id })
       .getOne();
-    await this.commentsRepository.manager.transaction(async (transactionalEntityManager) => {
-      const data = await transactionalEntityManager
-        .createQueryBuilder()
-        .select('COMMENT')
-        .from(CommentEntity, 'COMMENT')
-        .where('COMMENT.id = :id', { id: requestOption.id })
-        .andWhere('COMMENT.userId = :userId', { userId: requestOption.userId.userId })
-        .getOne();
-      await transactionalEntityManager
-        .createQueryBuilder()
-        .delete()
-        .from(CommentEntity)
-        .where('id = :id', { id: data.id })
-        .andWhere('userId = :userId', { userId: requestOption.userId.userId })
-        .execute();
-    });
+    await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id: requestOption.id })
+          .andWhere('COMMENT.userId = :userId', {
+            userId: requestOption.userId.userId,
+          })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .delete()
+          .from(CommentEntity)
+          .where('id = :id', { id: data.id })
+          .andWhere('userId = :userId', { userId: requestOption.userId.userId })
+          .execute();
+      },
+    );
 
     return value;
   }
@@ -108,22 +114,24 @@ export class CommentRepository {
   async updateContent(requestOption: CommentEntity) {
     const { id, userId, content } = requestOption;
 
-    await this.commentsRepository.manager.transaction(async (transactionalEntityManager) => {
-      const data = await transactionalEntityManager
-        .createQueryBuilder()
-        .select('COMMENT')
-        .from(CommentEntity, 'COMMENT')
-        .where('COMMENT.id = :id', { id })
-        .andWhere('COMMENT.userId = :userId', { userId: userId.userId })
-        .getOne();
-      await transactionalEntityManager
-        .createQueryBuilder()
-        .update(CommentEntity)
-        .set({ content })
-        .where('id = :id', { id: data.id })
-        .andWhere('userId = :userId', userId)
-        .execute();
-    });
+    await this.commentsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const data = await transactionalEntityManager
+          .createQueryBuilder()
+          .select('COMMENT')
+          .from(CommentEntity, 'COMMENT')
+          .where('COMMENT.id = :id', { id })
+          .andWhere('COMMENT.userId = :userId', { userId: userId.userId })
+          .getOne();
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .update(CommentEntity)
+          .set({ content })
+          .where('id = :id', { id: data.id })
+          .andWhere('userId = :userId', userId)
+          .execute();
+      },
+    );
     return await this.commentsRepository
       .createQueryBuilder('comment')
       .select()
@@ -138,7 +146,11 @@ export class CommentRepository {
   //   await this.cacheManager.del(`/commments/${category}/${target}`);
   //   return;
   // }
-  async setCommentCache(category: string, target: string, whereOption: Brackets) {
+  async setCommentCache(
+    category: string,
+    target: string,
+    whereOption: Brackets,
+  ) {
     const result = await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.userId', 'user')
@@ -172,17 +184,17 @@ export class CommentRepository {
   createSelectOption(data: CommentEntity): Brackets {
     if (data.category === 'champ') {
       return new Brackets((qb) => {
-        qb.where('comment.category = :category', { category: data.category }).andWhere(
-          'comment.champId = :champId',
-          { champId: data.champId.id },
-        );
+        qb.where('comment.category = :category', {
+          category: data.category,
+        }).andWhere('comment.champId = :champId', { champId: data.champId.id });
       });
     } else {
       return new Brackets((qb) => {
-        qb.where('comment.category = :category', { category: data.category }).andWhere(
-          'comment.summonerName = :summonerName',
-          { summonerName: data.summonerName.summonerName },
-        );
+        qb.where('comment.category = :category', {
+          category: data.category,
+        }).andWhere('comment.summonerName = :summonerName', {
+          summonerName: data.summonerName.summonerName,
+        });
       });
     }
   }

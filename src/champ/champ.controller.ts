@@ -61,7 +61,9 @@ export class ChampController {
   })
   // @UseInterceptors(CacheInterceptor)
   @Get('/:champId/users')
-  async getPreferChampUser(@Param('champId') champId: string): Promise<PreferChampUsersDTO[]> {
+  async getPreferChampUser(
+    @Param('champId') champId: string,
+  ): Promise<PreferChampUsersDTO[]> {
     return await this.champService.getPreferChampUsers(champId);
   }
 }

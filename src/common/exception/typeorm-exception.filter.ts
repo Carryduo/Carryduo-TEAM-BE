@@ -5,9 +5,9 @@ import { TypeORMError } from 'typeorm';
 export class TypeOrmFilter implements ExceptionFilter {
   catch(exception: TypeORMError, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse();
-    let message: string = exception.message;
-    let code: number = (exception as any).code;
-    const status: number = 500;
+    const message: string = exception.message;
+    const code: number = (exception as any).code;
+    const status = 500;
 
     response.status(status).json({
       success: false,

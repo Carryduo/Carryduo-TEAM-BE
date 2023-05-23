@@ -1,5 +1,13 @@
 import { CommonEntity } from '../../common/entities/common.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { ChampEntity } from '../../champ/entities/champ.entity';
 import { SubscriptionEntity } from '../../subscription/entities/subscription.entity';
 import { CommentEntity } from '../../comments/entities/comments.entity';
@@ -12,7 +20,12 @@ export class SummonerEntity extends CommonEntity {
   @Column({ name: 'summonerName', unique: true, type: 'varchar' })
   summonerName: string;
 
-  @Column({ name: 'summonerId', unique: true, nullable: false, type: 'varchar' })
+  @Column({
+    name: 'summonerId',
+    unique: true,
+    nullable: false,
+    type: 'varchar',
+  })
   summonerId: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -42,7 +55,10 @@ export class SummonerEntity extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   winRate: number;
 
-  @OneToMany(() => SummonerHistoryEntity, (history: SummonerHistoryEntity) => history.summonerName)
+  @OneToMany(
+    () => SummonerHistoryEntity,
+    (history: SummonerHistoryEntity) => history.summonerName,
+  )
   history?: SummonerHistoryEntity;
 
   @ManyToOne(() => ChampEntity, (champ: ChampEntity) => champ.id, {
@@ -90,9 +106,13 @@ export class SummonerEntity extends CommonEntity {
   )
   subscription?: SubscriptionEntity;
 
-  @OneToMany(() => CommentEntity, (comment: CommentEntity) => comment.summonerName, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => CommentEntity,
+    (comment: CommentEntity) => comment.summonerName,
+    {
+      cascade: true,
+    },
+  )
   comment: CommentEntity;
 
   static createSummonerNameOption(summonerName: string) {

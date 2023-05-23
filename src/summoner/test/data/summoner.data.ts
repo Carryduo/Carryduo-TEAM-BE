@@ -1,9 +1,11 @@
 export const summonerDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '180',
-  summonerPuuId: 'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
+  summonerPuuId:
+    'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
   tier: 'GOLD IV',
   lp: 1,
   tierImg: 'https://erunjrun.com/tier/Gold.png',
@@ -18,9 +20,11 @@ export const summonerDto = {
 export const unrankSummonerDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '180',
-  summonerPuuId: 'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
+  summonerPuuId:
+    'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
   lp: 0,
   tierImg: '',
   win: 0,
@@ -35,7 +39,8 @@ export const unrankSummonerDto = {
 export const RepositoryGetSummoner = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '183',
   tier: 'Unranked',
   tierImg: '',
@@ -127,7 +132,8 @@ export const recordSumInfoData = {
 export const summonerResponseDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '183',
   tier: 'Unranked',
   tierImg: '',

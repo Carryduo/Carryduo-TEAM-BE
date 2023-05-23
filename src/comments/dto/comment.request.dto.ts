@@ -58,7 +58,10 @@ export class GetCommentRequestDto {
       return CommentEntity.createGetChampComentOption(this._category, target);
     } else {
       target = SummonerEntity.createSummonerNameOption(this._target);
-      return CommentEntity.createGetSummonerCommentOption(this._category, target);
+      return CommentEntity.createGetSummonerCommentOption(
+        this._category,
+        target,
+      );
     }
   }
 }
@@ -69,7 +72,12 @@ export class PostCommentRequestDto {
   @Exclude() private readonly _target: string;
   @Exclude() private readonly _content: string;
 
-  constructor(userId: string, category: 'summoner' | 'champ', target: string, content: string) {
+  constructor(
+    userId: string,
+    category: 'summoner' | 'champ',
+    target: string,
+    content: string,
+  ) {
     this._userId = userId;
     this._category = category;
     this._target = target;
@@ -137,7 +145,11 @@ export class UpdateCommentRequestDto {
 
   toEntity(): CommentEntity {
     const userId = UserEntity.createSelectOption(this._userId);
-    return CommentEntity.createUpdateCommentOption(this._id, userId, this._content);
+    return CommentEntity.createUpdateCommentOption(
+      this._id,
+      userId,
+      this._content,
+    );
   }
 }
 

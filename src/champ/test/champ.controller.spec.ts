@@ -25,8 +25,14 @@ describe('ChampController', () => {
         ChampRepository,
         TransferChampData,
         { provide: getRepositoryToken(ChampEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(GameInfoEntity), useClass: MockRepository },
-        { provide: getRepositoryToken(UpdateChampRateEntity), useClass: MockRepository },
+        {
+          provide: getRepositoryToken(GameInfoEntity),
+          useClass: MockRepository,
+        },
+        {
+          provide: getRepositoryToken(UpdateChampRateEntity),
+          useClass: MockRepository,
+        },
         {
           provide: getRepositoryToken(ChampSkillEntity),
           useClass: MockRepository,
