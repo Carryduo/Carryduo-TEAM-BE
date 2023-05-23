@@ -53,6 +53,11 @@ export class FirstLoginRequestDto {
   }
 
   toEntity() {
-    return UserEntity.createUserOption(this._socialId, this._social, this._nickname, this._profileImg);
+    return UserEntity.createUserOption(
+      this._socialId,
+      this._social,
+      this._nickname,
+      this._profileImg,
+    );
   }
 }

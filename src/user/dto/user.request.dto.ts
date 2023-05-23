@@ -2,7 +2,14 @@ import { UserEntity } from '../..//user/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { ChampEntity } from '../..//champ/entities/champ.entity';
-import { IsBoolean, IsNumber, IsString, IsOptional, IsUUID, IsNotEmpty } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsString,
+  IsOptional,
+  IsUUID,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class GetOtherUserInfoRequestDto {
   @ApiProperty({
@@ -57,7 +64,8 @@ export class UpdateUserOptionRequestBodyDto {
 
   @ApiProperty({
     example: '0',
-    description: '아이언:0, 브론즈:1, 실버:2, 골드:3, 플레:4, 다이아:5, 마스터:6, 그마:7, 챌:8',
+    description:
+      '아이언:0, 브론즈:1, 실버:2, 골드:3, 플레:4, 다이아:5, 마스터:6, 그마:7, 챌:8',
     required: false,
   })
   @IsNumber()

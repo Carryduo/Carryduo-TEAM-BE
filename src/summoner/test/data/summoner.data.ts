@@ -1,9 +1,11 @@
 export const summonerDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '180',
-  summonerPuuId: 'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
+  summonerPuuId:
+    'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
   tier: 'GOLD IV',
   lp: 1,
   tierImg: 'https://erunjrun.com/tier/Gold.png',
@@ -18,9 +20,11 @@ export const summonerDto = {
 export const unrankSummonerDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '180',
-  summonerPuuId: 'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
+  summonerPuuId:
+    'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
   lp: 0,
   tierImg: '',
   win: 0,
@@ -35,7 +39,8 @@ export const unrankSummonerDto = {
 export const RepositoryGetSummoner = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '183',
   tier: 'Unranked',
   tierImg: '',
@@ -66,10 +71,69 @@ export const RepositoryGetSummoner = {
   },
 };
 
+export const positionInfoData = [
+  {
+    id: 4,
+    cnt: 4,
+  },
+  {
+    id: 5,
+    cnt: 1,
+  },
+];
+
+export const recentChampInfoData = [
+  { count: '3', champId: '360' },
+  { count: '1', champId: '18' },
+  { count: '1', champId: '32' },
+];
+
+export const recentChampRateData = [
+  {
+    recentChampId: '360',
+    recentChampName: '사미라',
+    recentChampImg:
+      'https://carryduo-image.s3.ap-northeast-2.amazonaws.com/13.1/champion/common/Samira.png',
+    recentChampWin: 1,
+    recentChampLose: 2,
+    recentChampTotal: 3,
+    recentChampRate: 33.33,
+  },
+  {
+    recentChampId: '18',
+    recentChampName: '트리스타나',
+    recentChampImg:
+      'https://carryduo-image.s3.ap-northeast-2.amazonaws.com/13.1/champion/common/Tristana.png',
+    recentChampWin: 1,
+    recentChampLose: 0,
+    recentChampTotal: 1,
+    recentChampRate: 100,
+  },
+  {
+    recentChampId: '32',
+    recentChampName: '아무무',
+    recentChampImg:
+      'https://carryduo-image.s3.ap-northeast-2.amazonaws.com/13.1/champion/common/Amumu.png',
+    recentChampWin: 1,
+    recentChampLose: 0,
+    recentChampTotal: 1,
+    recentChampRate: 100,
+  },
+];
+
+export const recordSumInfoData = {
+  winCount: '3',
+  killCount: '10',
+  deathCount: '4',
+  assistCount: '5.6',
+  totalCount: '5',
+};
+
 export const summonerResponseDto = {
   summonerName: '할배탈',
   summonerId: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
-  summonerIcon: 'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
+  summonerIcon:
+    'https://ddragon.leagueoflegends.com/cdn/12.17.1/img/profileicon/1628.png',
   summonerLevel: '183',
   tier: 'Unranked',
   tierImg: '',

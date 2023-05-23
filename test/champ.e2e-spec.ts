@@ -1,4 +1,8 @@
-import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
@@ -18,7 +22,9 @@ describe('Champ (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true, // 아무 decorator 도 없는 어떤 property의 object를 거름
@@ -64,30 +70,45 @@ describe('Champ (e2e)', () => {
   });
 
   it('/GET 타겟 챔피언 포지션 default 파라미터', async () => {
-    const response = await request(app.getHttpServer()).get('/champ/1/position/default');
+    const response = await request(app.getHttpServer()).get(
+      '/champ/1/position/default',
+    );
     expect(response.body.position).toBe('mid');
   });
 
   it('/GET 타겟 챔피언 포지션에 대한 데이터 없을시 default value return?', async () => {
-    const response = await request(app.getHttpServer()).get('/champ/888/position/ad');
+    const response = await request(app.getHttpServer()).get(
+      '/champ/888/position/ad',
+    );
     expect(response.body.winRate).toBe(0);
     expect(response.body.pickRate).toBe(0);
   });
 
   it('/GET 타겟 챔피언 포지션에 대한 데이터 정상 return?', async () => {
-    const response = await request(app.getHttpServer()).get('/champ/888/position/support');
+    const response = await request(app.getHttpServer()).get(
+      '/champ/888/position/support',
+    );
     expect(response.body.winRate).toBe(48.3);
     expect(response.body.pickRate).toBe(1.64);
   });
 
   it('/GET 타겟 챔피언 포지션에 대한 파라미터 예외 처리?', async () => {
-    const response = await request(app.getHttpServer()).get('/champ/888/position/aaa');
+    const response = await request(app.getHttpServer()).get(
+      '/champ/888/position/aaa',
+    );
     expect(response.statusCode).toBe(400);
-    expect(response.body.message).toEqual(['position must be one of the following values: default, top, jungle, mid, ad, support']);
+    expect(response.body.message).toEqual([
+      'position must be one of the following values: default, top, jungle, mid, ad, support',
+    ]);
   });
 
   afterAll(async () => {
-    await dataSource.getRepository(UserEntity).createQueryBuilder().delete().where({ nickname: '영우' }).execute();
+    await dataSource
+      .getRepository(UserEntity)
+      .createQueryBuilder()
+      .delete()
+      .where({ nickname: '영우' })
+      .execute();
     await app.close();
   });
 });

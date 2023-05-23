@@ -7,7 +7,10 @@ import { CombinationStatService } from './combination-stat.service';
 import { CombinationStatEntity } from './entities/combination-stat.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CombinationStatEntity]), ConfigModule.forRoot()],
+  imports: [
+    TypeOrmModule.forFeature([CombinationStatEntity]),
+    ConfigModule.forRoot(),
+  ],
   controllers: [CombinationStatController],
   providers: [CombinationStatService, CombinationStatRepository],
 })

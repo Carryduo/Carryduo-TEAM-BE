@@ -11,7 +11,15 @@ import { GameInfoEntity } from './entities/game.info.entity';
 import { TransferChampData } from './champ.data.transfer';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GameInfoEntity, UpdateChampRateEntity, ChampEntity, ChampSkillEntity, UserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      GameInfoEntity,
+      UpdateChampRateEntity,
+      ChampEntity,
+      ChampSkillEntity,
+      UserEntity,
+    ]),
+  ],
   controllers: [ChampController],
   providers: [ChampService, ChampRepository, TransferChampData],
   exports: [ChampRepository],

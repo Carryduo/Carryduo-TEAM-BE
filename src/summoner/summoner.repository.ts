@@ -8,6 +8,7 @@ import { Cache } from 'cache-manager';
 import { SummonerRecordSumData } from './dto/summoner/history/history.rate.dto';
 import { RecentChampDto } from './dto/summoner/history/history.recent.champ.dto';
 import { SummonerPositionDto } from './dto/summoner/history/history.position.dto';
+import { SummonerCommonDTO } from './dto/summoner/summoner.common.dto';
 
 export class SummonerRepository {
   constructor(
@@ -25,14 +26,14 @@ export class SummonerRepository {
   //   await this.cacheManager.set(`/summoner/${summonerName}`, data);
   // }
 
-  async existSummoner(summonerName: string): Promise<SummonerEntity> {
+  async existSummoner(summonerName: string): Promise<SummonerCommonDTO> {
     return await this.summonerRepository
       .createQueryBuilder()
       .where('summonerName = :summonerName', { summonerName })
       .getOne();
   }
 
-  async getSummoner(summonerName: string): Promise<SummonerEntity> {
+  async getSummoner(summonerName: string): Promise<SummonerCommonDTO> {
     return await this.summonerRepository
       .createQueryBuilder('summoner')
       .leftJoinAndSelect('summoner.mostChamp1', 'most1')
@@ -66,7 +67,9 @@ export class SummonerRepository {
       .getOne();
   }
 
-  async getSummonerRecordSum(summonerId: string): Promise<SummonerRecordSumData> {
+  async getSummonerRecordSum(
+    summonerId: string,
+  ): Promise<SummonerRecordSumData> {
     return await this.historyRepository
       .createQueryBuilder('history')
       .select('SUM(history.win) winCount')
@@ -78,7 +81,9 @@ export class SummonerRepository {
       .getRawOne();
   }
 
-  async getSummonerPositionRecord(summonerId: string): Promise<SummonerPositionDto[]> {
+  async getSummonerPositionRecord(
+    summonerId: string,
+  ): Promise<SummonerPositionDto[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerId = :summonerId', { summonerId })
@@ -89,7 +94,9 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChamp(summonerId: string): Promise<{ count: string; champId: string }[]> {
+  async getRecentChamp(
+    summonerId: string,
+  ): Promise<{ count: string; champId: string }[]> {
     return await this.historyRepository
       .createQueryBuilder()
       .where('summonerId = :summonerId', { summonerId })
@@ -100,7 +107,10 @@ export class SummonerRepository {
       .getRawMany();
   }
 
-  async getRecentChampRate(champId: string, summonerId: string): Promise<RecentChampDto> {
+  async getRecentChampRate(
+    champId: string,
+    summonerId: string,
+  ): Promise<RecentChampDto> {
     return await this.historyRepository
       .createQueryBuilder('history')
       .leftJoinAndSelect('history.champId', 'champ')
@@ -109,8 +119,14 @@ export class SummonerRepository {
         'champ.champNameKo recentChampName',
         'champ.champImg recentChampImg',
       ])
-      .addSelect('SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END)', 'recentChampWin')
-      .addSelect('SUM(CASE WHEN history.win = 0 THEN 1 ELSE 0 END)', 'recentChampLose')
+      .addSelect(
+        'SUM(CASE WHEN history.win = 1 THEN 1 ELSE 0 END)',
+        'recentChampWin',
+      )
+      .addSelect(
+        'SUM(CASE WHEN history.win = 0 THEN 1 ELSE 0 END)',
+        'recentChampLose',
+      )
       .addSelect(
         'SUM(CASE WHEN history.win = 0 THEN 1 WHEN history.win = 1 THEN 1 ELSE 0 END)',
         'recentChampTotal',
@@ -125,10 +141,18 @@ export class SummonerRepository {
   }
 
   async createSummoner(summoner: SummonerEntity) {
-    await this.summonerRepository.createQueryBuilder().insert().values(summoner).execute();
+    await this.summonerRepository
+      .createQueryBuilder()
+      .insert()
+      .values(summoner)
+      .execute();
   }
   async createSummonerHistory(history: SummonerHistoryEntity[]) {
-    return this.historyRepository.createQueryBuilder().insert().values(history).execute();
+    return this.historyRepository
+      .createQueryBuilder()
+      .insert()
+      .values(history)
+      .execute();
   }
 
   async updateSummoner(summoner: SummonerEntity) {

@@ -17,4 +17,6 @@ export class RawQueryResponseDto {
   version?: string;
 }
 
-export class VersionResponseDto extends PickType(RawQueryResponseDto, ['version']) {}
+export class VersionResponseDto extends PickType(RawQueryResponseDto, [
+  'version',
+]) {}

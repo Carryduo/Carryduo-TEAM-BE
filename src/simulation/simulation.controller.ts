@@ -1,7 +1,20 @@
 import { CategoryParamPipe } from './../combination-stat/pipes/combination-stat.param.validator.pipe';
 import { SimulationService } from './simulation.service';
-import { Controller, Get, Param, Query, UseFilters, HttpException } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseFilters,
+  HttpException,
+} from '@nestjs/common';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../common/exception/http-exception.filter';
 import { simulationResponseDto } from './dto/simulation.response.dto';
 
@@ -48,12 +61,29 @@ export class SimulationController {
     example: '56',
   })
   @Get('/:category')
-  async getSimulationData(@Param('category', CategoryParamPipe) category: string, @Query('champ1Id') champ1Id: string, @Query('champ2Id') champ2Id: string, @Query('champ3Id') champ3Id: string, @Query('champ4Id') champ4Id: string): Promise<simulationResponseDto> {
-    if (isNaN(Number(champ1Id)) || isNaN(Number(champ2Id)) || isNaN(Number(champ3Id)) || isNaN(Number(champ4Id))) {
+  async getSimulationData(
+    @Param('category', CategoryParamPipe) category: string,
+    @Query('champ1Id') champ1Id: string,
+    @Query('champ2Id') champ2Id: string,
+    @Query('champ3Id') champ3Id: string,
+    @Query('champ4Id') champ4Id: string,
+  ): Promise<simulationResponseDto> {
+    if (
+      isNaN(Number(champ1Id)) ||
+      isNaN(Number(champ2Id)) ||
+      isNaN(Number(champ3Id)) ||
+      isNaN(Number(champ4Id))
+    ) {
       throw new HttpException(`champId는 숫자형태여야 합니다.`, 400);
     }
 
-    const data = await this.simulaitionService.getSimulationData(category, champ1Id, champ2Id, champ3Id, champ4Id);
+    const data = await this.simulaitionService.getSimulationData(
+      category,
+      champ1Id,
+      champ2Id,
+      champ3Id,
+      champ4Id,
+    );
     if (!data) {
       throw new HttpException(`대전 시뮬레이션 데이터가 없습니다`, 400);
     }

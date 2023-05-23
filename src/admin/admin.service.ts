@@ -6,7 +6,10 @@ import { Brackets } from 'typeorm';
 import { ChampRepository } from '../champ/champ.repository';
 import { UserRepository } from '../user/user.repository';
 import { FirstLoginResponseDto } from './dto/admin.response.dto';
-import { FirstLoginRequestDto, DeleteUserReqeustDto } from './dto/admin.request.dto';
+import {
+  FirstLoginRequestDto,
+  DeleteUserReqeustDto,
+} from './dto/admin.request.dto';
 @Injectable()
 export class AdminService {
   constructor(
@@ -27,7 +30,10 @@ export class AdminService {
     return new FirstLoginResponseDto(
       user.userId,
       user.nickname,
-      await this.jwtService.signAsync({ sub: user.userId }, { secret: process.env.JWT_SECRET_KEY }),
+      await this.jwtService.signAsync(
+        { sub: user.userId },
+        { secret: process.env.JWT_SECRET_KEY },
+      ),
     );
 
     // TODO: DTO 생성 | 로그인 시 기본 정보, 감싸기
@@ -41,7 +47,9 @@ export class AdminService {
     try {
       // 작성한 평판 목록 조회
       const option = userId.toEntity();
-      const commentIdList = await this.adminRepository.findCommentList(option.userId);
+      const commentIdList = await this.adminRepository.findCommentList(
+        option.userId,
+      );
 
       const cacheOptionList = [];
       // 카테고리, target, option 미리 세팅해두기
@@ -72,7 +80,9 @@ export class AdminService {
         cacheOptionList.push(cacheOptions);
       }
 
-      const preferchamp = await this.userRepository.findPreferchamps(option.userId);
+      const preferchamp = await this.userRepository.findPreferchamps(
+        option.userId,
+      );
 
       const preferChampList = [
         preferchamp.preferChamp1,

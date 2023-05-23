@@ -5,7 +5,13 @@ import { Brackets } from 'typeorm';
 @Injectable()
 export class SimulationService {
   constructor(private readonly simulationRepository: SimulationRepository) {}
-  async getSimulationData(category: string | number, champ1Id: string | number, champ2Id: string | number, champ3Id: string | number, champ4Id: string | number) {
+  async getSimulationData(
+    category: string | number,
+    champ1Id: string | number,
+    champ2Id: string | number,
+    champ3Id: string | number,
+    champ4Id: string | number,
+  ) {
     switch (category) {
       case 'top-jungle':
         category = 0;

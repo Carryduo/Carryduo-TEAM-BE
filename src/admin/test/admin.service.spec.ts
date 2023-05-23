@@ -1,4 +1,7 @@
-import { FirstLoginRequestDto, DeleteUserReqeustDto } from './../dto/admin.request.dto';
+import {
+  FirstLoginRequestDto,
+  DeleteUserReqeustDto,
+} from './../dto/admin.request.dto';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from 'src/user/user.repository';
@@ -42,8 +45,14 @@ describe('AdminService', () => {
             },
           },
         },
-        { provide: getRepositoryToken(GameInfoEntity), useValue: mockRepository },
-        { provide: getRepositoryToken(UpdateChampRateEntity), useValue: mockRepository },
+        {
+          provide: getRepositoryToken(GameInfoEntity),
+          useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(UpdateChampRateEntity),
+          useValue: mockRepository,
+        },
         {
           provide: getRepositoryToken(UserEntity),
           useValue: mockRepository,
@@ -102,7 +111,9 @@ describe('AdminService', () => {
           resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
+    const response = await service.kakaoLogin(
+      new FirstLoginRequestDto(loginData),
+    );
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);
@@ -121,7 +132,9 @@ describe('AdminService', () => {
           resolve({ userId: 'sampleId', nickname: data.nickname });
         }),
     );
-    const response = await service.kakaoLogin(new FirstLoginRequestDto(loginData));
+    const response = await service.kakaoLogin(
+      new FirstLoginRequestDto(loginData),
+    );
     expect(response.nickname).toEqual(loginResult.nickname);
     expect(response.token).toEqual(loginResult.token);
     expect(response.id).toEqual(loginResult.id);

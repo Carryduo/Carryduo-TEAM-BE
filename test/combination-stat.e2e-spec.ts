@@ -18,7 +18,9 @@ describe('Combination-Stat (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true, // 아무 decorator 도 없는 어떤 property의 object를 거름
@@ -31,7 +33,9 @@ describe('Combination-Stat (e2e)', () => {
   });
 
   it('/:category (GET)', async () => {
-    const response_top = await request(app.getHttpServer()).get('/combination-stat/top-jungle');
+    const response_top = await request(app.getHttpServer()).get(
+      '/combination-stat/top-jungle',
+    );
 
     const body_top = response_top.body;
 
@@ -41,7 +45,9 @@ describe('Combination-Stat (e2e)', () => {
   });
 
   it('/:category (GET) 예외처리 ', async () => {
-    const response = await request(app.getHttpServer()).get('/combination-stat/aaa');
+    const response = await request(app.getHttpServer()).get(
+      '/combination-stat/aaa',
+    );
     const body: HttpException = response.body;
     const status = response.statusCode;
     expect(status).toBe(400);
@@ -49,7 +55,9 @@ describe('Combination-Stat (e2e)', () => {
   });
 
   it('/:category/:position (GET) | top, mid, ad', async () => {
-    const response_mid = await request(app.getHttpServer()).get('/combination-stat/champ/875/mid');
+    const response_mid = await request(app.getHttpServer()).get(
+      '/combination-stat/champ/875/mid',
+    );
     const body_mid = response_mid.body;
     expect(body_mid.length).toBe(5);
 
@@ -57,14 +65,18 @@ describe('Combination-Stat (e2e)', () => {
   });
 
   it('/:category/:position (GET) 예외처리1 | param: category', async () => {
-    const response = await request(app.getHttpServer()).get('/combination-stat/champ/aaa/top');
+    const response = await request(app.getHttpServer()).get(
+      '/combination-stat/champ/aaa/top',
+    );
     const body = response.body;
     expect(response.statusCode).toBe(400);
     expect(body.message).toBe('aaa 는 챔피언 카테고리가 아닙니다');
   });
 
   it('/:category/:position (GET) 예외처리1 | param: position', async () => {
-    const response = await request(app.getHttpServer()).get('/combination-stat/champ/875/bbb');
+    const response = await request(app.getHttpServer()).get(
+      '/combination-stat/champ/875/bbb',
+    );
     const body = response.body;
     expect(response.statusCode).toBe(400);
     expect(body.message).toBe('bbb 는 포지션 카테고리가 아닙니다');
@@ -86,14 +98,18 @@ describe('Combination-Stat (e2e)', () => {
   });
 
   it('/:category/:position (GET) 예외처리3 | no data ', async () => {
-    const response = await request(app.getHttpServer()).get('/combination-stat/champ/427/ad');
+    const response = await request(app.getHttpServer()).get(
+      '/combination-stat/champ/427/ad',
+    );
     const body = response.body;
     expect(body.result).toStrictEqual([]);
     expect(body.message).toStrictEqual('유효한 데이터(표본 5 이상)가 없습니다');
   });
 
   it('/:version (GET)', async () => {
-    const response = await request(app.getHttpServer()).get('/combination-stat/version');
+    const response = await request(app.getHttpServer()).get(
+      '/combination-stat/version',
+    );
     const body = response.body;
     const status = response.statusCode;
     expect(status).toBe(200);

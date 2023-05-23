@@ -60,13 +60,24 @@ export class TierListRequestDto {
 }
 
 export class IndividualChampRequestDto {
-  @Exclude() private readonly _position: 'top' | 'jungle' | 'mid' | 'ad' | 'support';
+  @Exclude() private readonly _position:
+    | 'top'
+    | 'jungle'
+    | 'mid'
+    | 'ad'
+    | 'support';
   @Exclude() private readonly _champId: string;
-  constructor(champId: string, position: 'top' | 'jungle' | 'mid' | 'ad' | 'support') {
+  constructor(
+    champId: string,
+    position: 'top' | 'jungle' | 'mid' | 'ad' | 'support',
+  ) {
     this._champId = champId;
     this._position = position;
   }
-  static craeteDto(champId: string, position: 'top' | 'jungle' | 'mid' | 'ad' | 'support') {
+  static craeteDto(
+    champId: string,
+    position: 'top' | 'jungle' | 'mid' | 'ad' | 'support',
+  ) {
     return new IndividualChampRequestDto(champId, position);
   }
 

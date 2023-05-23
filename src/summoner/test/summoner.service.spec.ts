@@ -1,4 +1,4 @@
-import { CACHE_MANAGER } from '@nestjs/common';
+import { CACHE_MANAGER, HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ChampEntity } from '../../champ/entities/champ.entity';
@@ -6,10 +6,14 @@ import { SummonerEntity } from '../entities/summoner.entity';
 import { SummonerHistoryEntity } from '../entities/summoner.history.entity';
 import { SummonerRepository } from '../summoner.repository';
 import { SummonerService } from '../summoner.service';
-import { SummonerDtoFactory } from '../summoner.dto.factory';
+import { TransferSummonerData } from '../summoner.data.transfer';
 import * as dotenv from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import {
+  positionInfoData,
+  recentChampInfoData,
+  recentChampRateData,
+  recordSumInfoData,
   RepositoryGetSummoner,
   summonerDto,
   summonerResponseDto,
@@ -27,13 +31,14 @@ import {
 } from './data/riot.response';
 import { plainToInstance } from 'class-transformer';
 import { CreateSummonerDto } from '../dto/summoner/create.summoner.dto';
+import { SummonerCommonDTO } from '../dto/summoner/summoner.common.dto';
 
 class CacheMockRepository {}
 describe('SummonerService', () => {
   let configService: ConfigService;
   let service: SummonerService;
   let repository: SummonerRepository;
-  let dto: SummonerDtoFactory;
+  let transfer: TransferSummonerData;
   const mockRepository = () => {
     createQueryBuilder: jest.fn();
   };
@@ -48,7 +53,7 @@ describe('SummonerService', () => {
         ConfigService,
         SummonerService,
         SummonerRepository,
-        SummonerDtoFactory,
+        TransferSummonerData,
         {
           provide: axios,
           useValue: { get: jest.fn() },
@@ -75,7 +80,7 @@ describe('SummonerService', () => {
     configService = module.get<ConfigService>(ConfigService);
     service = module.get<SummonerService>(SummonerService);
     repository = module.get<SummonerRepository>(SummonerRepository);
-    dto = module.get<SummonerDtoFactory>(SummonerDtoFactory);
+    transfer = module.get<TransferSummonerData>(TransferSummonerData);
   });
 
   it('should be defined', () => {
@@ -93,7 +98,9 @@ describe('SummonerService', () => {
 
     repository.existSummoner = jest.fn().mockResolvedValue(existSummoner);
     repository.getSummoner = jest.fn().mockResolvedValue(RepositoryGetSummoner);
-    service.summonerHistoryCalculation = jest.fn().mockResolvedValue(summonerResponseDto);
+    service.summonerHistoryCalculation = jest
+      .fn()
+      .mockResolvedValue(summonerResponseDto);
 
     //createSummoner
     const createSummoner = jest.spyOn(service, 'createSummoner');
@@ -105,7 +112,23 @@ describe('SummonerService', () => {
     expect(createSummoner).toHaveBeenCalledWith(summonerName);
   });
 
-  it('requestRiotSummonerApi?', async () => {
+  it('getSummoner 존재하지 않는 소환사 입력시 error return?', async () => {
+    const summonerName = '할배탈';
+    const request = jest.spyOn(axios, 'get');
+    request.mockRejectedValue({
+      response: { statusText: 'Not Found', status: 404 },
+    });
+
+    try {
+      await service.getSummoner(summonerName);
+    } catch (err) {
+      expect(err).toBeInstanceOf(HttpException);
+      expect(err.message).toEqual('Not Found - from getSummoner');
+      expect(err.status).toEqual(404);
+    }
+  });
+
+  it('requestRiotSummonerApi? 정상 return', async () => {
     const summonerName = '할배탈';
     const request = jest.spyOn(axios, 'get');
 
@@ -161,7 +184,7 @@ describe('SummonerService', () => {
     expect(result).toEqual(response);
   });
 
-  it('requestRiotSummonerHistoryApi?', async () => {
+  it('requestRiotSummonerHistoryApi 정상 return?', async () => {
     const puuId = 'puuid';
     const request = jest.spyOn(axios, 'get');
 
@@ -180,7 +203,7 @@ describe('SummonerService', () => {
     });
 
     const result = await service.requestRiotSummonerHistoryApi(puuId);
-    const response = await dto.createSummonerHistory(summonerHistory);
+    const response = await transfer.summonerHistoryEntity(summonerHistory);
 
     expect(result).toEqual(response);
   });
@@ -191,6 +214,68 @@ describe('SummonerService', () => {
     try {
       repository.existSummoner = jest.fn().mockResolvedValue(null);
       await service.refreshSummoner(summonerName);
+    } catch (err) {
+      error = err;
+    }
+    expect(error).not.toBeNull();
+  });
+
+  it('소환사 전적 데이터 연산 정상 작동 return?', async () => {
+    const summoner = plainToInstance(SummonerCommonDTO, summonerDto);
+    const summonerDefaultData = await transfer.summonerDefaultData(summoner);
+    repository.getSummonerRecordSum = jest
+      .fn()
+      .mockResolvedValue(recordSumInfoData);
+
+    repository.getSummonerPositionRecord = jest
+      .fn()
+      .mockResolvedValue(positionInfoData);
+    const position = await transfer.summonerPosition(positionInfoData);
+
+    repository.getRecentChamp = jest
+      .fn()
+      .mockResolvedValue(recentChampInfoData);
+    repository.getRecentChampRate = jest
+      .fn()
+      .mockResolvedValue(recentChampRateData);
+    const recentChamp = await transfer.summonerRecentChamp(
+      recentChampInfoData,
+      summoner.summonerId,
+    );
+
+    const historyRate = await transfer.summonerHistoryRate(
+      recordSumInfoData,
+      position,
+      recentChamp,
+    );
+
+    const response = await transfer.SummonerHistoryResponse(
+      summonerDefaultData,
+      historyRate,
+    );
+
+    const result = await service.summonerHistoryCalculation(summoner);
+
+    expect(response).toEqual(result);
+  });
+
+  it('소환사 전적 데이터 연산 error test', async () => {
+    const summoner = null;
+    let error = null;
+    try {
+      await service.summonerHistoryCalculation(summoner);
+    } catch (err) {
+      error = err;
+    }
+    expect(error).not.toBeNull();
+  });
+
+  it('createSummoner error test', async () => {
+    const summonerName = '할배탈';
+    let error = null;
+    service.requestRiotSummonerApi = jest.fn().mockResolvedValue(null);
+    try {
+      await service.createSummoner(summonerName);
     } catch (err) {
       error = err;
     }

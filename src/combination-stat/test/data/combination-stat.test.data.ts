@@ -12,11 +12,13 @@ export const input1_tierList = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -34,11 +36,13 @@ export const input1_tierList_oldVersion = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -56,11 +60,13 @@ export const input2_tierList = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -78,11 +84,13 @@ export const input2_tierList_oldVersion = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -100,11 +108,13 @@ export const input0_tierList = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -122,11 +132,13 @@ export const input0_tierList_oldVersion = [
     champ1_id: '96',
     champ1_champNameKo: '코그모',
     champ1_champNameEn: 'KogMaw',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     champ2_id: '888',
     champ2_champNameKo: '레나타 글라스크',
     champ2_champNameEn: 'Renata',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
   },
 ];
 
@@ -145,13 +157,15 @@ export const result0_tierList = [
       id: '96',
       champNameKo: '코그모',
       champNameEn: 'KogMaw',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     },
     subChampId: <champType>{
       id: '888',
       champNameKo: '레나타 글라스크',
       champNameEn: 'Renata',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
     },
   },
 ];
@@ -171,13 +185,15 @@ export const result1_tierList = [
       id: '96',
       champNameKo: '코그모',
       champNameEn: 'KogMaw',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     },
     subChampId: <champType>{
       id: '888',
       champNameKo: '레나타 글라스크',
       champNameEn: 'Renata',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
     },
   },
 ];
@@ -203,13 +219,15 @@ export const result2_tierList = [
       id: '96',
       champNameKo: '코그모',
       champNameEn: 'KogMaw',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/KogMaw.png',
     },
     subChampId: <champType>{
       id: '888',
       champNameKo: '레나타 글라스크',
       champNameEn: 'Renata',
-      champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
+      champImg:
+        'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Renata.png',
     },
   },
 ];
@@ -227,11 +245,13 @@ export const input_IndividualChamp = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'e1a214b8-7efa-4f8b-9863-a4c99cdd0e78',
@@ -245,11 +265,13 @@ export const input_IndividualChamp = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '10b89000-4492-4dc5-be58-a8b7f8dc1f39',
@@ -263,11 +285,13 @@ export const input_IndividualChamp = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'bbb5f599-0efa-4740-934f-c8ebb4bb57bb',
@@ -281,11 +305,13 @@ export const input_IndividualChamp = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'ddacf41f-6d26-46c5-a52b-8984884b9e93',
@@ -299,11 +325,13 @@ export const input_IndividualChamp = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 ];
 
@@ -320,11 +348,13 @@ export const input_IndividualChamp_jungle = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'e1a214b8-7efa-4f8b-9863-a4c99cdd0e78',
@@ -338,11 +368,13 @@ export const input_IndividualChamp_jungle = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '10b89000-4492-4dc5-be58-a8b7f8dc1f39',
@@ -356,11 +388,13 @@ export const input_IndividualChamp_jungle = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'bbb5f599-0efa-4740-934f-c8ebb4bb57bb',
@@ -374,11 +408,13 @@ export const input_IndividualChamp_jungle = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: 'ddacf41f-6d26-46c5-a52b-8984884b9e93',
@@ -392,11 +428,13 @@ export const input_IndividualChamp_jungle = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 ];
 
@@ -413,11 +451,13 @@ export const input_IndividualChamp_jungle_oldVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
@@ -431,11 +471,13 @@ export const input_IndividualChamp_jungle_oldVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
@@ -449,11 +491,13 @@ export const input_IndividualChamp_jungle_oldVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
@@ -467,11 +511,13 @@ export const input_IndividualChamp_jungle_oldVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
@@ -485,11 +531,13 @@ export const input_IndividualChamp_jungle_oldVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 ];
 
@@ -506,11 +554,13 @@ export const input_IndividualChamp_jungle_recentVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
   {
     id: '80af9e09-7138-4707-8c68-b504825bc0a8',
@@ -524,30 +574,13 @@ export const input_IndividualChamp_jungle_recentVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
-  },
-
-  {
-    id: '80af9e09-7138-4707-8c68-b504825bc0a8',
-    createdAt: new Date('2022-10-06T06:43:34.056Z'),
-    updatedAt: new Date('2022-10-20T12:24:47.928Z'),
-    category: 2,
-    version: '13.1.',
-    winrate: 0.6667,
-    opScore: 1.5231,
-    sampleNum: 6,
-    champ1_id: '22',
-    champ1_champNameKo: '애쉬',
-    champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
-    champ2_id: '875',
-    champ2_champNameKo: '세트',
-    champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 
   {
@@ -562,11 +595,13 @@ export const input_IndividualChamp_jungle_recentVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 
   {
@@ -581,15 +616,46 @@ export const input_IndividualChamp_jungle_recentVersion = [
     champ1_id: '22',
     champ1_champNameKo: '애쉬',
     champ1_champNameEn: 'Ashe',
-    champ1_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
     champ2_id: '875',
     champ2_champNameKo: '세트',
     champ2_champNameEn: 'Sett',
-    champ2_champImg: 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
+  },
+
+  {
+    id: '80af9e09-7138-4707-8c68-b504825bc0a8',
+    createdAt: new Date('2022-10-06T06:43:34.056Z'),
+    updatedAt: new Date('2022-10-20T12:24:47.928Z'),
+    category: 2,
+    version: '13.1.',
+    winrate: 0.6667,
+    opScore: 1.5231,
+    sampleNum: 6,
+    champ1_id: '22',
+    champ1_champNameKo: '애쉬',
+    champ1_champNameEn: 'Ashe',
+    champ1_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Ashe.png',
+    champ2_id: '875',
+    champ2_champNameKo: '세트',
+    champ2_champNameEn: 'Sett',
+    champ2_champImg:
+      'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/champion/Sett.png',
   },
 ];
 
 export const result_individualChamp_noResponse = [];
 
-export const result_mainPageData_recentVersion = { category0: 30, category1: 30, category2: 30 };
-export const result_mainPageData_oldVersion = { category0: 29, category1: 30, category2: 30 };
+export const result_mainPageData_recentVersion = {
+  category0: 30,
+  category1: 30,
+  category2: 30,
+};
+export const result_mainPageData_oldVersion = {
+  category0: 29,
+  category1: 30,
+  category2: 30,
+};

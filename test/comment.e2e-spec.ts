@@ -1,7 +1,11 @@
 import { UserEntity } from './../src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { Reflector } from '@nestjs/core';
@@ -22,7 +26,9 @@ describe('Comment (e2e)', () => {
 
     jest.setTimeout(50000);
     app = moduleFixture.createNestApplication();
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true, // 아무 decorator 도 없는 어떤 property의 object를 거름
@@ -101,7 +107,9 @@ describe('Comment (e2e)', () => {
   });
 
   it('/:categry/:target (GET) | 댓글 조회', async () => {
-    const response = await request(app.getHttpServer()).get('/comments/champ/875');
+    const response = await request(app.getHttpServer()).get(
+      '/comments/champ/875',
+    );
     expect(response.body.length).toBe(1);
     expect(response.body[0].champId.id).toBe('875');
     expect(response.body[0].userId.nickname).toBe(sample.nickname);
@@ -126,7 +134,9 @@ describe('Comment (e2e)', () => {
   });
 
   it('/:categry/:target (GET) | 댓글 수정, 삭제 확인', async () => {
-    const response = await request(app.getHttpServer()).get('/comments/champ/875');
+    const response = await request(app.getHttpServer()).get(
+      '/comments/champ/875',
+    );
     expect(response.body.length).toBe(1);
     expect(response.body[0].champId.id).toBe('875');
     expect(response.body[0].userId.nickname).toBe(sample.nickname);

@@ -5,7 +5,6 @@ import { RawQueryResponseDto } from './dtos/combination-stat.repository.dto';
 import { CombinationStatEntity } from './entities/combination-stat.entity';
 
 @Injectable()
-// TODO: 각 출력값은 각 DTO에 감싸기
 export class CombinationStatRepository {
   constructor(
     @InjectRepository(CombinationStatEntity)
@@ -13,10 +12,15 @@ export class CombinationStatRepository {
   ) {}
 
   async getVersions(): Promise<{ version: string }[]> {
-    return await this.combinationStatRepository.createQueryBuilder('COMBINATION_STAT').select(['DISTINCT COMBINATION_STAT.version']).getRawMany();
+    return await this.combinationStatRepository
+      .createQueryBuilder('COMBINATION_STAT')
+      .select(['DISTINCT COMBINATION_STAT.version'])
+      .getRawMany();
   }
   //   mainPage 티어리스트
-  async getTierList(requestOption: CombinationStatEntity): Promise<RawQueryResponseDto[]> {
+  async getTierList(
+    requestOption: CombinationStatEntity,
+  ): Promise<RawQueryResponseDto[]> {
     const { category, version } = requestOption;
     return await this.combinationStatRepository
       .createQueryBuilder('COMBINATION_STAT')
@@ -43,12 +47,18 @@ export class CombinationStatRepository {
       .where('COMBINATION_STAT.category = :category', { category })
       .andWhere('COMBINATION_STAT.version = :version', { version })
       .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
-      .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
+      .orderBy({
+        '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5':
+          'DESC',
+      })
       .limit(30)
       .getRawMany();
   }
 
-  async getIndividualChampData(whereOption: { option: { category: Brackets; champ: Brackets } }, requestOption: CombinationStatEntity): Promise<RawQueryResponseDto[]> {
+  async getIndividualChampData(
+    whereOption: { option: { category: Brackets; champ: Brackets } },
+    requestOption: CombinationStatEntity,
+  ): Promise<RawQueryResponseDto[]> {
     // 탑, 미드, 원딜
     const { option } = whereOption;
     const { version } = requestOption;
@@ -78,12 +88,17 @@ export class CombinationStatRepository {
       .andWhere(option.champ)
       .andWhere('COMBINATION_STAT.version = :version', { version })
       .andWhere('COMBINATION_STAT.sampleNum >= :sampleNum', { sampleNum: 5 })
-      .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
+      .orderBy({
+        '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5':
+          'DESC',
+      })
       .limit(5)
       .getRawMany();
   }
 
-  getMainpageData = async (version: string): Promise<{ category0: number; category1: number; category2: number }> => {
+  async getMainpageData(
+    version: string,
+  ): Promise<{ category0: number; category1: number; category2: number }> {
     try {
       const category0 = await this.combinationStatRepository
         .createQueryBuilder('COMBINATION_STAT')
@@ -92,8 +107,13 @@ export class CombinationStatRepository {
         .select()
         .where('COMBINATION_STAT.category = :category', { category: 0 })
         .andWhere('COMBINATION_STAT.version = :version', { version })
-        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
-        .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', {
+          sampleNum: 30,
+        })
+        .orderBy({
+          '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5':
+            'DESC',
+        })
         .getCount();
       const category1 = await this.combinationStatRepository
         .createQueryBuilder('COMBINATION_STAT')
@@ -102,8 +122,13 @@ export class CombinationStatRepository {
         .select()
         .where('COMBINATION_STAT.category = :category', { category: 1 })
         .andWhere('COMBINATION_STAT.version = :version', { version })
-        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
-        .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', {
+          sampleNum: 30,
+        })
+        .orderBy({
+          '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5':
+            'DESC',
+        })
         .getCount();
       const category2 = await this.combinationStatRepository
         .createQueryBuilder('COMBINATION_STAT')
@@ -112,96 +137,53 @@ export class CombinationStatRepository {
         .select()
         .where('COMBINATION_STAT.category = :category', { category: 2 })
         .andWhere('COMBINATION_STAT.version = :version', { version })
-        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', { sampleNum: 30 })
-        .orderBy({ '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5': 'DESC' })
+        .andWhere('COMBINATION_STAT.sample_num >= :sampleNum', {
+          sampleNum: 30,
+        })
+        .orderBy({
+          '((COMBINATION_STAT.win/COMBINATION_STAT.sample_num) * 0.4 + ((COMBINATION_STAT.sample_num - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) / ((SELECT MAX(sample_num) FROM COMBINATION_STAT) - (SELECT MIN(sample_num) FROM COMBINATION_STAT)) * 0.6 )) * 5':
+            'DESC',
+        })
         .getCount();
       return { category0, category1, category2 };
     } catch (err) {
       console.log(err);
       return;
     }
-  };
+  }
 
-  createIndividualRequestOption(requestOption: { champId: string; position: string }): { option: { category: Brackets; champ: Brackets } } {
-    const { champId, position } = requestOption;
-    let option: { category: Brackets; champ: Brackets };
-    switch (position) {
-      case 'top':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 0,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-      case 'jungle':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 0,
-            }).orWhere('COMBINATION_STAT.category = :category2', {
-              category2: 1,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
-              subChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'mid':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 1,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'ad':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 2,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.mainChampId = :mainChampId', {
-              mainChampId: champId,
-            });
-          }),
-        };
-        break;
-
-      case 'support':
-        option = {
-          category: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.category = :category', {
-              category: 2,
-            });
-          }),
-          champ: new Brackets((qb) => {
-            qb.where('COMBINATION_STAT.subChampId = :subChampId', {
-              subChampId: champId,
-            });
-          }),
-        };
-        break;
+  createCategoryOption(category: number | number[]): Brackets {
+    let categoryOption: Brackets;
+    if (Array.isArray(category)) {
+      categoryOption = new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.category = :category', {
+          category: category[0],
+        }).orWhere('COMBINATION_STAT.category = :category2', {
+          category2: category[1],
+        });
+      });
+    } else {
+      categoryOption = new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.category = :category', {
+          category,
+        });
+      });
     }
-    return { option };
+    return categoryOption;
+  }
+
+  createChampIdOption(champIdOption: {
+    mainChampId?: string;
+    subChampId?: string;
+  }): Brackets {
+    if (champIdOption.subChampId === undefined) {
+      return new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.mainChampId = :mainChampId', champIdOption);
+      });
+    } else {
+      return new Brackets((qb) => {
+        qb.where('COMBINATION_STAT.subChampId = :subChampId', champIdOption);
+      });
+    }
   }
 }

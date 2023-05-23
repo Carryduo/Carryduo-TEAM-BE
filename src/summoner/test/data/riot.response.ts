@@ -2,7 +2,8 @@ export const summonerData = {
   data: {
     id: 'Xtuzku0AfucpULmsfXCT8c6ybe96Y7aVrPrBLjfy8xh_QBw',
     accountId: 'uzQKODbTVEQax8kSBt0vKyXrVAnV4bnMXd9M2lMpFcNIhNI',
-    puuid: 'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
+    puuid:
+      'rNs_hmUPsdkwl_1psIBND7GCnaP2ckz8b_a5RPut4sO5w3HEWdxpWWi194GpWZPVKtzVwXkhu_lbGw',
     name: '할배탈',
     profileIconId: 1628,
     revisionDate: 1667131128000,
@@ -632,7 +633,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 10353,
           physicalDamageTaken: 12520,
           profileIcon: 584,
-          puuid: '83Ea4RnYMsWZtXAbfIKgRLQF2wUOXLryYdAnyDIYwRljSxgMUnM1yisOqSEjF5WjErCQuGHP3qRjHw',
+          puuid:
+            '83Ea4RnYMsWZtXAbfIKgRLQF2wUOXLryYdAnyDIYwRljSxgMUnM1yisOqSEjF5WjErCQuGHP3qRjHw',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -914,7 +916,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 154,
           physicalDamageTaken: 8558,
           profileIcon: 23,
-          puuid: 'YdDjJ0w5cXgaSRmrzVXVZdgidPj__sm3fVfDQVRkLeNX1b5VMrg8T0wKaiby49bheXg-85Z2CNpoCw',
+          puuid:
+            'YdDjJ0w5cXgaSRmrzVXVZdgidPj__sm3fVfDQVRkLeNX1b5VMrg8T0wKaiby49bheXg-85Z2CNpoCw',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -1196,7 +1199,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 15198,
           physicalDamageTaken: 6910,
           profileIcon: 5417,
-          puuid: 'FDdmoN17cXRoxrJgKP0zDpufCwYkGbFq4Pn9xArXJsD-iM5bslWNrZcOGtS07g-o4hiYHZfINFtpXA',
+          puuid:
+            'FDdmoN17cXRoxrJgKP0zDpufCwYkGbFq4Pn9xArXJsD-iM5bslWNrZcOGtS07g-o4hiYHZfINFtpXA',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -1476,7 +1480,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 9076,
           physicalDamageTaken: 6961,
           profileIcon: 939,
-          puuid: 'yeoZUjCX2FrG6vZd1hj0RlI3qLy-qiO5pDngUco4iB3xE3_g26AhSuXzvIzaW5B_LPxRQmmvtUIAQg',
+          puuid:
+            'yeoZUjCX2FrG6vZd1hj0RlI3qLy-qiO5pDngUco4iB3xE3_g26AhSuXzvIzaW5B_LPxRQmmvtUIAQg',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -1751,7 +1756,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 3722,
           physicalDamageTaken: 9425,
           profileIcon: 5168,
-          puuid: 'XCtkdY-v8T_5HNRAB9hzzBbjzWKAXRx_lq4_QeYNhkSH3etY9abxskZLWS4tFp5dHGkmzzyZB0Rmkw',
+          puuid:
+            'XCtkdY-v8T_5HNRAB9hzzBbjzWKAXRx_lq4_QeYNhkSH3etY9abxskZLWS4tFp5dHGkmzzyZB0Rmkw',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -2027,7 +2033,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 1009,
           physicalDamageTaken: 13847,
           profileIcon: 5488,
-          puuid: 'UFzh2K8o20FTUlEcQTeUqgh45Mni9frxHhIY1nV2WJsTevYhi9v2ylwq7t266jU3Zix-sGLwiC8IVw',
+          puuid:
+            'UFzh2K8o20FTUlEcQTeUqgh45Mni9frxHhIY1nV2WJsTevYhi9v2ylwq7t266jU3Zix-sGLwiC8IVw',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -2302,7 +2309,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 636,
           physicalDamageTaken: 6520,
           profileIcon: 907,
-          puuid: 'vdwE7oezhwln6fSazEwSfeIYSToP6dG5RJ7iKbuxWodRZ_1Q6DwuqdreFRKXKn-GTUurS5JzsMPbVA',
+          puuid:
+            'vdwE7oezhwln6fSazEwSfeIYSToP6dG5RJ7iKbuxWodRZ_1Q6DwuqdreFRKXKn-GTUurS5JzsMPbVA',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -2316,7 +2324,8 @@ export const matchData = {
           summoner1Id: 14,
           summoner2Casts: 3,
           summoner2Id: 4,
-          summonerId: 'W6G0KVF-YArP8-OxohT0ljo8x0w9VoOyfanMVQJsWxlsuHXp3It1dumX_Q',
+          summonerId:
+            'W6G0KVF-YArP8-OxohT0ljo8x0w9VoOyfanMVQJsWxlsuHXp3It1dumX_Q',
           summonerLevel: 43,
           summonerName: 'dddbbbdddbbb',
           teamEarlySurrendered: false,
@@ -2580,7 +2589,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 9913,
           physicalDamageTaken: 13203,
           profileIcon: 5255,
-          puuid: '3_ItUvHcGM6JsN0J6NcRhaek-cIgxqWsIbKKS5dtOEGxsrVaPWihhzcuS9DxmzHo6wUx0T2-hVCBbA',
+          puuid:
+            '3_ItUvHcGM6JsN0J6NcRhaek-cIgxqWsIbKKS5dtOEGxsrVaPWihhzcuS9DxmzHo6wUx0T2-hVCBbA',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
@@ -2855,7 +2865,8 @@ export const matchData = {
           physicalDamageDealtToChampions: 999,
           physicalDamageTaken: 7381,
           profileIcon: 2076,
-          puuid: 'tv0Dy1OYJkgLCiVz4mTtDlt1k3nIfKAmKS87TohwdBnEu4DcBROOxcOeBNE6CyUU2yBiZpbFi-vY1g',
+          puuid:
+            'tv0Dy1OYJkgLCiVz4mTtDlt1k3nIfKAmKS87TohwdBnEu4DcBROOxcOeBNE6CyUU2yBiZpbFi-vY1g',
           quadraKills: 0,
           riotIdName: '',
           riotIdTagline: '',
