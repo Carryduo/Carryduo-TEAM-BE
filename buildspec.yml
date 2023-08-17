@@ -12,14 +12,14 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo "CODEBUILD_RESOLVED_SOURCE_VERSION=$CODEBUILD_RESOLVED_SOURCE_VERSION" >> build.sh
       - echo "Commit ID - $CODEBUILD_RESOLVED_SOURCE_VERSION"  # 커밋 ID 출력
-      - echo "CODEBUILD_RESOLVED_SOURCE_VERSION=$CODEBUILD_RESOLVED_SOURCE_VERSION" >> build.env
       - npm run build
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
-    - build.env
+    - build.sh
     - '**/*'
   name: build-$(date +%Y-%m-%d)
