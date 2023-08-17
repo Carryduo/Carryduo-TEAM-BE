@@ -2,7 +2,6 @@
 echo ${COMMIT_ID}
 #!/bin/bash
 sudo chmod -R 777 /home/ubuntu/build
-sudo chmod 400 /home/ubuntu/build/scripts/create.log-stream.sh
 #navigate into our working directory
 cd /home/ubuntu/build
 
