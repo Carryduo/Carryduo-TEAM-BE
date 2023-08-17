@@ -5,7 +5,5 @@ files:
     destination: /home/ubuntu/build/
 hooks:
   AfterInstall:
-    - location: scripts/create.log-stream.sh
-      timeout: 300
     - location: scripts/after.install.sh
       timeout: 300
