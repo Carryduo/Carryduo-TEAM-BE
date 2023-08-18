@@ -11,6 +11,7 @@ phases:
       - echo Nothing to do in the pre_build phase...
   build:
     commands:
+      - echo "commit id2 - ${SourceVariables.CommitId}""
       - echo Build started on `date`
       - echo "CODEBUILD_RESOLVED_SOURCE_VERSION=$CODEBUILD_RESOLVED_SOURCE_VERSION" >> build.sh
       - echo "Commit ID - $CODEBUILD_RESOLVED_SOURCE_VERSION"  # 커밋 ID 출력
